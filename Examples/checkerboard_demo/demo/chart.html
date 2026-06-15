@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <title>AATField Demo</title>
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script src="demo_data.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -129,15 +130,13 @@
         const black = "rgb(17,24,39)";
         const plane = "rgba(17,24,39,0.22)";
 
-        let data;
-        let maxLayer = 8;
+        let data = DEMO_DATA;
+        let maxLayer = data.models["2d"].states.length - 1;
         let current = 0;
         let playing = false;
         let lastTime = null;
 
-        fetch("demo_data.json").then(r => r.json()).then(json => {
-            data = json;
-            maxLayer = data.models["2d"].states.length - 1;
+        window.addEventListener("load", () => {
             document.getElementById("slider").max = maxLayer;
             render(0);
         });

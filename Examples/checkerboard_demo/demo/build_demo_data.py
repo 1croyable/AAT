@@ -162,7 +162,7 @@ def main():
 
     ckpt_2d_path = root_dir / "checkerboard_2d.pt"
     ckpt_3d_path = root_dir / "checkerboard_3d.pt"
-    out_path = demo_dir / "demo_data.json"
+    out_path = demo_dir / "demo_data.js"
 
     grid_size = 4
     n_points = 2000
@@ -180,8 +180,8 @@ def main():
     data_2d = pack_model_data("2d", model_2d, ckpt_2d, x_device, y_device)
     data_3d = pack_model_data("3d", model_3d, ckpt_3d, x_device, y_device)
 
-    points = []
     trace_set = set(trace_indices)
+    points = []
     for i in range(n_points):
         points.append({
             "id": int(i),
@@ -204,7 +204,9 @@ def main():
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
+        f.write("const DEMO_DATA = ")
         json.dump(payload, f, ensure_ascii=False)
+        f.write(";\n")
 
     print(f"saved: {out_path}")
     print(f"2d accuracy by layer: {[round(v, 4) for v in data_2d['accuracy_by_layer']]}")
