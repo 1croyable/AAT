@@ -193,6 +193,29 @@ class AATFieldLayer(nn.Module):
 
         self.selected_counts = [int(K) for _ in range(C)]
 
+    @torch.no_grad()
+    def materialize_child_count(self, k: int) -> None:
+        k = int(k)
+        if k < 1:
+            raise ValueError("k must be >= 1.")
+
+        C = self.num_classes
+        D = self.state_dim
+        device = self.parents.device
+        dtype = self.parents.dtype
+
+        self.child_offsets = nn.Parameter(torch.zeros(C, k, D, device=device, dtype=dtype))
+
+        anchors_n = int(C + C * k)
+        self.raw_sigma = nn.Parameter(torch.full((anchors_n,), inv_softplus(float(self.cfg.sigma_init)), device=device, dtype=dtype))
+        self.charge = nn.Parameter(torch.full((anchors_n,), float(self.cfg.charge_init), device=device, dtype=dtype))
+        if self.cfg.gate_bias:
+            self.child_gate_bias = nn.Parameter(torch.zeros(C * k, device=device, dtype=dtype))
+        else:
+            self.register_parameter("child_gate_bias", None)
+
+        self.selected_counts = [int(k) for _ in range(C)]
+
 
 class AATField(nn.Module):
     def __init__(self, cfg: AATFieldConfig):
@@ -240,6 +263,30 @@ class AATField(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.head(self.transport(x))
+
+
+    @torch.no_grad()
+    def materialize_from_state_dict(self, state_dict) -> None:
+        for li, layer in enumerate(self.layers):
+            key = f"layers.{li}.child_offsets"
+            if key not in state_dict:
+                continue
+
+            value = state_dict[key]
+            if value.dim() != 3:
+                raise RuntimeError(f"Invalid checkpoint tensor shape for {key}: {tuple(value.shape)}")
+
+            C, K, D = map(int, value.shape)
+            if C != layer.num_classes:
+                raise RuntimeError(f"Checkpoint class count mismatch in layer {li}: checkpoint={C}, model={layer.num_classes}")
+            if D != layer.state_dim:
+                raise RuntimeError(f"Checkpoint state_dim mismatch in layer {li}: checkpoint={D}, model={layer.state_dim}")
+            if layer.children_per_class != K:
+                layer.materialize_child_count(K)
+
+    def load_state_dict(self, state_dict, strict: bool = True, assign: bool = False):
+        self.materialize_from_state_dict(state_dict)
+        return super().load_state_dict(state_dict, strict=strict, assign=assign)
 
     @torch.no_grad()
     def initialize(self, x: torch.Tensor, y: torch.Tensor, *, samples: int = 8192, min_children: int = 2, kmeans_iters: int = 8, seed: int = 123) -> None:
