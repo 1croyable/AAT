@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 import torch
 
-from aatfield import AATField, AATFieldConfig
+from aatfield import AATField
 
 
 def make_checkerboard(n: int, grid_size: int = 4):
@@ -13,10 +13,25 @@ def make_checkerboard(n: int, grid_size: int = 4):
 
 
 def load_model(path: Path, device: torch.device):
-    ckpt = torch.load(path, map_location=device)
-    cfg = AATFieldConfig(**ckpt["config"])
-    model = AATField(cfg).to(device)
-    model.load_state_dict(ckpt["state_dict"])
+    if hasattr(AATField, "_torch_load"):
+        ckpt = AATField._torch_load(path, map_location=device)
+    else:
+        ckpt = torch.load(path, map_location=device)
+
+    if not isinstance(ckpt, dict) or "config" not in ckpt or "state_dict" not in ckpt:
+        raise ValueError(
+            f"{path} is not a self-contained AATField checkpoint. "
+            "Please re-save the model with model.save_checkpoint(path)."
+        )
+
+    if hasattr(AATField, "from_checkpoint"):
+        model = AATField.from_checkpoint(path, map_location=device).to(device)
+    else:
+        from aatfield import AATFieldConfig
+        cfg = AATFieldConfig(**ckpt["config"])
+        model = AATField(cfg).to(device)
+        model.load_state_dict(ckpt["state_dict"])
+
     model.eval()
     return model, ckpt
 

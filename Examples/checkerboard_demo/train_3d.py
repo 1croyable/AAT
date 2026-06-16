@@ -1,5 +1,4 @@
 from pathlib import Path
-from dataclasses import asdict
 
 import torch
 import torch.nn.functional as F
@@ -14,11 +13,15 @@ def make_checkerboard(n: int, grid_size: int = 4):
     return x, y
 
 
-def accuracy(model, x, y):
+def accuracy(model: AATField, x: torch.Tensor, y: torch.Tensor) -> float:
     model.eval()
     with torch.no_grad():
         pred = model(x).argmax(dim=1)
-        return (pred == y).float().mean().item()
+        return float((pred == y).float().mean().item())
+
+
+def clone_state_dict(model: AATField):
+    return {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
 
 
 def main():
@@ -44,8 +47,8 @@ def main():
         input_dim=2,
         extra_dims=1,
         num_classes=2,
-        layers=8,
-        max_children=12,
+        layers=4,
+        max_children=8,
         sigma_init=0.75,
         charge_init=0.08,
         step_cap=1.0,
@@ -76,7 +79,7 @@ def main():
             best_val_acc = val_acc
             best_train_acc = accuracy(model, x_train, y_train)
             best_epoch = epoch
-            best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+            best_state = clone_state_dict(model)
 
         if epoch == 1 or epoch % 50 == 0 or epoch == epochs:
             train_acc = accuracy(model, x_train, y_train)
@@ -88,18 +91,24 @@ def main():
                 f"best_val={best_val_acc:.4f}@{best_epoch}"
             )
 
-    checkpoint = {
-        "config": asdict(cfg),
-        "state_dict": best_state,
-        "grid_size": grid_size,
-        "best_epoch": best_epoch,
-        "best_train_acc": best_train_acc,
-        "best_val_acc": best_val_acc,
-        "selected_children": model.selected_children_by_layer(),
-        "total_children": model.total_children(),
-    }
+    if best_state is None:
+        raise RuntimeError("No best checkpoint was recorded.")
 
-    torch.save(checkpoint, out_path)
+    # Save the real best model, not the final epoch model.
+    model.load_state_dict(best_state)
+    model.eval()
+
+    model.save_checkpoint(
+        out_path,
+        metadata={
+            "grid_size": grid_size,
+            "best_epoch": best_epoch,
+            "best_train_acc": best_train_acc,
+            "best_val_acc": best_val_acc,
+            "selected_children": model.selected_children_by_layer(),
+            "total_children": model.total_children(),
+        },
+    )
 
     print(f"saved best checkpoint: {out_path}")
     print(f"best_epoch: {best_epoch}")
