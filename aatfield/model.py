@@ -66,7 +66,10 @@ class AATFieldLayer(nn.Module):
         K = self.children_per_class
         axis = self.child_offsets.reshape(C * K, self.state_dim)
         axis = axis / axis.norm(dim=-1, keepdim=True).clamp_min(1e-6)
-        s = ((z.unsqueeze(1) - child_flat.unsqueeze(0)) * axis.unsqueeze(0)).sum(dim=-1)
+
+        # [B, child_n] = [B, D] @ [D, child_n]
+        s = z @ axis.t()
+        s = s - (child_flat * axis).sum(dim=-1).view(1, -1)
         s = s / sigma_child.view(1, -1).clamp_min(1e-6)
         if self.child_gate_bias is not None:
             s = s + self.child_gate_bias.view(1, -1)
@@ -98,8 +101,8 @@ class AATFieldLayer(nn.Module):
         gate = self._child_gate(z, child_flat, sigma[C:])
         strength = torch.cat([base[:, :C], base[:, C:] * sigma[C:].view(1, -1) * gate], dim=1)
 
-        diff = anchors.unsqueeze(0) - z.unsqueeze(1)
-        move = ((strength / dist.clamp_min(1e-6)).unsqueeze(-1) * diff).sum(dim=1)
+        beta = strength / dist.clamp_min(1e-6)
+        move = beta @ anchors - z * beta.sum(dim=1, keepdim=True)
 
         cap = float(self.cfg.step_cap)
         if cap > 0:
