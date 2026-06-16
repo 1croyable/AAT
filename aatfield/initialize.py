@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from typing import Tuple
+from typing import Dict, List, Tuple
 
+import math
 import torch
 import torch.nn.functional as F
 
@@ -12,7 +13,7 @@ from .utils import pairwise_dist2
 @torch.no_grad()
 def boundary_weights(pts: torch.Tensor, class_id: int, parents: torch.Tensor) -> torch.Tensor:
     """
-    Boundary-aware sample weights for child placement.
+    Centroid-silhouette sample weights for child placement.
     """
     pts = pts.float()
     parents = parents.float()
@@ -26,11 +27,9 @@ def boundary_weights(pts: torch.Tensor, class_id: int, parents: torch.Tensor) ->
     mask[int(class_id)] = False
     d_other = d[:, mask].min(dim=1).values
 
-    margin = d_other - d_own
-    tau = torch.median(torch.abs(margin)).clamp_min(1e-4)
-    safe_margin = torch.clamp(margin, min=0.0)
-    w = 1.0 + torch.exp(-(safe_margin * safe_margin) / (tau * tau + 1e-8))
-    return w.clamp_min(1e-6)
+    silhouette = (d_other - d_own) / torch.maximum(d_own, d_other).clamp_min(1e-8)
+    w = (1.0 - silhouette).clamp_min(1e-3)
+    return w / w.mean().clamp_min(1e-8)
 
 
 @torch.no_grad()
@@ -132,9 +131,70 @@ def child_response_features_for_class(z: torch.Tensor, parent: torch.Tensor, cen
     return alpha * F.relu(s)
 
 
+@torch.no_grad()
+def initialize_layer_auto_k(layer, z: torch.Tensor, y: torch.Tensor, *, min_children: int, kmeans_iters: int) -> None:
+    z = z.detach().float()
+    y = y.detach().long().to(z.device)
+    C = layer.num_classes
+    M = int(layer.cfg.max_children)
+    D = layer.state_dim
+    min_children = max(1, min(int(min_children), M))
+
+    parents = torch.zeros(C, D, device=z.device, dtype=z.dtype)
+    global_mean = z.mean(dim=0)
+    for c in range(C):
+        pts = z[y == c]
+        parents[c] = pts.mean(dim=0) if pts.shape[0] > 0 else global_mean
+
+    centers_by_class: List[Dict[int, torch.Tensor]] = []
+    max_k_by_class: List[int] = []
+    for c in range(C):
+        pts = z[y == c]
+        if pts.shape[0] == 0:
+            pts = z
+        w = boundary_weights(pts, c, parents)
+        max_k = min(M, int(pts.shape[0]))
+        max_k_by_class.append(max_k)
+
+        centers_map: Dict[int, torch.Tensor] = {}
+        for k in range(1, max_k + 1):
+            centers, _ = weighted_kmeans(pts, w, k=k, iters=int(kmeans_iters))
+            centers_map[int(k)] = centers.detach().clone()
+        centers_by_class.append(centers_map)
+
+    common_max_k = min(max_k_by_class) if max_k_by_class else M
+    common_min_k = min(max(min_children, 1), common_max_k)
+
+    all_centers_full = [centers_by_class[c][max_k_by_class[c]] for c in range(C)]
+    full_anchors = torch.cat([parents] + all_centers_full, dim=0)
+    nearest = torch.sqrt(pairwise_dist2(z, full_anchors).min(dim=1).values + 1e-8)
+    sigma = float(torch.quantile(nearest, 0.20).item()) * 0.75
+    sigma = max(0.05, min(3.0, sigma))
+
+    best_k = int(common_min_k)
+    best_score = -float("inf")
+    for k in range(int(common_min_k), int(common_max_k) + 1):
+        info_values: List[float] = []
+        for c in range(C):
+            bin_y = (y == c).long()
+            phi = child_response_features_for_class(z=z, parent=parents[c], centers=centers_by_class[c][int(k)], sigma_value=sigma)
+            sc = supervised_fisher_score(phi, bin_y, num_classes=2)
+            info_values.append(float(math.log1p(max(sc, 0.0))))
+        layer_score = float(sum(info_values) / max(len(info_values), 1))
+        if layer_score > best_score:
+            best_score = layer_score
+            best_k = int(k)
+
+    child_centers = torch.zeros(C, best_k, D, device=z.device, dtype=z.dtype)
+    for c in range(C):
+        child_centers[c] = centers_by_class[c][best_k][:best_k]
+    layer._materialize(parents, child_centers, sigma)
+
+
 __all__ = [
     "boundary_weights",
     "weighted_kmeans",
     "supervised_fisher_score",
     "child_response_features_for_class",
+    "initialize_layer_auto_k",
 ]

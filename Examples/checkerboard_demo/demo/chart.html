@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>AATField Demo</title>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script src="demo_data.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #e5e7eb;
+            font-family: Arial, sans-serif;
+            color: #111827;
+        }
+
+        .wrap {
+            width: min(96vw, 1120px);
+            margin: 16px auto;
+        }
+
+        .controls {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        button {
+            border: 1px solid #cbd5e1;
+            background: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        input[type="range"] {
+            flex: 1;
+        }
+
+        #layerText {
+            width: 105px;
+            text-align: right;
+            color: #4b5563;
+            font-size: 13px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 14px;
+            padding: 10px;
+            aspect-ratio: 1 / 1;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title {
+            height: 26px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .acc {
+            font-size: 13px;
+            font-weight: 400;
+            color: #4b5563;
+        }
+
+        .plot {
+            flex: 1;
+            min-height: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="controls">
+            <button id="playBtn">Play</button>
+            <button id="resetBtn">Reset</button>
+            <input id="slider" type="range" min="0" max="8" value="0" step="0.01">
+            <div id="layerText">layer 0.00</div>
+        </div>
+
+        <div class="grid">
+            <div class="panel">
+                <div class="title">2D classification <span id="acc2d" class="acc"></span></div>
+                <div id="c2d" class="plot"></div>
+            </div>
+
+            <div class="panel">
+                <div class="title">3D classification <span id="acc3d" class="acc"></span></div>
+                <div id="c3d" class="plot"></div>
+            </div>
+
+            <div class="panel">
+                <div class="title">2D transport traces <span class="acc">20 points</span></div>
+                <div id="t2d" class="plot"></div>
+            </div>
+
+            <div class="panel">
+                <div class="title">3D transport traces <span class="acc">20 points</span></div>
+                <div id="t3d" class="plot"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const blue = "rgba(37,99,235,0.72)";
+        const orange = "rgba(234,88,12,0.72)";
+        const blueStrong = "rgb(37,99,235)";
+        const orangeStrong = "rgb(234,88,12)";
+        const bluePath = "rgba(37,99,235,0.65)";
+        const orangePath = "rgba(234,88,12,0.65)";
+        const black = "rgb(17,24,39)";
+        const plane = "rgba(17,24,39,0.22)";
+
+        let data = DEMO_DATA;
+        let maxLayer = data.models["2d"].states.length - 1;
+        let current = 0;
+        let playing = false;
+        let lastTime = null;
+
+        window.addEventListener("load", () => {
+            document.getElementById("slider").max = maxLayer;
+            render(0);
+        });
+
+        function interp(model, t, id) {
+            const l0 = Math.floor(t);
+            const l1 = Math.min(l0 + 1, model.states.length - 1);
+            const a = t - l0;
+            const p0 = model.states[l0][id];
+            const p1 = model.states[l1][id];
+            return p0.map((v, i) => v * (1 - a) + p1[i] * a);
+        }
+
+        function parentLayer(model, t) {
+            return Math.min(Math.floor(t), model.parents_by_layer.length - 1);
+        }
+
+        function range2d(model) {
+            let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+            for (const state of model.states) {
+                for (const p of state) {
+                    x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]);
+                    y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]);
+                }
+            }
+            const cx = (x0 + x1) / 2;
+            const cy = (y0 + y1) / 2;
+            const r = Math.max(x1 - x0, y1 - y0) * 0.6;
+            return [[cx - r, cx + r], [cy - r, cy + r]];
+        }
+
+        function range3d(model) {
+            let lo = [Infinity, Infinity, Infinity];
+            let hi = [-Infinity, -Infinity, -Infinity];
+            for (const state of model.states) {
+                for (const p of state) {
+                    for (let i = 0; i < 3; i++) {
+                        lo[i] = Math.min(lo[i], p[i]);
+                        hi[i] = Math.max(hi[i], p[i]);
+                    }
+                }
+            }
+            const center = lo.map((v, i) => (v + hi[i]) / 2);
+            const r = Math.max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) * 0.62;
+            return center.map(c => [c - r, c + r]);
+        }
+
+        function layout2d(model) {
+            const r = range2d(model);
+            return {
+                margin: { l: 8, r: 8, t: 8, b: 8 },
+                paper_bgcolor: "white",
+                plot_bgcolor: "white",
+                showlegend: false,
+                xaxis: { range: r[0], showticklabels: false, zeroline: false, gridcolor: "#e5e7eb" },
+                yaxis: { range: r[1], showticklabels: false, zeroline: false, gridcolor: "#e5e7eb", scaleanchor: "x" },
+            };
+        }
+
+        function layout3d(model) {
+            const r = range3d(model);
+            return {
+                margin: { l: 0, r: 0, t: 0, b: 0 },
+                paper_bgcolor: "white",
+                showlegend: false,
+                scene: {
+                    aspectmode: "cube",
+                    xaxis: { range: r[0], showticklabels: false, title: "", zeroline: false, gridcolor: "#e5e7eb" },
+                    yaxis: { range: r[1], showticklabels: false, title: "", zeroline: false, gridcolor: "#e5e7eb" },
+                    zaxis: { range: r[2], showticklabels: false, title: "", zeroline: false, gridcolor: "#e5e7eb" },
+                    camera: { eye: { x: -1.3, y: -1.2, z: 0.8 } }
+                }
+            };
+        }
+
+        function class2d(t) {
+            const model = data.models["2d"];
+            const layer = Math.round(t);
+            const c0 = { x: [], y: [] };
+            const c1 = { x: [], y: [] };
+
+            for (let i = 0; i < data.points.length; i++) {
+                const p = interp(model, t, i);
+                const target = data.points[i].label === 0 ? c0 : c1;
+                target.x.push(p[0]);
+                target.y.push(p[1]);
+            }
+
+            const b = model.boundary.by_layer[layer].points;
+            const parents = model.parents_by_layer[parentLayer(model, t)];
+
+            return [
+                scatter2d(c0.x, c0.y, blue, 4),
+                scatter2d(c1.x, c1.y, orange, 4),
+                line2d([b[0][0], b[1][0]], [b[0][1], b[1][1]], black, 2),
+                parent2d(parents),
+            ];
+        }
+
+        function class3d(t) {
+            const model = data.models["3d"];
+            const layer = Math.round(t);
+            const c0 = { x: [], y: [], z: [] };
+            const c1 = { x: [], y: [], z: [] };
+
+            for (let i = 0; i < data.points.length; i++) {
+                const p = interp(model, t, i);
+                const target = data.points[i].label === 0 ? c0 : c1;
+                target.x.push(p[0]);
+                target.y.push(p[1]);
+                target.z.push(p[2]);
+            }
+
+            const parents = model.parents_by_layer[parentLayer(model, t)];
+            const traces = [scatter3d(c0.x, c0.y, c0.z, blue, 3), scatter3d(c1.x, c1.y, c1.z, orange, 3)];
+
+            const b = model.boundary.by_layer[layer];
+            if (b.points && b.points.length) traces.push(plane3d(b.points));
+
+            traces.push(parent3d(parents));
+            return traces;
+        }
+
+        function traces2d(t) {
+            const model = data.models["2d"];
+            const layer = Math.floor(t);
+            const out = [];
+
+            for (const id of data.trace_indices) {
+                const label = data.points[id].label;
+                const xs = [];
+                const ys = [];
+                for (let l = 0; l <= layer; l++) {
+                    xs.push(model.states[l][id][0]);
+                    ys.push(model.states[l][id][1]);
+                }
+                const p = interp(model, t, id);
+                xs.push(p[0]);
+                ys.push(p[1]);
+                out.push(line2d(xs, ys, label === 0 ? bluePath : orangePath, 2));
+            }
+
+            const now0 = { x: [], y: [] };
+            const now1 = { x: [], y: [] };
+
+            for (const id of data.trace_indices) {
+                const p = interp(model, t, id);
+                const target = data.points[id].label === 0 ? now0 : now1;
+                target.x.push(p[0]);
+                target.y.push(p[1]);
+            }
+
+            out.push(scatter2d(now0.x, now0.y, blueStrong, 9));
+            out.push(scatter2d(now1.x, now1.y, orangeStrong, 9));
+            out.push(parent2d(model.parents_by_layer[parentLayer(model, t)]));
+            return out;
+        }
+
+        function traces3d(t) {
+            const model = data.models["3d"];
+            const layer = Math.floor(t);
+            const out = [];
+
+            for (const id of data.trace_indices) {
+                const label = data.points[id].label;
+                const xs = [];
+                const ys = [];
+                const zs = [];
+                for (let l = 0; l <= layer; l++) {
+                    xs.push(model.states[l][id][0]);
+                    ys.push(model.states[l][id][1]);
+                    zs.push(model.states[l][id][2]);
+                }
+                const p = interp(model, t, id);
+                xs.push(p[0]);
+                ys.push(p[1]);
+                zs.push(p[2]);
+                out.push(line3d(xs, ys, zs, label === 0 ? bluePath : orangePath, 5));
+            }
+
+            const now0 = { x: [], y: [], z: [] };
+            const now1 = { x: [], y: [], z: [] };
+
+            for (const id of data.trace_indices) {
+                const p = interp(model, t, id);
+                const target = data.points[id].label === 0 ? now0 : now1;
+                target.x.push(p[0]);
+                target.y.push(p[1]);
+                target.z.push(p[2]);
+            }
+
+            out.push(scatter3d(now0.x, now0.y, now0.z, blueStrong, 4));
+            out.push(scatter3d(now1.x, now1.y, now1.z, orangeStrong, 4));
+            out.push(parent3d(model.parents_by_layer[parentLayer(model, t)]));
+            return out;
+        }
+
+        function scatter2d(x, y, color, size) {
+            return { type: "scattergl", mode: "markers", x, y, marker: { color, size }, hoverinfo: "skip" };
+        }
+
+        function line2d(x, y, color, width) {
+            return { type: "scatter", mode: "lines", x, y, line: { color, width }, hoverinfo: "skip" };
+        }
+
+        function parent2d(parents) {
+            return {
+                type: "scatter",
+                mode: "markers",
+                x: parents.map(p => p[0]),
+                y: parents.map(p => p[1]),
+                marker: { size: 13, color: "white", line: { color: black, width: 2 }, symbol: "diamond" },
+                hoverinfo: "skip"
+            };
+        }
+
+        function scatter3d(x, y, z, color, size) {
+            return { type: "scatter3d", mode: "markers", x, y, z, marker: { color, size }, hoverinfo: "skip" };
+        }
+
+        function line3d(x, y, z, color, width) {
+            return { type: "scatter3d", mode: "lines", x, y, z, line: { color, width }, hoverinfo: "skip" };
+        }
+
+        function parent3d(parents) {
+            return {
+                type: "scatter3d",
+                mode: "markers",
+                x: parents.map(p => p[0]),
+                y: parents.map(p => p[1]),
+                z: parents.map(p => p[2]),
+                marker: { size: 6, color: "white", line: { color: black, width: 4 }, symbol: "diamond" },
+                hoverinfo: "skip"
+            };
+        }
+
+        function plane3d(points) {
+            return {
+                type: "surface",
+                x: points.map(row => row.map(p => p[0])),
+                y: points.map(row => row.map(p => p[1])),
+                z: points.map(row => row.map(p => p[2])),
+                opacity: 0.24,
+                showscale: false,
+                colorscale: [[0, plane], [1, plane]],
+                hoverinfo: "skip"
+            };
+        }
+
+        function render(t) {
+            current = Math.max(0, Math.min(maxLayer, t));
+            const layer = Math.round(current);
+
+            Plotly.react("c2d", class2d(current), layout2d(data.models["2d"]), { displayModeBar: false, responsive: true });
+            Plotly.react("c3d", class3d(current), layout3d(data.models["3d"]), { displayModeBar: false, responsive: true });
+            Plotly.react("t2d", traces2d(current), layout2d(data.models["2d"]), { displayModeBar: false, responsive: true });
+            Plotly.react("t3d", traces3d(current), layout3d(data.models["3d"]), { displayModeBar: false, responsive: true });
+
+            document.getElementById("slider").value = current;
+            document.getElementById("layerText").textContent = `layer ${current.toFixed(2)}`;
+            document.getElementById("acc2d").textContent = `acc ${(data.models["2d"].accuracy_by_layer[layer] * 100).toFixed(1)}%`;
+            document.getElementById("acc3d").textContent = `acc ${(data.models["3d"].accuracy_by_layer[layer] * 100).toFixed(1)}%`;
+        }
+
+        function tick(ts) {
+            if (!playing) return;
+            if (lastTime === null) lastTime = ts;
+
+            const dt = (ts - lastTime) / 1000;
+            lastTime = ts;
+
+            let next = current + dt * 0.6;
+            if (next >= maxLayer) {
+                next = maxLayer;
+                playing = false;
+                document.getElementById("playBtn").textContent = "Play";
+            }
+
+            render(next);
+            requestAnimationFrame(tick);
+        }
+
+        document.getElementById("playBtn").onclick = () => {
+            playing = !playing;
+            document.getElementById("playBtn").textContent = playing ? "Pause" : "Play";
+            lastTime = null;
+            if (playing) {
+                if (current >= maxLayer) render(0);
+                requestAnimationFrame(tick);
+            }
+        };
+
+        document.getElementById("resetBtn").onclick = () => {
+            playing = false;
+            document.getElementById("playBtn").textContent = "Play";
+            render(0);
+        };
+
+        document.getElementById("slider").oninput = e => {
+            playing = false;
+            document.getElementById("playBtn").textContent = "Play";
+            render(parseFloat(e.target.value));
+        };
+    </script>
+</body>
+
+</html>

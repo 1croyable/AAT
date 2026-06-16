@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import math
-from typing import Dict, List
+from pathlib import Path
+from typing import Dict, List, Optional, Any
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 from .config import AATFieldConfig, AATFieldLayerConfig
-from .utils import inv_softplus, make_permutation, pairwise_dist2
-from .initialize import boundary_weights, weighted_kmeans, supervised_fisher_score, child_response_features_for_class
+from .utils import inv_softplus, make_permutation
+from .initialize import initialize_layer_auto_k
 
 
 class AATFieldLayer(nn.Module):
@@ -94,9 +94,9 @@ class AATFieldLayer(nn.Module):
         alpha = torch.softmax(logits, dim=-1)
 
         dist = torch.sqrt(dist2 + 1e-8)
-        strength = alpha * self.charge.view(1, -1) * sigma.view(1, -1)
+        base = alpha * self.charge.view(1, -1)
         gate = self._child_gate(z, child_flat, sigma[C:])
-        strength = torch.cat([strength[:, :C], strength[:, C:] * gate], dim=1)
+        strength = torch.cat([base[:, :C], base[:, C:] * sigma[C:].view(1, -1) * gate], dim=1)
 
         diff = anchors.unsqueeze(0) - z.unsqueeze(1)
         move = ((strength / dist.clamp_min(1e-6)).unsqueeze(-1) * diff).sum(dim=1)
@@ -110,67 +110,7 @@ class AATFieldLayer(nn.Module):
 
     @torch.no_grad()
     def auto_k_init(self, z: torch.Tensor, y: torch.Tensor, *, min_children: int, kmeans_iters: int) -> None:
-        z = z.detach().float()
-        y = y.detach().long().to(z.device)
-        C = self.num_classes
-        M = int(self.cfg.max_children)
-        D = self.state_dim
-        min_children = max(1, min(int(min_children), M))
-
-        parents = torch.zeros(C, D, device=z.device, dtype=z.dtype)
-        global_mean = z.mean(dim=0)
-        for c in range(C):
-            pts = z[y == c]
-            parents[c] = pts.mean(dim=0) if pts.shape[0] > 0 else global_mean
-
-        centers_by_class: List[Dict[int, torch.Tensor]] = []
-        max_k_by_class: List[int] = []
-        for c in range(C):
-            pts = z[y == c]
-            if pts.shape[0] == 0:
-                pts = z
-            w = boundary_weights(pts, c, parents)
-            max_k = min(M, int(pts.shape[0]))
-            max_k_by_class.append(max_k)
-
-            centers_map: Dict[int, torch.Tensor] = {}
-            for k in range(1, max_k + 1):
-                centers, _ = weighted_kmeans(pts, w, k=k, iters=int(kmeans_iters))
-                centers_map[int(k)] = centers.detach().clone()
-            centers_by_class.append(centers_map)
-
-        common_max_k = min(max_k_by_class) if max_k_by_class else M
-        common_min_k = min(max(min_children, 1), common_max_k)
-
-        all_centers_full = [centers_by_class[c][max_k_by_class[c]] for c in range(C)]
-        full_anchors = torch.cat([parents] + all_centers_full, dim=0)
-        nearest = torch.sqrt(pairwise_dist2(z, full_anchors).min(dim=1).values + 1e-8)
-        sigma = float(torch.quantile(nearest, 0.20).item()) * 0.75
-        sigma = max(0.05, min(3.0, sigma))
-
-        best_k = int(common_min_k)
-        best_score = -float("inf")
-        for k in range(int(common_min_k), int(common_max_k) + 1):
-            info_values: List[float] = []
-            for c in range(C):
-                bin_y = (y == c).long()
-                phi = child_response_features_for_class(
-                    z=z,
-                    parent=parents[c],
-                    centers=centers_by_class[c][int(k)],
-                    sigma_value=sigma,
-                )
-                sc = supervised_fisher_score(phi, bin_y, num_classes=2)
-                info_values.append(float(math.log1p(max(sc, 0.0))))
-            layer_score = float(sum(info_values) / max(len(info_values), 1))
-            if layer_score > best_score:
-                best_score = layer_score
-                best_k = int(k)
-
-        child_centers = torch.zeros(C, best_k, D, device=z.device, dtype=z.dtype)
-        for c in range(C):
-            child_centers[c] = centers_by_class[c][best_k][:best_k]
-        self._materialize(parents, child_centers, sigma)
+        initialize_layer_auto_k(self, z, y, min_children=int(min_children), kmeans_iters=int(kmeans_iters))
 
     @torch.no_grad()
     def _materialize(self, parents: torch.Tensor, child_centers: torch.Tensor, sigma: float) -> None:
@@ -192,6 +132,29 @@ class AATFieldLayer(nn.Module):
             self.register_parameter("child_gate_bias", None)
 
         self.selected_counts = [int(K) for _ in range(C)]
+
+    @torch.no_grad()
+    def materialize_child_count(self, k: int) -> None:
+        k = int(k)
+        if k < 1:
+            raise ValueError("k must be >= 1.")
+
+        C = self.num_classes
+        D = self.state_dim
+        device = self.parents.device
+        dtype = self.parents.dtype
+
+        self.child_offsets = nn.Parameter(torch.zeros(C, k, D, device=device, dtype=dtype))
+
+        anchors_n = int(C + C * k)
+        self.raw_sigma = nn.Parameter(torch.full((anchors_n,), inv_softplus(float(self.cfg.sigma_init)), device=device, dtype=dtype))
+        self.charge = nn.Parameter(torch.full((anchors_n,), float(self.cfg.charge_init), device=device, dtype=dtype))
+        if self.cfg.gate_bias:
+            self.child_gate_bias = nn.Parameter(torch.zeros(C * k, device=device, dtype=dtype))
+        else:
+            self.register_parameter("child_gate_bias", None)
+
+        self.selected_counts = [int(k) for _ in range(C)]
 
 
 class AATField(nn.Module):
@@ -279,6 +242,110 @@ class AATField(nn.Module):
     @torch.no_grad()
     def total_children(self) -> int:
         return int(sum(sum(counts) for counts in self.selected_children_by_layer()))
+
+    def config_dict(self) -> Dict[str, object]:
+        cfg = self.cfg
+        return {
+            "input_dim": int(cfg.input_dim),
+            "extra_dims": int(cfg.extra_dims),
+            "num_classes": int(cfg.num_classes),
+            "layers": int(cfg.layers),
+            "max_children": int(cfg.max_children),
+            "sigma_init": float(cfg.sigma_init),
+            "charge_init": float(cfg.charge_init),
+            "step_cap": float(cfg.step_cap),
+            "gate_bias": bool(cfg.gate_bias),
+            "head_bias": bool(cfg.head_bias),
+            "lift_seed": int(cfg.lift_seed),
+        }
+
+    @torch.no_grad()
+    def checkpoint_dict(self, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, object]:
+        ckpt: Dict[str, object] = {
+            "format": "AATFieldCheckpoint",
+            "version": 1,
+            "config": self.config_dict(),
+            "state_dict": self.state_dict(),
+            "selected_children": self.selected_children_by_layer(),
+            "total_children": self.total_children(),
+        }
+        if metadata:
+            ckpt["metadata"] = dict(metadata)
+            # Also flatten metadata for simple demo scripts.
+            for key, value in metadata.items():
+                if key not in ckpt:
+                    ckpt[key] = value
+        return ckpt
+
+    @torch.no_grad()
+    def save_checkpoint(self, path: str | Path, metadata: Optional[Dict[str, Any]] = None) -> None:
+        """Save a full checkpoint that can reconstruct the model without external config."""
+        torch.save(self.checkpoint_dict(metadata=metadata), path)
+
+    @staticmethod
+    def _torch_load(path: str | Path, map_location=None):
+        """Compatibility wrapper for PyTorch versions with/without weights_only."""
+        try:
+            return torch.load(path, map_location=map_location, weights_only=False)
+        except TypeError:
+            return torch.load(path, map_location=map_location)
+
+    @torch.no_grad()
+    def materialize_from_state_dict(self, state_dict) -> None:
+        for li, layer in enumerate(self.layers):
+            key = f"layers.{li}.child_offsets"
+            if key not in state_dict:
+                continue
+
+            value = state_dict[key]
+            if value.dim() != 3:
+                raise RuntimeError(f"Invalid checkpoint tensor shape for {key}: {tuple(value.shape)}")
+
+            C, K, D = map(int, value.shape)
+            if C != layer.num_classes:
+                raise RuntimeError(f"Checkpoint class count mismatch in layer {li}: checkpoint={C}, model={layer.num_classes}")
+            if D != layer.state_dim:
+                raise RuntimeError(f"Checkpoint state_dim mismatch in layer {li}: checkpoint={D}, model={layer.state_dim}")
+            if layer.children_per_class != K:
+                layer.materialize_child_count(K)
+
+    def load_state_dict(self, state_dict, strict: bool = True, assign: bool = False):
+        self.materialize_from_state_dict(state_dict)
+        try:
+            return super().load_state_dict(state_dict, strict=strict, assign=assign)
+        except TypeError:
+            return super().load_state_dict(state_dict, strict=strict)
+
+    @classmethod
+    def from_checkpoint(cls, path: str | Path, map_location=None) -> "AATField":
+        """
+        Reconstruct AATField directly from a full checkpoint saved by save_checkpoint().
+        """
+        ckpt = cls._torch_load(path, map_location=map_location)
+        if not isinstance(ckpt, dict) or "config" not in ckpt:
+            raise RuntimeError(
+                "This checkpoint does not contain an AATField config. "
+                "It may be an old raw state_dict checkpoint. Recreate the model with "
+                "the original AATFieldConfig and call load_state_dict(...), or resave it "
+                "with model.save_checkpoint(...)."
+            )
+
+        state = ckpt.get("state_dict", ckpt.get("model_state_dict"))
+        if state is None:
+            raise RuntimeError("Checkpoint contains config but no state_dict/model_state_dict.")
+
+        model = cls(AATFieldConfig(**ckpt["config"]))
+        model.load_state_dict(state)
+        return model
+
+    @torch.no_grad()
+    def load_checkpoint(self, path: str | Path, map_location=None, strict: bool = True) -> None:
+        ckpt = self._torch_load(path, map_location=map_location)
+        if not isinstance(ckpt, dict):
+            raise RuntimeError("Invalid checkpoint object.")
+
+        state = ckpt.get("state_dict", ckpt.get("model_state_dict", ckpt))
+        self.load_state_dict(state, strict=strict)
 
 
 __all__ = [
