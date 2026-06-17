@@ -249,8 +249,22 @@ def synthetic_bundle(name: str, seed: int, n_train: int = 4096, n_val: int = 204
         x, y = make_spiral(n, gen)
     else:
         raise ValueError(f"unknown synthetic dataset: {name}")
-    return DataBundle(name, x.shape[1], 2, x[:n_train], y[:n_train], x[n_train:n_train+n_val], y[n_train:n_train+n_val], x[n_train+n_val:], y[n_train+n_val:])
 
+    idx = torch.randperm(n, generator=gen)
+    x = x[idx]
+    y = y[idx]
+
+    return DataBundle(
+        name,
+        x.shape[1],
+        2,
+        x[:n_train],
+        y[:n_train],
+        x[n_train:n_train+n_val],
+        y[n_train:n_train+n_val],
+        x[n_train+n_val:],
+        y[n_train+n_val:],
+    )
 
 def image_bundle(name: str, data_root: Path, train_limit: int, val_size: int) -> DataBundle:
     key = f"{name}:{train_limit}:{val_size}"
@@ -282,6 +296,7 @@ def image_bundle(name: str, data_root: Path, train_limit: int, val_size: int) ->
 def extra_dims_for_state(state: str, input_dim: int) -> int:
     if state == "x1": return 0
     if state == "x2": return int(input_dim)
+    if state == "x3": return int(input_dim) * 2
     if state == "x4": return int(input_dim) * 3
     if state == "x8": return int(input_dim) * 7
     if state == "p256": return 256
@@ -360,15 +375,38 @@ def fit_one(spec: RunSpec, data: DataBundle, out_dir: Path, device: torch.device
     test_acc, test_f1 = accuracy_and_f1(model, test_loader, device, data.num_classes)
     return {"status": "ok", "run_id": run_id(spec), "dataset": spec.dataset, "group": spec.group, "model": spec.model, "family": spec.family, "seed": spec.seed, "layers": spec.layers, "max_children": spec.max_children, "state": spec.state, "widths": spec.widths, "centers": spec.centers, "input_dim": data.input_dim, "state_dim": data.input_dim + extra_dims_for_state(spec.state, data.input_dim), "num_classes": data.num_classes, "params": int(count_parameters(model)), "best_epoch": best_epoch, "best_val_acc": round(best_val, 6), "best_val_f1": round(best_f1, 6), "test_acc": round(test_acc, 6), "test_f1": round(test_f1, 6), "train_time_sec": round(time.time() - start, 3), "checkpoint": str(ckpt_path), "selected_children": json.dumps(model.selected_children_by_layer()) if isinstance(model, AATField) else "", "total_children": model.total_children() if isinstance(model, AATField) else ""}
 
-
 def synthetic_specs() -> List[RunSpec]:
     datasets = ["checkerboard_2d", "checkerboard_3d", "checkerboard_4d", "moons_2d", "circles_2d", "spiral_2d"]
-    models = [("AAT-S-x1","aat",4,8,"x1","",0,800,2e-3),("AAT-S-x2","aat",4,8,"x2","",0,800,2e-3),("AAT-S-x4","aat",4,8,"x4","",0,800,2e-3),("AAT-S-x8","aat",4,8,"x8","",0,800,2e-3),("AAT-M-x2","aat",8,12,"x2","",0,800,1.5e-3),("AAT-M-x4","aat",8,12,"x4","",0,800,1.5e-3),("AAT-L-x4","aat",12,16,"x4","",0,800,1e-3),("AAT-L-x8","aat",12,16,"x8","",0,800,1e-3),("MLP-small","mlp",0,0,"","32-32",0,800,1e-3),("MLP-match","mlp",0,0,"","64-64",0,800,1e-3),("MLP-large","mlp",0,0,"","128-128-128",0,800,1e-3),("RBF-small","rbf",0,0,"","",32,800,1e-3),("RBF-match","rbf",0,0,"","",96,800,1e-3)]
-    return [RunSpec(d, "synthetic", name, fam, seed, L, K, state, widths, centers, epochs, lr, 256, 4096, 8, "flat") for d in datasets for seed in [0, 1, 2] for name, fam, L, K, state, widths, centers, epochs, lr in models]
+    models = [
+        ("AAT-S-x1","aat",4,8,"x1","",0,800,2e-3),
+        ("AAT-S-x2","aat",4,8,"x2","",0,800,2e-3),
+        ("AAT-S-x4","aat",4,8,"x4","",0,800,2e-3),
+        ("AAT-S-x8","aat",4,8,"x8","",0,800,2e-3),
+        ("AAT-M-x2","aat",8,12,"x2","",0,800,1.5e-3),
+        ("AAT-M-x4","aat",8,12,"x4","",0,800,1.5e-3),
+        ("AAT-L-x4","aat",12,16,"x4","",0,800,1e-3),
+        ("AAT-L-x8","aat",12,16,"x8","",0,800,1e-3),
+        ("MLP-small","mlp",0,0,"","32-32",0,800,1e-3),
+        ("MLP-match","mlp",0,0,"","64-64",0,800,1e-3),
+        ("MLP-large","mlp",0,0,"","128-128-128",0,800,1e-3),
+        ("RBF-small","rbf",0,0,"","",32,800,1e-3),
+        ("RBF-match","rbf",0,0,"","",96,800,1e-3),
+    ]
 
+    specs = []
+    for d in datasets:
+        for seed in [0, 1, 2]:
+            for name, fam, L, K, state, widths, centers, epochs, lr in models:
+                e = epochs
+                if d in {"moons_2d", "circles_2d"}:
+                    e = 100
+                elif d == "spiral_2d":
+                    e = 300
+                specs.append(RunSpec(d, "synthetic", name, fam, seed, L, K, state, widths, centers, e, lr, 256, 4096, 8, "flat"))
+    return specs
 
 def image_specs(dataset: str) -> List[RunSpec]:
-    models = [("AAT-Img-S-x1","aat",4,8,"x1","",0,80,1e-3,"flat"),("AAT-Img-S-p256","aat",4,8,"p256","",0,80,1e-3,"flat"),("AAT-Img-S-x2","aat",4,8,"x2","",0,80,1e-3,"flat"),("AAT-Img-M-p256","aat",8,12,"p256","",0,80,8e-4,"flat"),("AAT-Img-M-x2","aat",8,12,"x2","",0,80,8e-4,"flat"),("AAT-Img-L-p512","aat",16,16,"p512","",0,80,6e-4,"flat"),("AAT-Img-XL-x2","aat",16,24,"x2","",0,80,5e-4,"flat"),("MLP-small","mlp",0,0,"","256",0,80,1e-3,"flat"),("MLP-medium","mlp",0,0,"","512-512",0,80,1e-3,"flat"),("MLP-large","mlp",0,0,"","1024-1024",0,80,1e-3,"flat"),("RBF-match","rbf",0,0,"","",512,80,1e-3,"flat"),("CNN-small","cnn",0,0,"","",0,80,1e-3,"image")]
+    models = [("AAT-Img-S-x1","aat",4,8,"x1","",0,80,1e-3,"flat"),("AAT-Img-S-p256","aat",4,8,"p256","",0,80,1e-3,"flat"),("AAT-Img-S-x2","aat",4,8,"x2","",0,80,1e-3,"flat"),("AAT-Img-M-p256","aat",8,12,"p256","",0,80,8e-4,"flat"),("AAT-Img-M-x2","aat",8,12,"x2","",0,80,8e-4,"flat"),("AAT-Img-L-p512","aat",16,16,"p512","",0,80,6e-4,"flat"),("AAT-Img-XL-x3","aat",24,24,"x3","",0,80,1e-3,"flat"),("MLP-small","mlp",0,0,"","256",0,80,1e-3,"flat"),("MLP-medium","mlp",0,0,"","512-512",0,80,1e-3,"flat"),("MLP-large","mlp",0,0,"","1024-1024",0,80,1e-3,"flat"),("RBF-match","rbf",0,0,"","",512,80,1e-3,"flat"),("CNN-small","cnn",0,0,"","",0,80,1e-3,"image")]
     return [RunSpec(dataset, "image", name, fam, 0, L, K, state, widths, centers, epochs, lr, 256, 8192, 6, mode) for name, fam, L, K, state, widths, centers, epochs, lr, mode in models]
 
 

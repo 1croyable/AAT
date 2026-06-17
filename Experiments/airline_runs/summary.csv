@@ -1,0 +1,7 @@
+dataset,model,runs,params_mean,best_val_acc_mean,best_val_acc_std,test_acc_mean,test_f1_mean,train_time_sec_mean
+airline_satisfaction,AAT-Tab-L-x4,1,12802.0,0.956435,0.0,0.954458,0.953641,660.509
+airline_satisfaction,AAT-Tab-M-x2,1,3330.0,0.954126,0.0,0.951648,0.950687,638.416
+airline_satisfaction,AAT-Tab-M-x4,1,6530.0,0.953548,0.0,0.952071,0.951174,724.986
+airline_satisfaction,AAT-Tab-S-x1,1,898.0,0.948929,0.0,0.948106,0.947089,241.014
+airline_satisfaction,AAT-Tab-S-x2,1,1730.0,0.953805,0.0,0.950647,0.949682,221.888
+airline_satisfaction,AAT-Tab-S-x4,1,3394.0,0.95111,0.0,0.947798,0.946843,214.803
