@@ -528,7 +528,7 @@ def airline_specs() -> List[RunSpec]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data-dir", default="./data/AirlineSatisfaction")
+    parser.add_argument("--data-dir", default="../data/AirlineSatisfaction")
     parser.add_argument("--train-csv", default="")
     parser.add_argument("--test-csv", default="")
     parser.add_argument("--out-dir", default="./airline_runs")
