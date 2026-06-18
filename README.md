@@ -10,6 +10,8 @@
   <img src="Docs/Imgs/2d_classification.gif" alt="2D classification demo" width="45%" />
   <img src="Docs/Imgs/3d_traces.gif" alt="3D transport traces" width="45%" />
 </p>
+<p align="center">  <em>Visualization of sample transport in AATField on toy classification tasks.</em></p>
+
 
 AATField 的目标不是堆叠更大的矩阵，而是探索一种更几何化、更场化的表示演化方式：**让样本在状态空间中被逐步搬运到更容易分类的位置。**
 
