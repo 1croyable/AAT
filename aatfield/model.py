@@ -109,6 +109,7 @@ class AATFieldLayer(nn.Module):
             norm = move.norm(dim=-1, keepdim=True)
             capped = cap * torch.tanh(norm / cap)
             move = move * (capped / norm.clamp_min(1e-6))
+            
         return z + move
 
     @torch.no_grad()
@@ -208,7 +209,15 @@ class AATField(nn.Module):
         return self.head(self.transport(x))
 
     @torch.no_grad()
-    def initialize(self, x: torch.Tensor, y: torch.Tensor, *, samples: int = 8192, min_children: int = 2, kmeans_iters: int = 8, seed: int = 123) -> None:
+    def initialize(
+        self,
+        x: torch.Tensor,
+        y: torch.Tensor,
+        *,
+        samples: int = 8192,
+        min_children: int = 2,
+        kmeans_iters: int = 8,
+    ) -> None:
         if int(min_children) < 2:
             raise ValueError("min_children must be >= 2 for AATField initialization.")
 
@@ -219,9 +228,7 @@ class AATField(nn.Module):
         y = y.to(device=device, dtype=torch.long)
 
         if int(samples) > 0 and x.shape[0] > int(samples):
-            gen = torch.Generator(device=device)
-            gen.manual_seed(int(seed))
-            idx = torch.randperm(x.shape[0], generator=gen, device=device)[: int(samples)]
+            idx = torch.randperm(x.shape[0], device=device)[: int(samples)]
             x = x[idx]
             y = y[idx]
 
@@ -337,7 +344,8 @@ class AATField(nn.Module):
         if state is None:
             raise RuntimeError("Checkpoint contains config but no state_dict/model_state_dict.")
 
-        model = cls(AATFieldConfig(**ckpt["config"]))
+        config = dict(ckpt["config"])
+        model = cls(AATFieldConfig(**config))
         model.load_state_dict(state)
         return model
 
