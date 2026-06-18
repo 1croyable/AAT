@@ -656,7 +656,7 @@ def make_specs(k_min: int, k_max: int, include_autok: bool) -> List[Tuple[str, O
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-dir", default="../data/AirlineSatisfaction")
-    parser.add_argument("--out-dir", default=".")
+    parser.add_argument("--out-dir", default="./airline")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--epochs", type=int, default=100)
     parser.add_argument("--seed", type=int, default=0)
@@ -682,6 +682,8 @@ def main() -> None:
     train_csv = data_dir / "train.csv"
     test_csv = data_dir / "test.csv"
     out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
     results_csv = out_dir / "results.csv"
     summary_csv = out_dir / "summary.csv"
     device = torch.device(args.device)

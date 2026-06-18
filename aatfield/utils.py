@@ -27,11 +27,7 @@ def make_permutation(dim: int, seed: int) -> torch.Tensor:
 def pairwise_dist2(x: torch.Tensor, centers: torch.Tensor) -> torch.Tensor:
     x = x.float()
     centers = centers.float()
-    return (
-        (x * x).sum(dim=1, keepdim=True)
-        + (centers * centers).sum(dim=1).view(1, -1)
-        - 2.0 * x @ centers.t()
-    ).clamp_min(0.0)
+    return ((x * x).sum(dim=1, keepdim=True) + (centers * centers).sum(dim=1).view(1, -1) - 2.0 * x @ centers.t()).clamp_min(0.0)
 
 __all__ = [
     "inv_softplus",
