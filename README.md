@@ -1,10 +1,12 @@
+[中文版本](Docs/README-CN.md)
+
 # AATField
 
-**基于锚点的加性搬运场 (Anchor-based Additive Transport Field)**
+**Anchor-based Additive Transport Field**
 
-一种非线性分类模型。它把样本看作状态空间中的一个点，并学习一个由锚点诱导的搬运场，使样本状态在这个可学习场中逐层移动，最终完成分类。
+A nonlinear classification model. It treats each sample as a point in a state space and learns an anchor-induced transport field, allowing sample states to move layer by layer within this learnable field and eventually complete classification.
 
-简单地说：*样本状态 → 观察锚点并产生搬运方向与强度 → 残差更新 → 线性读取*
+Simply put: *sample state → observe anchors and produce transport direction and strength → residual update → linear readout*
 
 <p align="center">
   <img src="Docs/Imgs/2d_classification.gif" alt="2D classification demo" width="45%" />
@@ -12,36 +14,35 @@
 </p>
 <p align="center">  <em>Visualization of sample transport in AATField on toy classification tasks.</em></p>
 
+AATField does not aim to stack larger matrices, but instead explores a more geometric and field-like way of evolving representations: **gradually transporting samples in the state space to positions that are easier to classify.**
 
-AATField 的目标不是堆叠更大的矩阵，而是探索一种更几何化、更场化的表示演化方式：**让样本在状态空间中被逐步搬运到更容易分类的位置。**
+## Why AATField?
 
-## 为什么做 AATField？
+In modern neural networks, many representation learning processes rely on large-scale matrix transformations. Matrix computation is extremely efficient on GPUs and has been proven to be highly powerful.
 
-现代神经网络中，许多表示学习过程都依赖大规模矩阵变换。矩阵计算在 GPU 上非常高效，也已经被证明极其强大。
+However, this does not mean that matrix transformation is the only way to evolve representations. AATField comes from a simple geometric intuition:
 
-但这并不意味着矩阵变换是唯一的表示演化方式。AATField 来自一个简单的几何直觉：
+> If the goal of classification is ultimately to make samples from different classes easier to separate in space, can we directly learn “how to move these samples,” instead of only changing them indirectly through layer-by-layer matrix mappings? This leads to the exploration of a structure whose main source of capacity is not large-scale trainable weight matrices.
 
-> 如果分类的目标最终是让不同类别的样本在空间中变得更容易分开，那么是否可以直接学习“如何移动这些样本”，而不是只通过一层层矩阵映射去间接改变它们？由此可以探索一种不以大规模可训练权重矩阵为容量主要来源的结构。
+This gives the model a very intuitive interpretation: **each layer applies a set of local geometric transports to the sample state, gradually moving samples into a more separable spatial structure**.
 
-这种方式使模型具有一种非常直观的解释：**每一层都在对样本状态施加一组局部的几何搬运，让样本逐渐进入更可分的空间结构**。
+## Quick Start
 
-## 快速开始
+### 1. Installation
 
-### 1. 安装
-
-建议在虚拟环境中安装依赖：
+It is recommended to install dependencies in a virtual environment:
 
 ```bash
 pip install git+https://github.com/1croyable/AATField.git@main
 ```
 
-如果项目已经配置了本地包安装，也可以使用：
+If the project has been configured for local package installation, you can also use:
 
 ```bash
 pip install -e .
 ```
 
-### 2. 基本使用
+### 2. Basic Usage
 
 ```python
 import torch
@@ -53,18 +54,18 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 cfg = AATFieldConfig.from_data(
     train_x,
-    num_classes=xxx, # 该任务的分类数量
-    extra_dims=xxx, # 写入数字表示额外的维度数 x2表示扩大两倍 x3表示扩大三倍
-    layers=xxx, # 层数
-    max_children=xxx, # 每层初始化推断子吸引子数的最大上限
+    num_classes=xxx, # number of classes for this task
+    extra_dims=xxx, # number of additional dimensions
+    layers=xxx, # number of layers
+    max_children=xxx, # maximum number of child anchors inferred during initialization for each layer
 )
 
 model = AATField(cfg).to(device)
 
-# 需要先根据训练数据进行结构初始化先验
+# The model needs to be structurally initialized from the training data first
 model.initialize(train_x, train_y)
 
-optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3) # 在初始化后创建
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3) # create the optimizer after initialization
 
 for x, y in train_loader:
     x = x.to(device)
@@ -78,7 +79,7 @@ for x, y in train_loader:
     optimizer.step()
 ```
 
-### 3. 推理
+### 3. Inference
 
 ```python
 model.eval()
@@ -87,51 +88,51 @@ with torch.no_grad():
     pred = logits.argmax(dim=1)
 ```
 
-## 模型结构
+## Model Structure
 
-![image-20260618202151791](Docs/Imgs/structure.jpg)
+![structure](Docs/Imgs/structure.jpg)
 
-AATField 可以被概括为三个动作：观察、搬运、分类
+AATField can be summarized as three actions: observe, transport, classify.
 
-### 1. 状态空间：在更高维中观察样本
+### 1. State Space: Observing Samples in a Higher-Dimensional Space
 
-AATField 会首先把原始输入提升到一个更高维的状态空间中。
+AATField first lifts the original input into a higher-dimensional state space.
 
-模型首先在状态空间中放置一组可学习 anchors。这些 anchors 不是普通的隐藏神经元，而是用于定义局部几何场的参考点。样本会根据自己与 anchors 的距离关系，获得不同的响应强度。
+The model then places a set of learnable anchors in the state space. These anchors are not ordinary hidden neurons, but reference points used to define local geometric fields. Each sample obtains different response strengths according to its distance relationships with the anchors.
 
-这种设计来自一个直观假设：手中可见的数据只是更高维真实信息的低维投影。一个分类结果可能受到许多未被观测到的因素影响，而模型无法直接恢复这些隐藏因素。因此，AATField 不试图还原真实高维信息，而是**通过学习搬运场，在扩展后的状态空间中重新组织已有投影信息**，使样本逐渐变得更容易分类。
-
-------
-
-### 2. 产生搬运：方向、强度与激活
-
-每个 anchor 会对样本产生一组 contribution，多个 contributions 会被加总成一个整体搬运向量。一个 contribution 同时包含：
-
-- 方向：样本应该往哪里移动；
-- 强度：这次移动有多大；
-
-多个 anchor contributions 会被组合成一个整体搬运向量，然后以残差形式更新样本状态。为了增强非线性表达能力，AATField 可以在搬运生成过程或状态更新之后加入非线性调制，使搬运场不只是平滑地弯曲空间，而能够形成更灵活的局部变形、边界转折与状态重排。
+This design comes from an intuitive assumption: the visible data we have may only be a low-dimensional projection of higher-dimensional real information. A classification result may be affected by many unobserved factors, and the model cannot directly recover these hidden factors. Therefore, AATField does not try to reconstruct the true high-dimensional information. Instead, it **learns a transport field in the expanded state space to reorganize the existing projected information**, making samples gradually easier to classify.
 
 ------
 
-### 3. 线性读取：让搬运后的空间变得可分
+### 2. Generating Transport: Direction, Strength, and Activation
 
-AATField 最后使用一个简单的线性分类头。这个设计为了给搬运过程提供一个明确目标：让样本经过多层搬运后，在最终状态空间中尽可能变得线性可分。
+Each anchor produces a set of contributions for a sample, and multiple contributions are summed into an overall transport vector. A contribution contains:
 
-它不是把所有点压到某个固定形状上，而是**像扭动橡皮泥一样，对状态空间进行局部拉伸、折叠和重排**，使分类边界在最终空间中变得更简单。
+- Direction: where the sample should move;
+- Strength: how large this movement should be;
 
-## 当前实验观察
+Multiple anchor contributions are combined into an overall transport vector and then used to update the sample state in a residual form. To enhance nonlinear expressiveness, AATField can introduce nonlinear modulation during transport generation or after state update, so that the transport field does not merely bend space smoothly, but can also form more flexible local deformations, boundary turns, and state rearrangements.
 
-初步实验显示：
+------
 
-- AATField 可以在二维几何分类任务中形成有效的非线性边界；
-- 在 moons、spiral 和 checkerboard 等低维几何任务中，AATField 展示出较强的几何归纳偏置；
-- 在部分小参数设置下，AATField 可以接近或超过参数相近的 MLP baseline；
-- 在 flat image 和 tabular 任务上，尚未稳定超过强 MLP/CNN baseline；
-- 搬运过程具有较好的可视化解释性，可以直接观察样本点如何在状态空间中逐层移动。
+### 3. Linear Readout: Making the Transported Space Separable
 
-## 许可证
+AATField finally uses a simple linear classification head. This design gives the transport process a clear objective: after multiple layers of transport, samples should become as linearly separable as possible in the final state space.
 
-本项目使用 MIT License。
+It does not compress all points into a fixed shape. Instead, it **locally stretches, folds, and rearranges the state space like twisting clay**, making the classification boundary simpler in the final space.
 
-你可以自由使用、修改和分发本项目代码，但需要保留原始版权声明。
+## Current Experimental Observations
+
+Preliminary experiments show that:
+
+- AATField can form effective nonlinear boundaries on two-dimensional geometric classification tasks;
+- On low-dimensional geometric tasks such as moons, spiral, and checkerboard, AATField shows a strong geometric inductive bias;
+- In some small-parameter settings, AATField can approach or outperform MLP baselines with similar parameter counts;
+- On flat image and tabular tasks, it has not yet stably surpassed strong MLP/CNN baselines;
+- The transport process has good visual interpretability, allowing direct observation of how sample points move layer by layer in the state space.
+
+## License
+
+This project uses the MIT License.
+
+You are free to use, modify, and distribute the project code, but the original copyright notice must be retained.
