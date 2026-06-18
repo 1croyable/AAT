@@ -33,7 +33,7 @@ class AATFieldConfig:
         x: Any,
         *,
         num_classes: int,
-        extra_dims: int | str = 0,
+        extra_dims: int = 0,
         layers: int = 4,
         max_children: int = 10,
         sigma_init: float = 0.75,
@@ -41,46 +41,23 @@ class AATFieldConfig:
         step_cap: float = 1.0,
         gate_bias: bool = True,
         head_bias: bool = True,
+        lift_seed: int = 1234,
     ) -> "AATFieldConfig":
-        """
-        extra_dims:
-            0       -> no extra dimensions
-            32      -> add 32 zero dimensions
-            "x2"    -> state_dim = 2 * input_dim
-            "x3"    -> state_dim = 3 * input_dim
-            "p256"  -> add 256 zero dimensions
-        """
-        shape = tuple(x.shape)
+        shape = getattr(x, "shape", None)
+        if shape is None:
+            raise ValueError("x must have a shape attribute.")
+
+        shape = tuple(shape)
         if len(shape) < 2:
             raise ValueError("x must have shape [N, input_dim] or [N, ...].")
 
-        if len(shape) > 2:
-            input_dim = 1
-            for s in shape[1:]:
-                input_dim *= int(s)
-        else:
-            input_dim = int(shape[-1])
+        input_dim = 1
+        for s in shape[1:]:
+            input_dim *= int(s)
 
-        if isinstance(extra_dims, str):
-            key = extra_dims.lower().strip()
-
-            if key in {"x1", "none", "0"}:
-                extra_dims_int = 0
-            elif key.startswith("x"):
-                factor = float(key[1:])
-                if factor < 1:
-                    raise ValueError("extra_dims multiplier must be >= 1, e.g. 'x2'.")
-                extra_dims_int = int(round(input_dim * (factor - 1)))
-            elif key.startswith("p"):
-                extra_dims_int = int(key[1:])
-                if extra_dims_int < 0:
-                    raise ValueError("p-style extra_dims must be non-negative, e.g. 'p256'.")
-            else:
-                raise ValueError(f"Unknown extra_dims format: {extra_dims!r}")
-        else:
-            extra_dims_int = int(extra_dims)
-            if extra_dims_int < 0:
-                raise ValueError("extra_dims must be non-negative.")
+        extra_dims_int = int(extra_dims)
+        if extra_dims_int < 0:
+            raise ValueError("extra_dims must be non-negative.")
 
         return cls(
             input_dim=int(input_dim),
@@ -93,8 +70,8 @@ class AATFieldConfig:
             step_cap=float(step_cap),
             gate_bias=bool(gate_bias),
             head_bias=bool(head_bias),
+            lift_seed=int(lift_seed),
         )
-
 
 @dataclass
 class AATFieldLayerConfig:
