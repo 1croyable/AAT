@@ -1,0 +1,4 @@
+core_mode,activation_mode,layers,best_val_acc,best_val_f1,test_acc,test_f1,params,total_children,selected_k_by_layer,diag_mean_move_norm,diag_mean_move_state_ratio,diag_mean_energy_delta,diag_mean_activation_accept_rate,diag_mean_boundary_push_norm,diag_mean_child_axis_push_norm,diag_mean_activation_zero_rate,diag_mean_competition_fold_norm,diag_mean_competition_gap,diag_mean_competition_phi,diag_mean_competition_active_rate
+potential,competition_relu,4,0.918003,0.91628,0.918964,0.917454,14182,384,"[49, 48, 50, 45]",0.069889,0.007081,,,,,,0.052786,1.1954,0.6954,0.224029
+potential,competition_relu,2,0.908443,0.906374,0.907723,0.905969,7198,194,"[49, 48]",0.082539,0.008362,,,,,,0.042315,1.221795,0.721796,0.218872
+potential,competition_abs,2,0.892339,0.890006,0.885702,0.883663,6982,188,"[49, 45]",0.060434,0.006116,,,,,,0.214974,0.998626,0.498626,0.330811
