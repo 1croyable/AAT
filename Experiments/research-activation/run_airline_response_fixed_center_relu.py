@@ -1,26 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-run_airline_field_target_relu.py
+run_airline_response_fixed_center_relu.py
 
-Field-target ReLU AAT experiment on Airline Satisfaction.
+AAT conservative transport + local response-center ReLU plus fixed/global-stat centered coordinate ReLU depth grid.
 
-Goal
-----
-Test one extremely simple post-transport activation:
+The core transport remains the same potential-field move:
+    z_mid = z + F_l(z)
 
-    compute the normal potential transport move
-    reuse the transport field's implicit target r
-    apply z_next = r + ReLU(z_mid - r)
-
-This script does NOT modify the main aatfield package.  It reuses the current
-AATField initialization / Auto-K machinery, but overrides the transport logic
-inside this experiment file.
-
-Recommended placement:
-    C:/Projets/AATField/Experiments/research-activation/run_airline_field_target_relu.py
-
-Default data path:
-    ../data/AirlineSatisfaction
+Each layer then optionally applies a cheap O(D) response/global centered coordinate ReLU:
+    z_next = c_l + ReLU(z_mid - c_l)
+where c_l is one trainable global center per layer.  The coordinate directions are
+fixed axes, so this does not introduce a learned rotation matrix.
 """
 from __future__ import annotations
 
@@ -228,37 +218,43 @@ def load_state_dict_to_device(model: nn.Module, state: Dict[str, torch.Tensor], 
     model.load_state_dict({k: v.to(device) for k, v in state.items()})
 
 
+
 # ============================================================
-# Conservative / potential-style AAT wrapper
+# Conservative AAT + fixed response/global-stat centered coordinate ReLU
 # ============================================================
 
 
-class ConservativeAATField(AATField):
+class ResponseFixedCenterAATField(AATField):
     """
-    Experiment-only model.
+    AAT conservative transport + local response-center ReLU + fixed/global-stat
+    centered coordinate ReLU.
 
-    Core transport mode
-    -------------------
-    potential:
-        Treat anchors as a log-sum-exp potential field:
+    Transport:
+        z_mid = z + F_l(z)
 
-            scores_i = charge_i - ||z-a_i||^2 / (2 sigma_i^2)
-            alpha_i  = softmax(scores_i)
-            F(z)     = field_scale * sum_i alpha_i * (a_i-z) / sigma_i^2
+    Local non-conservative perturbation:
+        r_l(z) = field response center from the current layer
+        z_resp = r_l(z) + ReLU(z_mid - r_l(z))
 
-        This is the negative gradient direction of U(z) = -logsumexp(scores_i)
-        with respect to z, up to field_scale. No child gate is used.
+    Then a global coordinate ReLU with a NON-TRAINABLE center:
+        z_next = c_l + ReLU(z_resp - c_l)
 
-    current_nogate:
-        The old AAT transport without child gate. This is kept only as a
-        diagnostic comparison; it is not guaranteed conservative.
+    Modes
+    -----
+    response_then_zero_center_relu:
+        c_l = 0 for every layer.  This is the pure fixed-origin ReLU ablation.
+
+    response_then_anchor_stat_center_relu:
+        c_l is fixed after initialization from global data/anchor response statistics:
+        c_l = mean_x field_target_l(x).  This uses all anchors through the same
+        soft response used by the conservative field, but the resulting center is
+        not trainable.
     """
 
-    VALID_CORE_MODES = {"potential", "current_nogate"}
+    VALID_CORE_MODES = {"potential"}
     VALID_ACTIVATIONS = {
-        # One method only: reuse the implicit target center already produced
-        # by the same potential field that generated the move.
-        "field_target_relu",   # z_next = r_target + ReLU(z_mid - r_target)
+        "response_then_zero_center_relu",
+        "response_then_anchor_stat_center_relu",
     }
 
     def __init__(
@@ -266,11 +262,11 @@ class ConservativeAATField(AATField):
         cfg: AATFieldConfig,
         *,
         core_mode: str = "potential",
-        activation_mode: str = "field_target_relu",
-        field_scale: float = 1.0,
-        boundary_margin: float = 0.30,
-        boundary_strength: float = 0.50,
-        child_axis_strength: float = 0.50,
+        activation_mode: str = "response_then_zero_center_relu",
+        field_scale: float = 0.08,
+        center_strength: float = 1.0,
+        gate_temperature: float = 0.5,
+        center_init: str = "fixed",
         use_step_cap: bool = True,
     ):
         super().__init__(cfg)
@@ -281,80 +277,53 @@ class ConservativeAATField(AATField):
         self.core_mode = str(core_mode)
         self.activation_mode = str(activation_mode)
         self.field_scale = float(field_scale)
-        self.boundary_margin = float(boundary_margin)
-        self.boundary_strength = float(boundary_strength)
-        self.child_axis_strength = float(child_axis_strength)
+        self.center_strength = float(center_strength)
+        self.gate_temperature = float(gate_temperature)
+        self.center_init = str(center_init)
         self.use_step_cap = bool(use_step_cap)
 
+        # Non-trainable centers.  They are Parameters with requires_grad=False so
+        # they move with .to(device), save in state_dict, but are not counted or optimized.
+        self.center_c = nn.ParameterList([
+            nn.Parameter(torch.zeros(layer.state_dim), requires_grad=False) for layer in self.layers
+        ])
+        self.margin_tau = nn.ParameterList([
+            nn.Parameter(torch.zeros(1), requires_grad=False) for _ in self.layers
+        ])
+
     def _anchors_sigma(self, layer) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        C = layer.num_classes
         child_flat = layer.child_anchors().reshape(layer.child_n, layer.state_dim)
         anchors = torch.cat([layer.parents, child_flat], dim=0)
         sigma = layer.sigma()
         if sigma.shape[0] != anchors.shape[0]:
             raise RuntimeError(
-                f"shape mismatch: anchors={anchors.shape[0]} sigma={sigma.shape[0]}. "
-                "Initialize before creating optimizer."
+                f"shape mismatch: anchors={anchors.shape[0]} sigma={sigma.shape[0]}. Initialize before creating optimizer."
             )
         return anchors, sigma, child_flat
 
     def _potential_scores(self, layer, z: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
-        anchors, sigma, child_flat = self._anchors_sigma(layer)
+        anchors, sigma, _ = self._anchors_sigma(layer)
         dist2 = (
             (z * z).sum(dim=-1, keepdim=True)
             + (anchors * anchors).sum(dim=-1).view(1, -1)
             - 2.0 * (z @ anchors.t())
         ).clamp_min(0.0)
         sigma2 = sigma.view(1, -1).square().clamp_min(1e-8)
-        # Here charge is treated as an anchor logit / bias in the potential.
         scores = layer.charge.view(1, -1) - dist2 / (2.0 * sigma2)
         return scores, dist2, anchors, sigma
 
-    def _potential_energy(self, layer, z: torch.Tensor) -> torch.Tensor:
-        scores, _, _, _ = self._potential_scores(layer, z)
-        return -torch.logsumexp(scores, dim=1)
-
     def _field_step(self, layer, z: torch.Tensor, *, apply_cap: bool = True) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
-        if self.core_mode == "potential":
-            scores, dist2, anchors, sigma = self._potential_scores(layer, z)
-            alpha = torch.softmax(scores, dim=-1)
-            sigma2 = sigma.view(1, -1).square().clamp_min(1e-8)
-            # Transport vector is the potential gradient.  It can be rewritten as
-            #     move = field_scale * W * (r_target - z)
-            # where
-            #     W = sum_i alpha_i / sigma_i^2
-            #     r_target = sum_i (alpha_i / sigma_i^2) * anchor_i / W
-            # So r_target is not an extra field-center computation; it is the
-            # implicit target point already used by this transport step.
-            weight = alpha / sigma2
-            weighted_anchor = weight @ anchors
-            weighted_sum = weight.sum(dim=1, keepdim=True).clamp_min(1e-8)
-            field_target = weighted_anchor / weighted_sum
-            move = float(self.field_scale) * (weighted_anchor - z * weighted_sum)
-            energy = -torch.logsumexp(scores, dim=1)
-        elif self.core_mode == "current_nogate":
-            anchors, sigma, _ = self._anchors_sigma(layer)
-            dist2 = (
-                (z * z).sum(dim=-1, keepdim=True)
-                + (anchors * anchors).sum(dim=-1).view(1, -1)
-                - 2.0 * (z @ anchors.t())
-            ).clamp_min(0.0)
-            logits = -dist2 / (2.0 * sigma.view(1, -1).square().clamp_min(1e-8))
-            alpha = torch.softmax(logits, dim=-1)
-            dist = torch.sqrt(dist2 + 1e-8)
-            strength = alpha * layer.charge.view(1, -1)
-            beta = strength / dist.clamp_min(1e-6)
-            move = beta @ anchors - z * beta.sum(dim=1, keepdim=True)
-            scores = logits
-            energy = -torch.logsumexp(scores, dim=1)
-            # Diagnostic fallback only. The default experiment uses potential.
-            pos_weight = beta.abs().clamp_min(0.0)
-            denom = pos_weight.sum(dim=1, keepdim=True).clamp_min(1e-8)
-            field_target = (pos_weight @ anchors) / denom
-        else:
-            raise RuntimeError(f"bad core_mode={self.core_mode}")
-
+        scores, dist2, anchors, sigma = self._potential_scores(layer, z)
+        alpha = torch.softmax(scores, dim=-1)
+        sigma2 = sigma.view(1, -1).square().clamp_min(1e-8)
+        weight = alpha / sigma2
+        weighted_anchor = weight @ anchors
+        weighted_sum = weight.sum(dim=1, keepdim=True).clamp_min(1e-8)
+        field_target = weighted_anchor / weighted_sum
+        move = float(self.field_scale) * (weighted_anchor - z * weighted_sum)
+        energy = -torch.logsumexp(scores, dim=1)
         raw_move = move
+
         if apply_cap and self.use_step_cap:
             cap = float(layer.cfg.step_cap)
             if cap > 0:
@@ -374,103 +343,117 @@ class ConservativeAATField(AATField):
         }
         return z_mid, info
 
-    def _boundary_push_activation(self, layer, z_mid: torch.Tensor) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
-        parents = layer.parents
-        C = int(layer.num_classes)
-        if C < 2:
-            return z_mid, {"boundary_push_norm": z_mid.new_zeros(z_mid.shape[0]), "boundary_margin_value": z_mid.new_zeros(z_mid.shape[0])}
+    @torch.no_grad()
+    def _initialize_center_for_layer(self, layer_idx: int, layer, z: torch.Tensor) -> None:
+        z_mid, info = self._field_step(layer, z.detach(), apply_cap=True)
+        if self.activation_mode == "response_then_zero_center_relu":
+            c = torch.zeros(layer.state_dim, device=z.device, dtype=z.dtype)
+        elif self.activation_mode == "response_then_anchor_stat_center_relu":
+            # Global statistic center: average of per-sample response centers.
+            # Each field_target is already a soft weighted combination of all anchors.
+            c = info["field_target"].mean(dim=0)
+        else:
+            raise RuntimeError(f"bad activation_mode={self.activation_mode}")
+        self.center_c[layer_idx].copy_(c.to(self.center_c[layer_idx].device, self.center_c[layer_idx].dtype))
 
-        dist2 = (
-            (z_mid * z_mid).sum(dim=-1, keepdim=True)
-            + (parents * parents).sum(dim=-1).view(1, -1)
-            - 2.0 * (z_mid @ parents.t())
-        ).clamp_min(0.0)
-        # nearest parent and nearest competitor parent. Works for 2, 10, 20 classes.
-        top2 = torch.topk(dist2, k=2, dim=1, largest=False).indices
-        p1 = parents.index_select(0, top2[:, 0])
-        p2 = parents.index_select(0, top2[:, 1])
-        u = p1 - p2
-        u = u / u.norm(dim=-1, keepdim=True).clamp_min(1e-6)
-        mid = 0.5 * (p1 + p2)
-        signed = ((z_mid - mid) * u).sum(dim=-1, keepdim=True)
-        margin = float(self.boundary_margin)
-        # If the point is too close to the local parent-parent boundary, commit it
-        # further toward the nearest-parent side. This is a multiclass local boundary rule.
-        amount = F.relu(margin - signed)
-        push = float(self.boundary_strength) * amount * u
-        z_next = z_mid + push
-        return z_next, {
-            "boundary_push_norm": push.norm(dim=-1),
-            "boundary_margin_value": signed.squeeze(1),
+        scores = info["scores"]
+        if scores.shape[1] >= 2:
+            top2 = torch.topk(scores, k=2, dim=1).values
+            margin = top2[:, 0] - top2[:, 1]
+            tau = torch.median(margin)
+        else:
+            tau = torch.zeros((), device=z.device, dtype=z.dtype)
+        self.margin_tau[layer_idx].copy_(tau.view(1).to(self.margin_tau[layer_idx].device, self.margin_tau[layer_idx].dtype))
+
+    def _coordinate_relu_around(self, z_in: torch.Tensor, center: torch.Tensor, strength: float = 1.0) -> Tuple[torch.Tensor, torch.Tensor, Dict[str, torch.Tensor]]:
+        """Apply z_out = z_in + strength * (center + ReLU(z_in-center) - z_in)."""
+        centered = z_in - center
+        relu_z = center + torch.relu(centered)
+        correction = float(strength) * (relu_z - z_in)
+        z_out = z_in + correction
+        neg_mask = (centered < 0).float()
+        all_negative = (centered < 0).all(dim=1).float()
+        changed_dim = ((correction.abs() > 1e-8).float()).mean(dim=1)
+        return z_out, correction, {
+            "negative_rate": neg_mask.mean(dim=1).detach(),
+            "all_negative_rate": all_negative.detach(),
+            "changed_dim_rate": changed_dim.detach(),
+            "project_norm": correction.norm(dim=-1),
+            "center_norm": center.norm(dim=-1).detach(),
+            "center_distance_norm": centered.norm(dim=-1),
         }
 
-    def _child_axis_activation(self, layer, z_mid: torch.Tensor, alpha: torch.Tensor) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
-        C = int(layer.num_classes)
-        K = int(layer.children_per_class)
-        if K < 1:
-            return z_mid, {"child_axis_push_norm": z_mid.new_zeros(z_mid.shape[0]), "child_axis_positive_rate": z_mid.new_zeros(z_mid.shape[0])}
+    def _apply_activation(self, layer_idx: int, layer, z: torch.Tensor, z_mid: torch.Tensor, info: Dict[str, torch.Tensor]) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
+        """Always apply local response-center ReLU, then fixed/global-stat center ReLU."""
+        move = info["move"]
+        target = info["field_target"]
+        zeros = z_mid.new_zeros(z_mid.shape[0])
 
-        child_alpha = alpha[:, C:]
-        idx = child_alpha.argmax(dim=1)  # [B], over C*K children
-        child_flat = layer.child_anchors().reshape(C * K, layer.state_dim)
-        child = child_flat.index_select(0, idx)
-        parent_idx = idx // K
-        parent = layer.parents.index_select(0, parent_idx)
-        axis = child - parent
-        u = axis / axis.norm(dim=-1, keepdim=True).clamp_min(1e-6)
+        global_center = self.center_c[layer_idx].to(device=z_mid.device, dtype=z_mid.dtype).view(1, -1)
+        global_center_b = global_center.expand_as(z_mid)
 
-        # Post-transport local axis decision. If z_mid has crossed beyond the
-        # selected child along the parent->child axis, commit further along that axis.
-        s = ((z_mid - child) * u).sum(dim=-1, keepdim=True)
-        amount = F.relu(s)
-        push = float(self.child_axis_strength) * amount * u
-        z_next = z_mid + push
+        if float(self.center_strength) == 0.0:
+            z_after_response = z_mid
+            z_next = z_mid
+            response_diag = {
+                "negative_rate": zeros,
+                "all_negative_rate": zeros,
+                "changed_dim_rate": zeros,
+                "project_norm": zeros,
+                "center_norm": target.norm(dim=-1).detach(),
+                "center_distance_norm": (z_mid - target).norm(dim=-1),
+            }
+            center_diag = {
+                "negative_rate": zeros,
+                "all_negative_rate": zeros,
+                "changed_dim_rate": zeros,
+                "project_norm": zeros,
+                "center_norm": zeros + global_center.norm().detach(),
+                "center_distance_norm": (z_mid - global_center).norm(dim=-1),
+            }
+        else:
+            z_after_response, _, response_diag = self._coordinate_relu_around(
+                z_mid, target, strength=float(self.center_strength)
+            )
+            z_next, _, center_diag = self._coordinate_relu_around(
+                z_after_response, global_center_b, strength=float(self.center_strength)
+            )
+
         return z_next, {
-            "child_axis_push_norm": push.norm(dim=-1),
-            "child_axis_positive_rate": (s.squeeze(1) > 0).float(),
+            "center_negative_rate": center_diag["negative_rate"].detach(),
+            "center_all_negative_rate": center_diag["all_negative_rate"].detach(),
+            "center_changed_dim_rate": center_diag["changed_dim_rate"].detach(),
+            "center_gate_rate": zeros + 1.0,
+            "center_project_norm": center_diag["project_norm"],
+            "center_norm": center_diag["center_norm"],
+            "center_distance_norm": center_diag["center_distance_norm"],
+            "response_negative_rate": response_diag["negative_rate"].detach(),
+            "response_all_negative_rate": response_diag["all_negative_rate"].detach(),
+            "response_changed_dim_rate": response_diag["changed_dim_rate"].detach(),
+            "response_gate_rate": zeros + 1.0,
+            "response_project_norm": response_diag["project_norm"],
+            "response_center_norm": response_diag["center_norm"],
+            "response_center_distance_norm": response_diag["center_distance_norm"],
+            "margin_tau": zeros + self.margin_tau[layer_idx].detach().to(z_mid.device, z_mid.dtype).view(()),
+            "field_target_norm": target.norm(dim=-1),
+            "field_target_delta_norm": (z_mid - target).norm(dim=-1),
+            "move_norm": move.norm(dim=-1),
         }
 
-    def _apply_activation(self, layer, z: torch.Tensor, z_mid: torch.Tensor, info: Dict[str, torch.Tensor]) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
-        mode = self.activation_mode
-        if mode != "field_target_relu":
-            raise RuntimeError(f"bad activation_mode={mode}")
-
-        # Judge z_mid after transport. The failed value is reset to r, where r is
-        # the field target already implied by the same transport step, not a
-        # separately recomputed softmax center at z_mid.
-        r = info["field_target"]
-        delta = z_mid - r
-
-        # Per-dimension ReLU around the transport target:
-        #   z_next_d = r_d + ReLU(z_mid_d - r_d)
-        #            = max(z_mid_d, r_d)
-        z_next = r + F.relu(delta)
-        active = (delta > 0).float()
-        reset = z_next - z_mid
-        return z_next, {
-            "field_target_norm": r.norm(dim=-1),
-            "field_target_delta_norm": delta.norm(dim=-1),
-            "field_target_gate_active_rate": active.float().mean(dim=1),
-            "field_target_reset_norm": reset.norm(dim=-1),
-        }
-
-    def _layer_forward_with_info(self, layer, z: torch.Tensor) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
+    def _layer_forward_with_info(self, layer_idx: int, layer, z: torch.Tensor) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
         z_mid, info = self._field_step(layer, z)
-        z_next, act_info = self._apply_activation(layer, z, z_mid, info)
-        out = {
-            **info,
-            **act_info,
-            "z_pre": z,
-            "z_mid": z_mid,
-            "z_next": z_next,
-        }
+        z_next, act_info = self._apply_activation(layer_idx, layer, z, z_mid, info)
+        out = {**info, **act_info, "z_pre": z, "z_mid": z_mid, "z_next": z_next}
         return z_next, out
 
     def transport(self, x: torch.Tensor) -> torch.Tensor:
         z = self.lift(x)
-        for layer in self.layers:
-            z, _ = self._layer_forward_with_info(layer, z)
+        for li, layer in enumerate(self.layers):
+            z, _ = self._layer_forward_with_info(li, layer, z)
         return z
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.head(self.transport(x))
 
     @torch.no_grad()
     def initialize(
@@ -495,12 +478,12 @@ class ConservativeAATField(AATField):
             y = y[idx]
 
         z = self.lift(x)
-        for layer in self.layers:
+        for li, layer in enumerate(self.layers):
             layer.auto_k_init(z, y, min_children=int(min_children), kmeans_iters=int(kmeans_iters))
-            z, _ = self._layer_forward_with_info(layer, z)
+            self._initialize_center_for_layer(li, layer, z)
+            z, _ = self._layer_forward_with_info(li, layer, z)
         if was_training:
             self.train()
-
 
 # ============================================================
 # Diagnostics
@@ -508,11 +491,10 @@ class ConservativeAATField(AATField):
 
 
 @torch.no_grad()
-def collect_diagnostics(model: ConservativeAATField, x: torch.Tensor, device: torch.device, batch_size: int = 2048) -> Dict[str, Any]:
+def collect_diagnostics(model: ResponseFixedCenterAATField, x: torch.Tensor, device: torch.device, batch_size: int = 2048) -> Dict[str, Any]:
     model.eval()
     x = x[: min(int(x.shape[0]), 8192)]
     loader = DataLoader(TensorDataset(x), batch_size=int(batch_size), shuffle=False)
-
     per_layer: List[Dict[str, List[float]]] = []
     for _ in model.layers:
         per_layer.append({
@@ -521,27 +503,39 @@ def collect_diagnostics(model: ConservativeAATField, x: torch.Tensor, device: to
             "move_state_ratio": [],
             "field_target_norm": [],
             "field_target_delta_norm": [],
-            "field_target_gate_active_rate": [],
-            "field_target_reset_norm": [],
+            "center_negative_rate": [],
+            "center_all_negative_rate": [],
+            "center_changed_dim_rate": [],
+            "center_gate_rate": [],
+            "center_project_norm": [],
+            "center_norm": [],
+            "center_distance_norm": [],
+            "response_negative_rate": [],
+            "response_all_negative_rate": [],
+            "response_changed_dim_rate": [],
+            "response_gate_rate": [],
+            "response_project_norm": [],
+            "response_center_norm": [],
+            "response_center_distance_norm": [],
+            "margin_tau": [],
         })
 
     for (xb,) in loader:
         z = model.lift(xb.to(device))
         for li, layer in enumerate(model.layers):
-            z_next, info = model._layer_forward_with_info(layer, z)
+            z_next, info = model._layer_forward_with_info(li, layer, z)
             move = info["move"]
             d = per_layer[li]
             d["state_norm"].append(float(z_next.norm(dim=1).mean().item()))
             d["move_norm"].append(float(move.norm(dim=1).mean().item()))
             d["move_state_ratio"].append(float((move.norm(dim=1) / z.norm(dim=1).clamp_min(1e-8)).mean().item()))
             for key in [
-                "field_target_norm",
-                "field_target_delta_norm",
-                "field_target_gate_active_rate",
-                "field_target_reset_norm",
+                "field_target_norm", "field_target_delta_norm", "center_negative_rate", "center_all_negative_rate",
+                "center_changed_dim_rate", "center_gate_rate", "center_project_norm", "center_norm", "center_distance_norm",
+                "response_negative_rate", "response_all_negative_rate", "response_changed_dim_rate", "response_gate_rate",
+                "response_project_norm", "response_center_norm", "response_center_distance_norm", "margin_tau",
             ]:
-                if key in info:
-                    d[key].append(float(info[key].float().mean().item()))
+                d[key].append(float(info[key].float().mean().item()))
             z = z_next
 
     result: Dict[str, Any] = {}
@@ -549,7 +543,13 @@ def collect_diagnostics(model: ConservativeAATField, x: torch.Tensor, device: to
         for key, values in d.items():
             if values:
                 result[f"layer{li}_{key}"] = round(sum(values) / len(values), 6)
-    for key in ["state_norm", "move_norm", "move_state_ratio", "field_target_norm", "field_target_delta_norm", "field_target_gate_active_rate", "field_target_reset_norm"]:
+    for key in [
+        "state_norm", "move_norm", "move_state_ratio", "field_target_norm", "field_target_delta_norm",
+        "center_negative_rate", "center_all_negative_rate", "center_changed_dim_rate", "center_gate_rate",
+        "center_project_norm", "center_norm", "center_distance_norm",
+        "response_negative_rate", "response_all_negative_rate", "response_changed_dim_rate", "response_gate_rate",
+        "response_project_norm", "response_center_norm", "response_center_distance_norm", "margin_tau",
+    ]:
         vals = [float(result[f"layer{li}_{key}"]) for li in range(1, len(per_layer) + 1) if f"layer{li}_{key}" in result]
         if vals:
             result[f"diag_mean_{key}"] = round(sum(vals) / len(vals), 6)
@@ -576,13 +576,12 @@ def split_csv_list(s: str) -> List[str]:
 def selected_k_by_layer(model: AATField) -> List[int]:
     out: List[int] = []
     for counts in model.selected_children_by_layer():
-        # current Auto-K uses equal K per class; keep average for generality.
         out.append(int(round(sum(counts) / max(len(counts), 1))))
     return out
 
 
 def row_path_key(core_mode: str, activation_mode: str, layers: int, seed: int) -> str:
-    return f"airline__core_{core_mode}__act_{activation_mode}__L{layers}__seed{seed}"
+    return f"airline_response_fixed_center_relu__core_{core_mode}__act_{activation_mode}__L{layers}__seed{seed}"
 
 
 def train_one(
@@ -609,18 +608,18 @@ def train_one(
         sigma_init=float(args.sigma_init),
         charge_init=float(args.charge_init),
         step_cap=float(args.step_cap),
-        gate_bias=False,  # no contribution-level child gate in this experiment
+        gate_bias=False,
         head_bias=True,
         lift_seed=int(args.lift_seed),
     )
-    model = ConservativeAATField(
+    model = ResponseFixedCenterAATField(
         cfg,
         core_mode=core_mode,
         activation_mode=activation_mode,
         field_scale=float(args.field_scale),
-        boundary_margin=float(args.boundary_margin),
-        boundary_strength=float(args.boundary_strength),
-        child_axis_strength=float(args.child_axis_strength),
+        center_strength=float(args.center_strength),
+        gate_temperature=float(args.gate_temperature),
+        center_init=str(args.center_init),
         use_step_cap=not bool(args.no_step_cap),
     ).to(device)
 
@@ -635,9 +634,9 @@ def train_one(
         "max_children": int(args.max_children),
         "min_children": int(args.min_children),
         "field_scale": float(args.field_scale),
-        "boundary_margin": float(args.boundary_margin),
-        "boundary_strength": float(args.boundary_strength),
-        "child_axis_strength": float(args.child_axis_strength),
+        "center_strength": float(args.center_strength),
+        "gate_temperature": float(args.gate_temperature),
+        "center_init": str(args.center_init),
         "params": None,
         "total_children": None,
         "selected_k_by_layer": None,
@@ -659,8 +658,6 @@ def train_one(
             kmeans_iters=int(args.kmeans_iters),
         )
         init_time = time.time() - t0
-
-        # Important: optimizer after Auto-K materialization.
         opt = torch.optim.AdamW(model.parameters(), lr=float(args.lr), weight_decay=float(args.weight_decay))
         criterion = nn.CrossEntropyLoss()
 
@@ -722,14 +719,14 @@ def train_one(
             ckpt_dir = Path(args.out_dir) / "checkpoints"
             ckpt_dir.mkdir(parents=True, exist_ok=True)
             torch.save({
-                "format": "ConservativeAATFieldExperimentCheckpoint",
+                "format": "ResponseFixedCenterAATFieldCheckpoint",
                 "config": model.config_dict(),
                 "core_mode": core_mode,
                 "activation_mode": activation_mode,
                 "state_dict": model.state_dict(),
                 "row": row,
             }, ckpt_dir / f"{run_id}.pt")
-    except Exception as exc:  # keep grid running on one failed run
+    except Exception as exc:
         row["status"] = "error"
         row["error"] = repr(exc)
         print(f"ERROR in {run_id}: {exc!r}", flush=True)
@@ -740,14 +737,13 @@ def append_csv(path: Path, rows: List[Dict[str, Any]]) -> None:
     if not rows:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    # Union fieldnames, stable common fields first.
     first = [
         "status", "run_id", "seed", "core_mode", "activation_mode", "layers",
         "best_epoch", "best_val_acc", "best_val_f1", "test_acc", "test_f1",
         "params", "total_children", "selected_k_by_layer", "field_scale",
-        "boundary_margin", "boundary_strength", "child_axis_strength", "error",
+        "center_strength", "gate_temperature", "center_init", "error",
     ]
-    keys = []
+    keys: List[str] = []
     for r in rows:
         for k in r.keys():
             if k not in keys:
@@ -770,11 +766,11 @@ def write_summary(path: Path, rows: List[Dict[str, Any]]) -> None:
             f.write("no ok rows\n")
             return
         fields = [
-            "core_mode", "activation_mode", "layers", "best_val_acc", "best_val_f1",
-            "test_acc", "test_f1", "params", "total_children", "selected_k_by_layer",
-            "diag_mean_move_norm", "diag_mean_move_state_ratio",
-            "diag_mean_field_target_norm", "diag_mean_field_target_delta_norm",
-            "diag_mean_field_target_gate_active_rate", "diag_mean_field_target_reset_norm",
+            "core_mode", "activation_mode", "layers", "best_val_acc", "best_val_f1", "test_acc", "test_f1",
+            "params", "total_children", "selected_k_by_layer", "field_scale", "center_strength", "gate_temperature", "center_init",
+            "diag_mean_move_norm", "diag_mean_move_state_ratio", "diag_mean_field_target_norm", "diag_mean_field_target_delta_norm",
+            "diag_mean_center_negative_rate", "diag_mean_center_all_negative_rate", "diag_mean_center_changed_dim_rate", "diag_mean_center_gate_rate", "diag_mean_center_project_norm", "diag_mean_center_norm", "diag_mean_center_distance_norm",
+            "diag_mean_response_negative_rate", "diag_mean_response_all_negative_rate", "diag_mean_response_changed_dim_rate", "diag_mean_response_gate_rate", "diag_mean_response_project_norm", "diag_mean_response_center_norm", "diag_mean_response_center_distance_norm", "diag_mean_margin_tau",
         ]
         writer = csv.DictWriter(f, fieldnames=fields)
         writer.writeheader()
@@ -782,18 +778,77 @@ def write_summary(path: Path, rows: List[Dict[str, Any]]) -> None:
             writer.writerow({k: r.get(k, "") for k in fields})
 
 
+def resolve_airline_csvs(args: argparse.Namespace) -> Tuple[Path, Path]:
+    if getattr(args, "train_csv", None) is not None and getattr(args, "test_csv", None) is not None:
+        train_csv = Path(args.train_csv).expanduser()
+        test_csv = Path(args.test_csv).expanduser()
+        if train_csv.exists() and test_csv.exists():
+            return train_csv, test_csv
+        raise FileNotFoundError(f"Explicit CSV paths not found: train={train_csv} test={test_csv}")
+
+    if getattr(args, "train_csv", None) is not None:
+        train_csv = Path(args.train_csv).expanduser()
+        test_csv = train_csv.parent / "test.csv"
+        if train_csv.exists() and test_csv.exists():
+            return train_csv, test_csv
+    if getattr(args, "test_csv", None) is not None:
+        test_csv = Path(args.test_csv).expanduser()
+        train_csv = test_csv.parent / "train.csv"
+        if train_csv.exists() and test_csv.exists():
+            return train_csv, test_csv
+
+    candidates: List[Path] = []
+    def add_dir(p: Optional[Path]) -> None:
+        if p is None:
+            return
+        p = Path(p).expanduser()
+        if p not in candidates:
+            candidates.append(p)
+
+    add_dir(getattr(args, "data_dir", None))
+    cwd = Path.cwd()
+    for base in [cwd, SCRIPT_DIR, REPO_ROOT]:
+        add_dir(base)
+        add_dir(base / "data" / "AirlineSatisfaction")
+        add_dir(base / "data" / "airline_satisfaction")
+        add_dir(base / "data")
+        add_dir(base.parent / "data" / "AirlineSatisfaction")
+        add_dir(base.parent / "data")
+        add_dir(base.parent.parent / "data" / "AirlineSatisfaction")
+        add_dir(base.parent.parent / "data")
+    add_dir(Path("../data/AirlineSatisfaction"))
+    add_dir(Path("../data"))
+    add_dir(Path("../../data/AirlineSatisfaction"))
+    add_dir(Path("../../data"))
+
+    checked: List[str] = []
+    for d in candidates:
+        train_csv = d / "train.csv"
+        test_csv = d / "test.csv"
+        checked.append(str(d))
+        if train_csv.exists() and test_csv.exists():
+            return train_csv, test_csv
+    raise FileNotFoundError(
+        "Airline CSV not found. Looked for train.csv/test.csv in:\n"
+        + "\n".join(checked[:30])
+        + "\nUse --data-dir <folder> or --train-csv <path> --test-csv <path>."
+    )
+
+
 def build_argparser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Field-target ReLU AAT Airline experiment")
-    p.add_argument("--data-dir", type=str, default="../data/AirlineSatisfaction")
-    p.add_argument("--out-dir", type=str, default="./airline_field_target_relu")
+    p = argparse.ArgumentParser(description="Response-center + fixed/global-stat center coordinate ReLU AAT depth grid on Airline")
+    p.add_argument("--data-dir", type=Path, default=None)
+    p.add_argument("--train-csv", type=Path, default=None)
+    p.add_argument("--test-csv", type=Path, default=None)
+    p.add_argument("--out-dir", type=Path, default=SCRIPT_DIR / "airline_response_fixed_center_relu")
     p.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
 
-    p.add_argument("--core-modes", type=str, default="potential", help="potential,current_nogate")
+    p.add_argument("--core-modes", type=str, default="potential")
     p.add_argument(
         "--activation-modes",
         type=str,
-        default="field_target_relu",
-        help="field_target_relu",
+        default="response_then_zero_center_relu,response_then_anchor_stat_center_relu",
+        help="Comma list: response_then_zero_center_relu,response_then_anchor_stat_center_relu",
     )
     p.add_argument("--layers", type=str, default="1-8")
     p.add_argument("--seed", type=int, default=0)
@@ -805,6 +860,7 @@ def build_argparser() -> argparse.ArgumentParser:
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--val-ratio", type=float, default=0.15)
     p.add_argument("--extra-dims", type=int, default=2)
+    p.add_argument("--extra-dims-list", type=str, default="", help="Compatibility alias; first value is used as --extra-dims")
     p.add_argument("--max-children", type=int, default=100)
     p.add_argument("--min-children", type=int, default=2)
     p.add_argument("--init-samples", type=int, default=8192)
@@ -814,29 +870,28 @@ def build_argparser() -> argparse.ArgumentParser:
     p.add_argument("--step-cap", type=float, default=1.0)
     p.add_argument("--lift-seed", type=int, default=1234)
 
-    p.add_argument("--field-scale", type=float, default=0.08, help="Scale for potential gradient transport. 0.05~0.15 is a safe first range.")
-    # Kept only for compatibility with shared train_one signature; unused in this script.
-    p.add_argument("--boundary-margin", type=float, default=0.30)
-    p.add_argument("--boundary-strength", type=float, default=0.50)
-    p.add_argument("--child-axis-strength", type=float, default=0.50)
+    p.add_argument("--field-scale", type=float, default=0.08)
+    p.add_argument("--center-strength", type=float, default=1.0, help="1.0 exact centered ReLU; smaller values make it partial")
+    p.add_argument("--gate-temperature", type=float, default=0.5, help="Softness of margin gate; smaller is sharper")
+    p.add_argument("--center-init", type=str, default="fixed", help="Kept for CSV compatibility; centers are non-trainable in this script")
     p.add_argument("--no-step-cap", action="store_true")
     p.add_argument("--grad-clip", type=float, default=5.0)
 
     p.add_argument("--eval-every", type=int, default=1)
     p.add_argument("--best-metric", choices=["val_acc", "val_f1"], default="val_f1")
     p.add_argument("--fresh", action="store_true", help="Delete old results.csv/summary.csv before running")
-    p.add_argument("--limit", type=int, default=0, help="Run only first N grid items for smoke test")
+    p.add_argument("--limit", type=int, default=0)
     p.add_argument("--save-checkpoints", action="store_true")
     return p
 
 
 def main() -> None:
     args = build_argparser().parse_args()
-    data_dir = Path(args.data_dir)
-    out_dir = Path(args.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    results_csv = out_dir / "results.csv"
-    summary_csv = out_dir / "summary.csv"
+    if str(getattr(args, "extra_dims_list", "")).strip():
+        args.extra_dims = int(split_csv_list(args.extra_dims_list)[0])
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+    results_csv = args.out_dir / "results.csv"
+    summary_csv = args.out_dir / "summary.csv"
     if args.fresh:
         for p in [results_csv, summary_csv]:
             if p.exists():
@@ -844,7 +899,9 @@ def main() -> None:
 
     device = torch.device(str(args.device))
     print(f"device={device}", flush=True)
-    data = airline_bundle(data_dir / "train.csv", data_dir / "test.csv", val_ratio=float(args.val_ratio), seed=int(args.seed) + 123)
+    train_csv, test_csv = resolve_airline_csvs(args)
+    print(f"Airline CSV: train={train_csv} test={test_csv}", flush=True)
+    data = airline_bundle(train_csv, test_csv, val_ratio=float(args.val_ratio), seed=int(args.seed) + 123)
     train_loader, val_loader, test_loader = make_loaders(data, int(args.batch_size))
 
     grid: List[Tuple[str, str, int]] = []

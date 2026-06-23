@@ -1,7 +1,0 @@
-core_mode,activation_mode,layers,best_val_acc,best_val_f1,test_acc,test_f1,params,total_children,selected_k_by_layer,diag_mean_move_norm,diag_mean_move_state_ratio,diag_mean_field_center_norm,diag_mean_field_center_delta_norm,diag_mean_field_gate_active_rate,diag_mean_field_reset_norm
-potential,field_center_relu,2,0.959643,0.958825,0.95954,0.958801,6910,186,"[49, 44]",0.068377,0.008844,5.641817,5.774971,0.417662,4.553738
-potential,center_hard_reset,4,0.959002,0.958212,0.959501,0.95878,13390,362,"[49, 44, 45, 43]",0.100152,0.01687,5.570917,4.417687,0.490882,2.995268
-potential,field_center_relu,4,0.958873,0.958046,0.958693,0.957937,13390,362,"[49, 44, 45, 43]",0.102946,0.017747,5.47873,4.413539,0.503881,3.025186
-potential,center_hard_reset,2,0.958617,0.957815,0.957923,0.95716,6910,186,"[49, 44]",0.068748,0.008861,5.601327,5.816433,0.415384,4.517774
-potential,move_sign_reset,4,0.955216,0.954311,0.954881,0.954026,16270,442,"[49, 54, 65, 53]",0.125422,0.011791,9.338877,4.454901,0.520401,2.878889
-potential,move_sign_reset,2,0.955473,0.954625,0.954689,0.953904,7630,206,"[49, 54]",0.088817,0.009059,8.621629,5.886217,0.485359,4.207135

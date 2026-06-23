@@ -1,5 +1,0 @@
-core_mode,activation_mode,layers,best_val_acc,best_val_f1,test_acc,test_f1,params,total_children,selected_k_by_layer,diag_mean_move_norm,diag_mean_move_state_ratio,diag_mean_energy_delta,diag_mean_activation_accept_rate,diag_mean_boundary_push_norm,diag_mean_child_axis_push_norm,diag_mean_activation_zero_rate
-potential,boundary_push,6,0.953869,0.952961,0.95261,0.951766,22174,602,"[49, 53, 54, 49, 47, 49]",0.171034,0.01784,,,0.003116,,
-potential,boundary_push,4,0.953035,0.952141,0.951994,0.951148,15118,410,"[49, 53, 54, 49]",0.209552,0.02177,,,0.003359,,
-potential,boundary_push,2,0.95188,0.950994,0.950608,0.949779,7558,204,"[49, 53]",0.274119,0.028348,,,0.005773,,
-potential,boundary_push,1,0.950083,0.949067,0.948991,0.948109,3670,98,[49],0.340712,0.035131,,,0.006174,,

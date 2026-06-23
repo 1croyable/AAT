@@ -1,4 +1,0 @@
-activation_mode,layers,best_val_acc,best_val_f1,test_acc,test_f1,params,total_children,selected_k_by_layer,diag_mean_move_norm,diag_mean_move_state_ratio,diag_mean_state_zero_rate,diag_mean_activation_zero_rate
-none,7,0.957013,0.956145,0.95415,0.953314,24180,638,"[41, 41, 47, 47, 49, 49, 45]",0.395512,0.042863,7e-06,0.0
-parent_relu,6,0.958681,0.957803,0.958308,0.957479,8642,220,"[41, 7, 19, 13, 19, 11]",0.544646,0.09024,2e-06,0.389822
-post_relu,7,0.959002,0.958139,0.958385,0.957591,24328,642,"[41, 47, 43, 43, 43, 49, 55]",0.453739,0.111646,0.291129,0.291129

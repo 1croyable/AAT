@@ -25,12 +25,8 @@ class AATFieldLayer(nn.Module):
         self.child_offsets = nn.Parameter(torch.randn(C, M, D) * 0.06)
         self.charge = nn.Parameter(torch.randn(cfg.candidate_anchors_n) * float(cfg.charge_init))
         self.raw_sigma = nn.Parameter(torch.full((cfg.candidate_anchors_n,), inv_softplus(float(cfg.sigma_init))))
-        if cfg.gate_bias:
-            self.child_gate_bias = nn.Parameter(torch.zeros(cfg.candidate_child_n))
-        else:
-            self.register_parameter("child_gate_bias", None)
-
         self.selected_counts: List[int] = [M for _ in range(C)]
+        self.field_scale = float(getattr(cfg, "field_scale", 0.08))
 
     @property
     def state_dim(self) -> int:
@@ -61,24 +57,8 @@ class AATFieldLayer(nn.Module):
     def all_anchors(self) -> torch.Tensor:
         return torch.cat([self.parents, self.child_anchors().reshape(self.child_n, self.state_dim)], dim=0)
 
-    def _child_gate(self, z: torch.Tensor, child_flat: torch.Tensor, sigma_child: torch.Tensor) -> torch.Tensor:
-        C = self.num_classes
-        K = self.children_per_class
-        axis = self.child_offsets.reshape(C * K, self.state_dim)
-        axis = axis / axis.norm(dim=-1, keepdim=True).clamp_min(1e-6)
-
-        # [B, child_n] = [B, D] @ [D, child_n]
-        s = z @ axis.t()
-        s = s - (child_flat * axis).sum(dim=-1).view(1, -1)
-        s = s / sigma_child.view(1, -1).clamp_min(1e-6)
-        if self.child_gate_bias is not None:
-            s = s + self.child_gate_bias.view(1, -1)
-        return F.relu(s)
-
-    def forward(self, z: torch.Tensor) -> torch.Tensor:
-        C = self.num_classes
-        child_flat = self.child_anchors().reshape(self.child_n, self.state_dim)
-        anchors = torch.cat([self.parents, child_flat], dim=0)
+    def _potential_response(self, z: torch.Tensor):
+        anchors = self.all_anchors()
         sigma = self.sigma()
 
         if sigma.shape[0] != anchors.shape[0]:
@@ -93,24 +73,20 @@ class AATFieldLayer(nn.Module):
             + (anchors * anchors).sum(dim=-1).view(1, -1)
             - 2.0 * (z @ anchors.t())
         ).clamp_min(0.0)
-        logits = -dist2 / (2.0 * sigma.view(1, -1).square() + 1e-8)
-        alpha = torch.softmax(logits, dim=-1)
+        sigma2 = sigma.view(1, -1).square().clamp_min(1e-8)
+        scores = self.charge.view(1, -1) - dist2 / (2.0 * sigma2)
+        alpha = torch.softmax(scores, dim=-1)
+        weight = alpha / sigma2
+        weighted_anchor = weight @ anchors
+        weighted_sum = weight.sum(dim=1, keepdim=True).clamp_min(1e-8)
+        field_target = weighted_anchor / weighted_sum
+        move = self.field_scale * (weighted_anchor - z * weighted_sum)
+        return move, field_target
 
-        dist = torch.sqrt(dist2 + 1e-8)
-        base = alpha * self.charge.view(1, -1)
-        gate = self._child_gate(z, child_flat, sigma[C:])
-        strength = torch.cat([base[:, :C], base[:, C:] * sigma[C:].view(1, -1) * gate], dim=1)
-
-        beta = strength / dist.clamp_min(1e-6)
-        move = beta @ anchors - z * beta.sum(dim=1, keepdim=True)
-
-        cap = float(self.cfg.step_cap)
-        if cap > 0:
-            norm = move.norm(dim=-1, keepdim=True)
-            capped = cap * torch.tanh(norm / cap)
-            move = move * (capped / norm.clamp_min(1e-6))
-            
-        return z + move
+    def forward(self, z: torch.Tensor) -> torch.Tensor:
+        move, field_target = self._potential_response(z)
+        z_mid = z + move
+        return torch.relu(field_target + torch.relu(z_mid - field_target))
 
     @torch.no_grad()
     def auto_k_init(self, z: torch.Tensor, y: torch.Tensor, *, min_children: int, kmeans_iters: int) -> None:
@@ -130,11 +106,6 @@ class AATFieldLayer(nn.Module):
         anchors_n = int(C + C * K)
         self.raw_sigma = nn.Parameter(torch.full((anchors_n,), inv_softplus(float(sigma)), device=device, dtype=dtype))
         self.charge = nn.Parameter(torch.full((anchors_n,), float(self.cfg.charge_init), device=device, dtype=dtype))
-        if self.cfg.gate_bias:
-            self.child_gate_bias = nn.Parameter(torch.zeros(C * K, device=device, dtype=dtype))
-        else:
-            self.register_parameter("child_gate_bias", None)
-
         self.selected_counts = [int(K) for _ in range(C)]
 
     @torch.no_grad()
@@ -153,11 +124,6 @@ class AATFieldLayer(nn.Module):
         anchors_n = int(C + C * k)
         self.raw_sigma = nn.Parameter(torch.full((anchors_n,), inv_softplus(float(self.cfg.sigma_init)), device=device, dtype=dtype))
         self.charge = nn.Parameter(torch.full((anchors_n,), float(self.cfg.charge_init), device=device, dtype=dtype))
-        if self.cfg.gate_bias:
-            self.child_gate_bias = nn.Parameter(torch.zeros(C * k, device=device, dtype=dtype))
-        else:
-            self.register_parameter("child_gate_bias", None)
-
         self.selected_counts = [int(k) for _ in range(C)]
 
 
@@ -281,7 +247,6 @@ class AATField(nn.Module):
         }
         if metadata:
             ckpt["metadata"] = dict(metadata)
-            # Also flatten metadata for simple demo scripts.
             for key, value in metadata.items():
                 if key not in ckpt:
                     ckpt[key] = value
@@ -289,12 +254,10 @@ class AATField(nn.Module):
 
     @torch.no_grad()
     def save_checkpoint(self, path: str | Path, metadata: Optional[Dict[str, Any]] = None) -> None:
-        """Save a full checkpoint that can reconstruct the model without external config."""
         torch.save(self.checkpoint_dict(metadata=metadata), path)
 
     @staticmethod
     def _torch_load(path: str | Path, map_location=None):
-        """Compatibility wrapper for PyTorch versions with/without weights_only."""
         try:
             return torch.load(path, map_location=map_location, weights_only=False)
         except TypeError:
@@ -328,9 +291,6 @@ class AATField(nn.Module):
 
     @classmethod
     def from_checkpoint(cls, path: str | Path, map_location=None) -> "AATField":
-        """
-        Reconstruct AATField directly from a full checkpoint saved by save_checkpoint().
-        """
         ckpt = cls._torch_load(path, map_location=map_location)
         if not isinstance(ckpt, dict) or "config" not in ckpt:
             raise RuntimeError(
