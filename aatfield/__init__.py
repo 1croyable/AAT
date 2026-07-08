@@ -1,4 +1,4 @@
-from .config import AATFieldConfig
-from .model import AATField
+from .config import AATConfig
+from .model import AAT
 
-__all__ = ["AATFieldConfig", "AATField"]
+__all__ = ["AATConfig", "AAT"]
