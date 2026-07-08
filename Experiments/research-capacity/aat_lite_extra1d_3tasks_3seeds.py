@@ -1,61 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-r"""
-AAT-Lite + one extra zero dimension | 3 datasets x 3 seeds.
-
-Purpose
--------
-Test the new simplified AAT-Lite model with an added empty coordinate:
-
-  original x in R^D  ->  padded x' = [x, 0] in R^(D+1)
-
-Then the usual center/radius/polar state is computed in the padded space.
-The added coordinate starts at zero for every sample, but AAT transport can write
-into it through du. This tests whether a small latent geometric dimension gives
-points extra room to move, as earlier anchor-response experiments suggested.
-
-Model
------
-This uses AAT-Lite only:
-  - fixed angular rays:          v_i = normalize(B_i)
-  - fixed transport values:      dr_i = dr0_i, du_i = du0_i
-  - no ray bending S
-  - no rho-dependent dr1/du1
-
-Kept unchanged:
-  - angular ray response
-  - ray bias beta
-  - scalar gate init = 1.0 and trainable
-  - ray dropout
-  - u renormalization
-  - final linear head on (rho, u)
-
-Default tasks/runs
-------------------
-Datasets: airline, occupancy, mnist
-Seeds   : 0,1,2
-Total   : 3 x 3 = 9 runs
-
-Default model sizes:
-  Airline:   L=4,  R=32, epochs=60
-  Occupancy: L=4,  R=16, epochs=60
-  MNIST:     L=12, R=48, train=50000, val=10000, test=10000, epochs=150
-
-Recommended command from research-capacity:
-  python .\aat_lite_extra1d_3tasks_3seeds.py --device cuda --amp --resume --download ^
-    --airline-root "..\data\AirlineSatisfaction" ^
-    --occupancy-root ".\data\occupancy+detection" ^
-    --mnist-root ".\data"
-
-PowerShell with backticks:
-  python .\aat_lite_extra1d_3tasks_3seeds.py --device cuda --amp --resume --download `
-    --airline-root "..\data\AirlineSatisfaction" `
-    --occupancy-root ".\data\occupancy+detection" `
-    --mnist-root ".\data"
-
-Quick smoke test:
-  python .\aat_lite_extra1d_3tasks_3seeds.py --device cuda --datasets occupancy --seeds 0 --epochs-occupancy 2
-"""
 
 from __future__ import annotations
 
@@ -92,7 +36,6 @@ MNIST_RAY_DROPOUT = 0.20
 EXTRA_DIMS = 1
 EVAL_EVERY = 5
 
-# Manageable defaults for a 12-run comparison.
 AIRLINE_LAYERS = 4
 AIRLINE_RAYS = 32
 AIRLINE_EPOCHS = 60
