@@ -1,0 +1,3 @@
+variant,seed,layers,rays,grid_size,params,best_epoch,train_acc,val_acc,seconds
+radial_score,3,4,32,4,908,1750,0.967529296875,0.958984375,20.256332635879517
+pre_perturb,3,4,32,4,788,1450,0.919189453125,0.91259765625,20.35440468788147
