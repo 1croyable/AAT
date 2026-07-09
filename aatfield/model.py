@@ -46,7 +46,7 @@ class AATLayer(nn.Module):
     def forward(self, rho: torch.Tensor, u: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         rays = F.normalize(self.base, dim=1, eps=1e-8)
         cos = u @ rays.t()
-        scale = torch.exp((rho * self.radial_weight.view(1, -1)).clamp(-2.0, 2.0))
+        scale = torch.exp((rho * self.radial_weight.view(1, -1)))
         score = self.kappa * scale * cos + self.ray_bias.view(1, -1)
         alpha = F.softmax(score, dim=1)
         alpha = self.dropout(alpha)
