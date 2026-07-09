@@ -24,7 +24,7 @@ class AATLayer(nn.Module):
 
         self.base = nn.Parameter(torch.randn(self.rays, self.state_dim) / math.sqrt(self.state_dim))
         self.ray_bias = nn.Parameter(torch.zeros(self.rays))
-        self.radial_bias = nn.Parameter(torch.zeros(self.rays))
+        self.radial_weight = nn.Parameter(torch.zeros(self.rays))
         self.dr = nn.Parameter(torch.randn(self.rays) * 0.02)
         self.du = nn.Parameter(torch.randn(self.rays, self.state_dim) * 0.02 / math.sqrt(self.state_dim))
         self.gate = nn.Parameter(torch.tensor(GATE_INIT))
@@ -45,7 +45,9 @@ class AATLayer(nn.Module):
 
     def forward(self, rho: torch.Tensor, u: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         rays = F.normalize(self.base, dim=1, eps=1e-8)
-        score = self.kappa * (u @ rays.t()) + self.ray_bias + rho * self.radial_bias.view(1, -1)
+        cos = u @ rays.t()
+        scale = torch.exp((rho * self.radial_weight.view(1, -1)).clamp(-2.0, 2.0))
+        score = self.kappa * scale * cos + self.ray_bias.view(1, -1)
         alpha = F.softmax(score, dim=1)
         alpha = self.dropout(alpha)
         rho = (rho + (alpha @ self.dr[:, None]) * self.gate)
