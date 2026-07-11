@@ -152,6 +152,7 @@ Current experiments show that:
 - On real-world tabular datasets such as Airline Satisfaction, AAT demonstrates clearly better parameter efficiency than MLP baselines at the same or similar parameter counts, especially in small-model settings, while also achieving higher classification performance in some configurations.
 - On flattened 784-dimensional MNIST, an AAT model with 8 layers and 48 rays per layer achieved a best validation accuracy of 98.51% and a test accuracy of 98.26%;
 - These results indicate that AAT is not limited to low-dimensional visualization tasks, and can also scale to tabular data and high-dimensional flattened images;
+- Scaling experiments show that AAT gradually reaches a performance plateau as depth and ray count increase; a suitable combination is often sufficient, with increasing the number of rays generally proving more consistently beneficial than adding more layers.
 - AAT still has room for improvement in training speed and hardware execution efficiency;
 - The transport process can be visualized layer by layer, making it possible to directly observe how sample states change through multiple transport layers and gradually become easier to classify, as illustrated on MNIST.
 
