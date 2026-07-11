@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkerboard Transport — Cartesian and 3D Polar State</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root { color-scheme: light; font-family: Arial, sans-serif; }
+    * { box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%; margin: 0; overflow: hidden;
+      background: #ffffff; color: #0f172a;
+    }
+    #controls {
+      position: fixed; top: 14px; left: 18px; right: 18px; z-index: 20;
+      display: flex; align-items: center; gap: 12px; min-height: 36px;
+    }
+    #accuracy { min-width: 104px; font-size: 28px; font-weight: 650; }
+    #stage { min-width: 92px; font-size: 14px; color: #475569; }
+    #playButton {
+      height: 32px; padding: 0 12px; border: 1px solid #94a3b8;
+      border-radius: 5px; background: #ffffff; color: #0f172a; cursor: pointer;
+    }
+    #playButton:hover { background: #f8fafc; }
+    #progress { width: min(38vw, 520px); cursor: pointer; }
+    #plots {
+      position: absolute; inset: 58px 12px 12px 12px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      min-width: 0; min-height: 0;
+    }
+    .panel {
+      position: relative; min-width: 0; min-height: 0;
+      border: 1px solid #e2e8f0; border-radius: 8px;
+      overflow: hidden; background: #ffffff;
+    }
+    .panel-title {
+      position: absolute; top: 9px; left: 50%; transform: translateX(-50%);
+      z-index: 5; padding: 3px 8px; border-radius: 4px;
+      background: rgba(255,255,255,0.90); font-size: 14px;
+      font-weight: 600; color: #334155; pointer-events: none;
+      white-space: nowrap;
+    }
+    .panel canvas, #polar3d {
+      display: block; width: 100% !important; height: 100% !important;
+    }
+    #error {
+      display: none; position: fixed; inset: 0; align-items: center;
+      justify-content: center; padding: 32px; background: #ffffff;
+      color: #111827; font-size: 18px; text-align: center; z-index: 100;
+      white-space: pre-line;
+    }
+    @media (max-width: 900px) {
+      body { overflow: auto; }
+      #controls {
+        position: sticky; top: 0; flex-wrap: wrap; padding: 10px 0;
+        background: rgba(255,255,255,0.96);
+      }
+      #plots {
+        position: relative; inset: auto; height: 1250px; margin: 8px 12px 12px;
+        grid-template-columns: 1fr; grid-template-rows: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <span id="accuracy">0.0%</span>
+    <span id="stage">input</span>
+    <button id="playButton" type="button">Play</button>
+    <input id="progress" type="range" min="0" max="4000" step="1" value="0" />
+  </div>
+
+  <main id="plots">
+    <section class="panel">
+      <div class="panel-title">Cartesian transport view</div>
+      <canvas id="cartesianChart"></canvas>
+    </section>
+    <section class="panel">
+      <div class="panel-title">Polar state space (u₁, u₂, ρ)</div>
+      <div id="polar3d"></div>
+    </section>
+  </main>
+
+  <div id="error">Could not load checkerboard_transport.json</div>
+
+  <script>
+    const JSON_PATH = "./checkerboard_transport.json";
+    const TOTAL_DURATION_MS = 4000;
+
+    const CLASS_COLORS = ["rgba(37, 99, 235, 0.90)", "rgba(239, 68, 68, 0.90)"];
+    const PLOTLY_CLASS_COLORS = ["rgb(37,99,235)", "rgb(239,68,68)"];
+    const REGION_COLORS = [[37,99,235], [239,68,68]];
+
+    const state = {
+      cartesianPositions: [],
+      polar3d: {u1: [], u2: [], rho: []},
+      labels: [],
+      accuracy: 0,
+      stage: "input",
+      cartesianRegion: null
+    };
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    function buildRegionCanvas(region) {
+      if (!region || !Array.isArray(region.prob_class1)) return null;
+      const rows = region.prob_class1.length;
+      const cols = rows > 0 ? region.prob_class1[0].length : 0;
+      if (!rows || !cols) return null;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = cols; canvas.height = rows;
+      const ctx = canvas.getContext("2d");
+      const image = ctx.createImageData(cols, rows);
+
+      for (let row = 0; row < rows; row++) {
+        const targetRow = rows - 1 - row;
+        for (let col = 0; col < cols; col++) {
+          const p = Math.max(0, Math.min(1, Number(region.prob_class1[row][col])));
+          const i = (targetRow * cols + col) * 4;
+          image.data[i] = Math.round(REGION_COLORS[0][0] * (1-p) + REGION_COLORS[1][0] * p);
+          image.data[i+1] = Math.round(REGION_COLORS[0][1] * (1-p) + REGION_COLORS[1][1] * p);
+          image.data[i+2] = Math.round(REGION_COLORS[0][2] * (1-p) + REGION_COLORS[1][2] * p);
+          image.data[i+3] = 34;
+        }
+      }
+      ctx.putImageData(image, 0, 0);
+      return canvas;
+    }
+
+    function drawDecisionRegion(chart, region) {
+      if (!region || !region.canvas) return;
+      const {ctx, scales, chartArea} = chart;
+      const b = region.bounds;
+      const left = scales.x.getPixelForValue(b.min[0]);
+      const right = scales.x.getPixelForValue(b.max[0]);
+      const top = scales.y.getPixelForValue(b.max[1]);
+      const bottom = scales.y.getPixelForValue(b.min[1]);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(chartArea.left, chartArea.top, chartArea.right-chartArea.left, chartArea.bottom-chartArea.top);
+      ctx.clip();
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(region.canvas, left, top, right-left, bottom-top);
+      ctx.restore();
+    }
+
+    function drawAxes(chart) {
+      const {ctx, scales, chartArea} = chart;
+      const zeroX = scales.x.min <= 0 && scales.x.max >= 0;
+      const zeroY = scales.y.min <= 0 && scales.y.max >= 0;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(chartArea.left, chartArea.top, chartArea.right-chartArea.left, chartArea.bottom-chartArea.top);
+      ctx.clip();
+      ctx.strokeStyle = "rgba(15,23,42,0.52)";
+      ctx.lineWidth = 1.1;
+      if (zeroX) {
+        const x0 = scales.x.getPixelForValue(0);
+        ctx.beginPath(); ctx.moveTo(x0, chartArea.top); ctx.lineTo(x0, chartArea.bottom); ctx.stroke();
+      }
+      if (zeroY) {
+        const y0 = scales.y.getPixelForValue(0);
+        ctx.beginPath(); ctx.moveTo(chartArea.left, y0); ctx.lineTo(chartArea.right, y0); ctx.stroke();
+      }
+      if (zeroX && zeroY) {
+        const x0 = scales.x.getPixelForValue(0), y0 = scales.y.getPixelForValue(0);
+        ctx.beginPath(); ctx.arc(x0, y0, 2.8, 0, Math.PI*2);
+        ctx.fillStyle = "#0f172a"; ctx.fill();
+        ctx.font = "12px Arial"; ctx.fillStyle = "#0f172a";
+        ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+        ctx.fillText("(0, 0)", x0+5, y0-4);
+      }
+      ctx.restore();
+    }
+
+    function drawCartesianPoints(chart) {
+      const {ctx, scales, chartArea} = chart;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(chartArea.left, chartArea.top, chartArea.right-chartArea.left, chartArea.bottom-chartArea.top);
+      ctx.clip();
+      for (let i = 0; i < state.cartesianPositions.length; i++) {
+        const p = state.cartesianPositions[i];
+        const x = scales.x.getPixelForValue(p[0]);
+        const y = scales.y.getPixelForValue(p[1]);
+        ctx.beginPath(); ctx.arc(x, y, 2.1, 0, Math.PI*2);
+        ctx.fillStyle = CLASS_COLORS[state.labels[i] % CLASS_COLORS.length];
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    const cartesianPlugin = {
+      id: "cartesian-transport",
+      beforeDraw(chart) {
+        const {ctx, width, height} = chart;
+        ctx.save(); ctx.fillStyle = "#ffffff"; ctx.fillRect(0,0,width,height); ctx.restore();
+      },
+      beforeDatasetsDraw(chart) {
+        drawDecisionRegion(chart, state.cartesianRegion);
+        drawAxes(chart);
+      },
+      afterDatasetsDraw(chart) { drawCartesianPoints(chart); }
+    };
+
+    function cartesianOptions(bounds) {
+      return {
+        responsive: true, maintainAspectRatio: false, animation: false, events: [],
+        layout: {padding: {top: 28, right: 12, bottom: 8, left: 8}},
+        plugins: {legend: {display:false}, tooltip:{enabled:false}},
+        scales: {
+          x: {
+            type:"linear", min:bounds.min[0], max:bounds.max[0],
+            title:{display:true,text:"x₁",color:"#334155"},
+            grid:{drawOnChartArea:false}, border:{color:"rgba(15,23,42,0.65)"},
+            ticks:{color:"#334155",maxTicksLimit:8}
+          },
+          y: {
+            type:"linear", min:bounds.min[1], max:bounds.max[1],
+            title:{display:true,text:"x₂",color:"#334155"},
+            grid:{drawOnChartArea:false}, border:{color:"rgba(15,23,42,0.65)"},
+            ticks:{color:"#334155",maxTicksLimit:8}
+          }
+        }
+      };
+    }
+
+    function solve3x3(A, b) {
+      const M = A.map((row, i) => [...row, b[i]]);
+      for (let col = 0; col < 3; col++) {
+        let pivot = col;
+        for (let row = col+1; row < 3; row++) {
+          if (Math.abs(M[row][col]) > Math.abs(M[pivot][col])) pivot = row;
+        }
+        [M[col], M[pivot]] = [M[pivot], M[col]];
+        const d = M[col][col];
+        if (Math.abs(d) < 1e-12) return [0,0,0];
+        for (let j = col; j < 4; j++) M[col][j] /= d;
+        for (let row = 0; row < 3; row++) {
+          if (row === col) continue;
+          const f = M[row][col];
+          for (let j = col; j < 4; j++) M[row][j] -= f * M[col][j];
+        }
+      }
+      return [M[0][3], M[1][3], M[2][3]];
+    }
+
+    function fitDecisionPlane(boundaryCurve) {
+      let sxx=0, syy=0, sxy=0, sx=0, sy=0, sr=0, sxr=0, syr=0, n=0;
+      for (const [theta, rho] of boundaryCurve || []) {
+        const x = Math.cos(theta), y = Math.sin(theta), r = Number(rho);
+        sxx += x*x; syy += y*y; sxy += x*y;
+        sx += x; sy += y; sr += r; sxr += x*r; syr += y*r; n++;
+      }
+      if (n < 3) return {a:0,b:0,c:0};
+      const [a,b,c] = solve3x3(
+        [[sxx,sxy,sx],[sxy,syy,sy],[sx,sy,n]],
+        [sxr,syr,sr]
+      );
+      return {a,b,c}; // rho = a*u1 + b*u2 + c
+    }
+
+    function planeSurface(plane, rhoBounds) {
+      const steps = 31;
+      const x = [], y = [], z = [];
+      for (let i = 0; i < steps; i++) x.push(-1.15 + 2.30*i/(steps-1));
+      for (let j = 0; j < steps; j++) y.push(-1.15 + 2.30*j/(steps-1));
+      for (let j = 0; j < steps; j++) {
+        const row = [];
+        for (let i = 0; i < steps; i++) {
+          const value = plane.a*x[i] + plane.b*y[j] + plane.c;
+          row.push(Math.max(rhoBounds[0], Math.min(rhoBounds[1], value)));
+        }
+        z.push(row);
+      }
+      return {x,y,z};
+    }
+
+    function frameTo3D(frame) {
+      const u1=[], u2=[], rho=[];
+      for (const [theta, r] of frame.polar_positions) {
+        u1.push(Math.cos(theta));
+        u2.push(Math.sin(theta));
+        rho.push(r);
+      }
+      return {u1,u2,rho};
+    }
+
+    function interpolatePolar3D(fromFrame, toFrame, t) {
+      const n = fromFrame.polar_positions.length;
+      for (let i = 0; i < n; i++) {
+        const [ta, ra] = fromFrame.polar_positions[i];
+        const [tb, rb] = toFrame.polar_positions[i];
+        let d = tb-ta;
+        if (d > Math.PI) d -= Math.PI*2;
+        if (d < -Math.PI) d += Math.PI*2;
+        const theta = ta + d*t;
+        state.polar3d.u1[i] = Math.cos(theta);
+        state.polar3d.u2[i] = Math.sin(theta);
+        state.polar3d.rho[i] = lerp(ra, rb, t);
+      }
+    }
+
+    async function main() {
+      const response = await fetch(JSON_PATH);
+      if (!response.ok) throw new Error(`Could not load ${JSON_PATH}`);
+      const data = await response.json();
+      const frames = data.frames;
+      if (!Array.isArray(frames) || !frames.length) throw new Error("The JSON contains no transport frames.");
+      if (!frames[0].positions || !frames[0].polar_positions) {
+        throw new Error("The JSON must contain frame.positions and frame.polar_positions.");
+      }
+      const views = data.views || {};
+      const cartesianView = views.transport_cartesian;
+      const polarView = views.transport_polar;
+      if (!cartesianView || !polarView) {
+        throw new Error("The JSON must contain views.transport_cartesian and views.transport_polar.");
+      }
+
+      state.labels = data.labels;
+      state.cartesianPositions = frames[0].positions.map(p => [...p]);
+      state.polar3d = frameTo3D(frames[0]);
+      state.accuracy = frames[0].head_separability ?? frames[0].accuracy ?? 0;
+      state.stage = frames[0].name;
+      state.cartesianRegion = {bounds: cartesianView.bounds, canvas: buildRegionCanvas(cartesianView)};
+
+      const accuracyElement = document.getElementById("accuracy");
+      const stageElement = document.getElementById("stage");
+      const playButton = document.getElementById("playButton");
+      const progress = document.getElementById("progress");
+      progress.max = String(TOTAL_DURATION_MS);
+
+      const cartesianChart = new Chart(document.getElementById("cartesianChart"), {
+        type:"scatter", data:{datasets:[]},
+        options:cartesianOptions(cartesianView.bounds), plugins:[cartesianPlugin]
+      });
+
+      const rhoBounds = [polarView.bounds.min[1], polarView.bounds.max[1]];
+      const fittedPlane = fitDecisionPlane(polarView.boundary_curve || []);
+      const surface = planeSurface(fittedPlane, rhoBounds);
+      const pointColors = state.labels.map(label => PLOTLY_CLASS_COLORS[label % 2]);
+
+      const plotData = [
+        {
+          type:"surface", x:surface.x, y:surface.y, z:surface.z,
+          opacity:0.88, showscale:false, hoverinfo:"skip",
+          colorscale:[[0,"rgb(148,163,184)"],[1,"rgb(148,163,184)"]],
+          name:"Linear decision plane"
+        },
+        {
+          type:"scatter3d", mode:"markers",
+          x:state.polar3d.u1, y:state.polar3d.u2, z:state.polar3d.rho,
+          marker:{size:2.5,color:pointColors,opacity:0.88},
+          hoverinfo:"skip", name:"Samples"
+        }
+      ];
+
+      const plotLayout = {
+        margin:{l:0,r:0,t:30,b:0}, paper_bgcolor:"#ffffff", plot_bgcolor:"#ffffff",
+        showlegend:false,
+        scene:{
+          xaxis:{title:"u₁",range:[-1.15,1.15],gridcolor:"#e2e8f0",zerolinecolor:"#94a3b8"},
+          yaxis:{title:"u₂",range:[-1.15,1.15],gridcolor:"#e2e8f0",zerolinecolor:"#94a3b8"},
+          zaxis:{title:"ρ",range:rhoBounds,gridcolor:"#e2e8f0",zerolinecolor:"#94a3b8"},
+          aspectmode:"manual", aspectratio:{x:1,y:1,z:1.25},
+          camera:{eye:{x:1.45,y:1.45,z:1.05}},
+          bgcolor:"#ffffff"
+        },
+        uirevision:"keep-camera"
+      };
+      const plotConfig = {responsive:true,displaylogo:false,modeBarButtonsToRemove:["toImage"]};
+      await Plotly.newPlot("polar3d", plotData, plotLayout, plotConfig);
+
+      const segmentCount = frames.length - 1;
+      let currentTime=0, playing=false, lastTimestamp=null, animationFrameId=null;
+
+      function copyFrame(frame) {
+        for (let i=0;i<state.cartesianPositions.length;i++) {
+          state.cartesianPositions[i][0]=frame.positions[i][0];
+          state.cartesianPositions[i][1]=frame.positions[i][1];
+        }
+        state.polar3d = frameTo3D(frame);
+      }
+
+      function interpolateFrames(fromFrame,toFrame,t) {
+        for (let i=0;i<state.cartesianPositions.length;i++) {
+          state.cartesianPositions[i][0]=lerp(fromFrame.positions[i][0],toFrame.positions[i][0],t);
+          state.cartesianPositions[i][1]=lerp(fromFrame.positions[i][1],toFrame.positions[i][1],t);
+        }
+        interpolatePolar3D(fromFrame,toFrame,t);
+      }
+
+      function redraw() {
+        accuracyElement.textContent=`${(state.accuracy*100).toFixed(1)}%`;
+        stageElement.textContent=state.stage;
+        cartesianChart.draw();
+        Plotly.restyle("polar3d", {
+          x:[state.polar3d.u1], y:[state.polar3d.u2], z:[state.polar3d.rho]
+        }, [1]);
+      }
+
+      function renderAt(timeMs) {
+        currentTime=Math.max(0,Math.min(TOTAL_DURATION_MS,timeMs));
+        progress.value=String(currentTime);
+        if (currentTime>=TOTAL_DURATION_MS) {
+          const last=frames[frames.length-1]; copyFrame(last);
+          state.accuracy=last.head_separability ?? last.accuracy ?? 0;
+          state.stage=last.name;
+        } else {
+          const scaled=(currentTime/TOTAL_DURATION_MS)*segmentCount;
+          const fromIndex=Math.floor(scaled);
+          const toIndex=Math.min(fromIndex+1,frames.length-1);
+          const t=scaled-fromIndex;
+          interpolateFrames(frames[fromIndex],frames[toIndex],t);
+          state.accuracy=frames[fromIndex].head_separability ?? frames[fromIndex].accuracy ?? 0;
+          state.stage=frames[fromIndex].name;
+        }
+        redraw();
+      }
+
+      function stopPlayback() {
+        playing=false; playButton.textContent="Play"; lastTimestamp=null;
+        if (animationFrameId!==null) { cancelAnimationFrame(animationFrameId); animationFrameId=null; }
+      }
+      function animate(timestamp) {
+        if (!playing) return;
+        if (lastTimestamp===null) lastTimestamp=timestamp;
+        const delta=timestamp-lastTimestamp; lastTimestamp=timestamp;
+        renderAt(currentTime+delta);
+        if (currentTime>=TOTAL_DURATION_MS) { stopPlayback(); return; }
+        animationFrameId=requestAnimationFrame(animate);
+      }
+      playButton.addEventListener("click",()=>{
+        if (playing) { stopPlayback(); return; }
+        if (currentTime>=TOTAL_DURATION_MS) renderAt(0);
+        playing=true; playButton.textContent="Pause"; lastTimestamp=null;
+        animationFrameId=requestAnimationFrame(animate);
+      });
+      progress.addEventListener("input",e=>{ stopPlayback(); renderAt(Number(e.target.value)); });
+      renderAt(0);
+    }
+
+    main().catch(error => {
+      console.error(error);
+      const el=document.getElementById("error");
+      el.style.display="flex";
+      el.textContent=`${error.message}\n\nMake sure checkerboard_transport.json is in the same directory.`;
+    });
+  </script>
+</body>
+</html>

@@ -1,42 +1,39 @@
 [中文版本](Docs/README-CN.md)
 
-# AATField
+# Anchor-based Additive Transport (AAT)
 
-**Anchor-based Additive Transport Field**
+AAT is a nonlinear classification algorithm. It first transforms the input into a normalized radial-directional state, then allows each sample to respond to a set of trainable ray anchors. The resulting response weights are used to mix the transport values carried by each ray, so that samples gradually become easier to classify through multiple layers of additive transport.
 
-A nonlinear classification model. It treats each sample as a point in a state space and learns an anchor-induced transport field, allowing sample states to move layer by layer within this learnable field and eventually complete classification.
-
-Simply put: *sample state → observe anchors and produce transport direction and strength → residual update → linear readout*
+In simple terms: *input features → centering and polar transform → ray response and weight computation → additive transport → linear readout*
 
 <p align="center">
   <img src="Docs/Imgs/2d_classification.gif" alt="2D classification demo" width="45%" />
-  <img src="Docs/Imgs/3d_traces.gif" alt="3D transport traces" width="45%" />
 </p>
-<p align="center">  <em>Visualization of sample transport in AATField on toy classification tasks.</em></p>
+<p align="center">  <em>Visualization of sample transport in AAT on a 2D checkerboard classification task.</em></p>
 
-AATField does not aim to stack larger matrices, but instead explores a more geometric and field-like way of evolving representations: **gradually transporting samples in the state space to positions that are easier to classify.**
+AAT does not use stacks of large dense matrices as its primary modeling mechanism. Instead, it updates sample states layer by layer by using state-dependent ray responses to mix trainable transport values, and finally performs classification with a linear head.
 
-## Why AATField?
+## Why AAT?
 
-In modern neural networks, many representation learning processes rely on large-scale matrix transformations. Matrix computation is extremely efficient on GPUs and has been proven to be highly powerful.
+In modern neural networks, many representation-learning processes rely on large-scale matrix transformations. Matrix computation is highly efficient on GPUs and has already proven to be extremely powerful.
 
-However, this does not mean that matrix transformation is the only way to evolve representations. AATField comes from a simple geometric intuition:
+However, this does not mean that matrix transformation is the only way to evolve data representations. AAT originates from a simple geometric intuition:
 
-> If the goal of classification is ultimately to make samples from different classes easier to separate in space, can we directly learn “how to move these samples,” instead of only changing them indirectly through layer-by-layer matrix mappings? This leads to the exploration of a structure whose main source of capacity is not large-scale trainable weight matrices.
+> If the ultimate goal of classification is to make samples from different classes easier to distinguish in space, can we directly learn “how to move these samples,” rather than changing them only indirectly through layer-by-layer matrix mappings? This motivates the exploration of a structure that does not use large-scale dense matrix transformations as its primary modeling mechanism.
 
-This gives the model a very intuitive interpretation: **each layer applies a set of local geometric transports to the sample state, gradually moving samples into a more separable spatial structure**.
+This gives the model a very intuitive interpretation: **each layer computes how strongly the current sample state responds to a set of trainable rays, then uses the response weights to mix the corresponding transport values, gradually producing a state representation that is easier to separate.**
 
 ## Quick Start
 
 ### 1. Installation
 
-It is recommended to install dependencies in a virtual environment:
+It is recommended to install the dependencies in a virtual environment:
 
 ```bash
 pip install git+https://github.com/1croyable/AATField.git@main
 ```
 
-If the project has been configured for local package installation, you can also use:
+If the project has already been configured for local package installation, you can also use:
 
 ```bash
 pip install -e .
@@ -48,24 +45,23 @@ pip install -e .
 import torch
 import torch.nn.functional as F
 
-from aatfield import AATField, AATFieldConfig
+from aatfield import AAT, AATConfig
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-cfg = AATFieldConfig.from_data(
+cfg = AATConfig.from_data(
     train_x,
-    num_classes=xxx, # number of classes for this task
-    extra_dims=xxx, # number of additional dimensions
-    layers=xxx, # number of layers
-    max_children=xxx, # maximum number of child anchors inferred during initialization for each layer
+    num_classes=xxx,  # number of classes
+    layers=xxx,       # number of transport layers
+    rays=xxx,         # number of rays in each layer
 )
 
-model = AATField(cfg).to(device)
+model = AAT(cfg).to(device)
 
-# The model needs to be structurally initialized from the training data first
-model.initialize(train_x, train_y)
+# Fit the center and radial normalization range from training data
+model.fit_state(train_x)
 
-optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3) # create the optimizer after initialization
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
 for x, y in train_loader:
     x = x.to(device)
@@ -79,60 +75,90 @@ for x, y in train_loader:
     optimizer.step()
 ```
 
+`rays` can be an integer, meaning that all layers use the same number of rays:
+
+```
+rays=32
+```
+
+It can also specify a different number of rays for each layer:
+
+```
+rays=[16, 24, 32, 32]
+```
+
 ### 3. Inference
 
 ```python
 model.eval()
+
 with torch.no_grad():
+    x = x.to(device)
     logits = model(x)
     pred = logits.argmax(dim=1)
+```
+
+### 4. Save and Load
+
+```python
+model.save_checkpoint("aat.pt") # Save both the configuration and trained weights
+```
+
+```python
+model = AAT.from_checkpoint("aat.pt", map_location=device) # Load the model
 ```
 
 ## Model Structure
 
 ![structure](Docs/Imgs/structure.jpg)
 
-AATField can be summarized as three actions: observe, transport, classify.
+AAT can be summarized in three stages: state transformation, additive transport, and linear classification.
 
-### 1. State Space: Observing Samples in a Higher-Dimensional Space
+### 1. Polar State Construction
 
-AATField first lifts the original input into a higher-dimensional state space.
+AAT first centers the input features and transforms each sample into a polar state composed of a normalized radius $\rho$ and a unit direction vector $\mathbf{u}$:
 
-The model then places a set of learnable anchors in the state space. These anchors are not ordinary hidden neurons, but reference points used to define local geometric fields. Each sample obtains different response strengths according to its distance relationships with the anchors.
-
-This design comes from an intuitive assumption: the visible data we have may only be a low-dimensional projection of higher-dimensional real information. A classification result may be affected by many unobserved factors, and the model cannot directly recover these hidden factors. Therefore, AATField does not try to reconstruct the true high-dimensional information. Instead, it **learns a transport field in the expanded state space to reorganize the existing projected information**, making samples gradually easier to classify.
-
-------
-
-### 2. Generating Transport: Direction, Strength, and Activation
-
-Each anchor produces a set of contributions for a sample, and multiple contributions are summed into an overall transport vector. A contribution contains:
-
-- Direction: where the sample should move;
-- Strength: how large this movement should be;
-
-Multiple anchor contributions are combined into an overall transport vector and then used to update the sample state in a residual form. To enhance nonlinear expressiveness, AATField can introduce nonlinear modulation during transport generation or after state update, so that the transport field does not merely bend space smoothly, but can also form more flexible local deformations, boundary turns, and state rearrangements.
+$$
+\mathbf{z}_0=[\rho_0,\mathbf{u}_0]
+$$
 
 ------
 
-### 3. Linear Readout: Making the Transported Space Separable
+### 2. Ray Response and Additive Transport
 
-AATField finally uses a simple linear classification head. This design gives the transport process a clear objective: after multiple layers of transport, samples should become as linearly separable as possible in the final state space.
+Each layer contains a set of trainable rays. Based on its current state, each sample computes a response score for every ray, and softmax is then used to obtain the corresponding response weights.
 
-It does not compress all points into a fixed shape. Instead, it **locally stretches, folds, and rearranges the state space like twisting clay**, making the classification boundary simpler in the final space.
+Each ray also carries an independent pair of radial and directional transport values. The model uses the response weights to form a weighted mixture of these transport values and updates the current state in residual form. The direction vector is renormalized after every update.
+
+This process is repeated across multiple layers, gradually transforming the sample state.
+
+------
+
+### 3. Linear Readout
+
+After $L$ transport layers, the final state is represented as:
+
+$$
+\mathbf{z}_L=[\rho_L,\mathbf{u}_L]
+$$
+
+AAT uses a simple linear classification head to directly read the final state and produce class predictions. Training therefore encourages the preceding transport layers to transform samples into state representations that are easier to classify linearly.
 
 ## Current Experimental Observations
 
-Preliminary experiments show that:
+Current experiments show that:
 
-- AATField can form effective nonlinear boundaries on two-dimensional geometric classification tasks;
-- On low-dimensional geometric tasks such as moons, spiral, and checkerboard, AATField shows a strong geometric inductive bias;
-- In some small-parameter settings, AATField can approach or outperform MLP baselines with similar parameter counts;
-- On flat image and tabular tasks, it has not yet stably surpassed strong MLP/CNN baselines;
-- The transport process has good visual interpretability, allowing direct observation of how sample points move layer by layer in the state space.
+- AAT can learn complex nonlinear classification boundaries on low-dimensional tasks such as checkerboard, Swiss roll, and triple helix, reaching representative test accuracies of approximately 97.8%, above 97%, and around 94%, respectively;
+- On real-world tabular datasets such as Airline Satisfaction, AAT demonstrates clearly better parameter efficiency than MLP baselines at the same or similar parameter counts, especially in small-model settings, while also achieving higher classification performance in some configurations.
+- On flattened 784-dimensional MNIST, an AAT model with 8 layers and 48 rays per layer achieved a best validation accuracy of 98.51% and a test accuracy of 98.26%;
+- These results indicate that AAT is not limited to low-dimensional visualization tasks, and can also scale to tabular data and high-dimensional flattened images;
+- AAT still has room for improvement in training speed and hardware execution efficiency;
+- The transport process can be visualized layer by layer, making it possible to directly observe how sample states change through multiple transport layers and gradually become easier to classify, as illustrated on MNIST.
+
+<img src="Docs/Imgs\mnist_visual.png" alt="mnist_visual" style="zoom: 25%;" />
 
 ## License
 
 This project uses the MIT License.
 
-You are free to use, modify, and distribute the project code, but the original copyright notice must be retained.
+You are free to use, modify, and distribute the project code, provided that the original copyright notice is retained.

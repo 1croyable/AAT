@@ -1,29 +1,25 @@
-# AATField
+# Anchor-based Additive Transport (AAT)
 
-**基于锚点的加性搬运场 (Anchor-based Additive Transport Field)**
+AAT 是一种非线性分类算法。它首先将输入转换为归一化的径向—方向状态，然后让每个样本对一组可训练的 ray anchors 产生响应，并根据响应权重混合每条 ray 所携带的搬运值，使样本在多层加性搬运中逐渐变得更容易分类。
 
-一种非线性分类模型。它把样本看作状态空间中的一个点，并学习一个由锚点诱导的搬运场，使样本状态在这个可学习场中逐层移动，最终完成分类。
-
-简单地说：*样本状态 → 观察锚点并产生搬运方向与强度 → 残差更新 → 线性读取*
+简单来说：*输入特征 → 中心化与极坐标变换 → ray 响应与权重计算 → 加性搬运 → 线性读出*
 
 <p align="center">
   <img src="Imgs/2d_classification.gif" alt="2D classification demo" width="45%" />
-  <img src="Imgs/3d_traces.gif" alt="3D transport traces" width="45%" />
 </p>
-<p align="center">  <em>Visualization of sample transport in AATField on toy classification tasks.</em></p>
+<p align="center">  <em>Visualization of sample transport in AAT on 2D Checkerboard classification task.</em></p>
 
+AAT 不以堆叠大规模稠密矩阵作为主要建模方式，而是通过状态相关的 ray 响应混合可训练搬运值，逐层更新样本状态，并最终由线性分类头完成分类。
 
-AATField 的目标不是堆叠更大的矩阵，而是探索一种更几何化、更场化的表示演化方式：**让样本在状态空间中被逐步搬运到更容易分类的位置。**
+## 为什么做 AAT？
 
-## 为什么做 AATField？
+在现代神经网络中，许多表示学习过程都依赖大规模矩阵变换。矩阵计算在 GPU 上非常高效，也已经被证明具有强大的建模能力。
 
-现代神经网络中，许多表示学习过程都依赖大规模矩阵变换。矩阵计算在 GPU 上非常高效，也已经被证明极其强大。
+然而，这并不意味着矩阵变换是演化数据表示的唯一方式。AAT 来自一个简单的几何直觉：
 
-但这并不意味着矩阵变换是唯一的表示演化方式。AATField 来自一个简单的几何直觉：
+> 如果分类的最终目标，是让不同类别的样本在空间中更容易被区分，那么我们能否直接学习“如何移动这些样本”，而不是只通过一层层矩阵映射间接改变它们？这促使我们探索一种不以大规模稠密矩阵变换为主要建模方式的结构。
 
-> 如果分类的目标最终是让不同类别的样本在空间中变得更容易分开，那么是否可以直接学习“如何移动这些样本”，而不是只通过一层层矩阵映射去间接改变它们？由此可以探索一种不以大规模可训练权重矩阵为容量主要来源的结构。
-
-这种方式使模型具有一种非常直观的解释：**每一层都在对样本状态施加一组局部的几何搬运，让样本逐渐进入更可分的空间结构**。
+这使模型具有一种非常直观的解释：**每一层都会根据样本的当前状态计算其对一组可训练 rays 的响应，并通过响应权重混合对应的搬运值，使样本逐渐形成更加容易分离的状态表示。**
 
 ## 快速开始
 
@@ -47,24 +43,23 @@ pip install -e .
 import torch
 import torch.nn.functional as F
 
-from aatfield import AATField, AATFieldConfig
+from aatfield import AAT, AATConfig
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-cfg = AATFieldConfig.from_data(
+cfg = AATConfig.from_data(
     train_x,
-    num_classes=xxx, # 该任务的分类数量
-    extra_dims=xxx, # 额外的维度数
-    layers=xxx, # 层数
-    max_children=xxx, # 每层初始化推断子吸引子数的最大上限
+    num_classes=xxx,  # number of classes
+    layers=xxx,       # number of transport layers
+    rays=xxx,         # number of rays in each layer
 )
 
-model = AATField(cfg).to(device)
+model = AAT(cfg).to(device)
 
-# 需要先根据训练数据进行结构初始化先验
-model.initialize(train_x, train_y)
+# Fit the center and radial normalization range from training data
+model.fit_state(train_x)
 
-optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3) # 在初始化后创建
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
 for x, y in train_loader:
     x = x.to(device)
@@ -78,57 +73,87 @@ for x, y in train_loader:
     optimizer.step()
 ```
 
+`rays` 可以是一个整数，表示所有层使用相同数量的 rays：
+
+```
+rays=32
+```
+
+也可以为每一层分别指定数量：
+
+```
+rays=[16, 24, 32, 32]
+```
+
 ### 3. 推理
 
 ```python
 model.eval()
+
 with torch.no_grad():
+    x = x.to(device)
     logits = model(x)
     pred = logits.argmax(dim=1)
+```
+
+### 4. 保存和加载
+
+```python
+model.save_checkpoint("aat.pt") # 保存，会连同配置和权重一起保存下来
+```
+
+```python
+model = AAT.from_checkpoint("aat.pt", map_location=device) # 加载模型
 ```
 
 ## 模型结构
 
 ![structure](Imgs/structure.jpg)
 
-AATField 可以被概括为三个动作：观察、搬运、分类
+AAT 可以概括为三个阶段：状态转换、加性搬运和线性分类。
 
-### 1. 状态空间：在更高维中观察样本
+### 1. Polar State Construction
 
-AATField 会首先把原始输入提升到一个更高维的状态空间中。
+AAT 首先对输入特征进行中心化，并将每个样本转换为由归一化半径 $\rho$ 和单位方向向量 $\mathbf{u}$ 组成的极坐标状态：
 
-模型首先在状态空间中放置一组可学习 anchors。这些 anchors 不是普通的隐藏神经元，而是用于定义局部几何场的参考点。样本会根据自己与 anchors 的距离关系，获得不同的响应强度。
-
-这种设计来自一个直观假设：手中可见的数据只是更高维真实信息的低维投影。一个分类结果可能受到许多未被观测到的因素影响，而模型无法直接恢复这些隐藏因素。因此，AATField 不试图还原真实高维信息，而是**通过学习搬运场，在扩展后的状态空间中重新组织已有投影信息**，使样本逐渐变得更容易分类。
-
-------
-
-### 2. 产生搬运：方向、强度与激活
-
-每个 anchor 会对样本产生一组 contribution，多个 contributions 会被加总成一个整体搬运向量。一个 contribution 同时包含：
-
-- 方向：样本应该往哪里移动；
-- 强度：这次移动有多大；
-
-多个 anchor contributions 会被组合成一个整体搬运向量，然后以残差形式更新样本状态。为了增强非线性表达能力，AATField 可以在搬运生成过程或状态更新之后加入非线性调制，使搬运场不只是平滑地弯曲空间，而能够形成更灵活的局部变形、边界转折与状态重排。
+$$
+\mathbf{z}_0=[\rho_0,\mathbf{u}_0]
+$$
 
 ------
 
-### 3. 线性读取：让搬运后的空间变得可分
+### 2. Ray Response and Additive Transport
 
-AATField 最后使用一个简单的线性分类头。这个设计为了给搬运过程提供一个明确目标：让样本经过多层搬运后，在最终状态空间中尽可能变得线性可分。
+每一层包含一组可训练 rays。样本会根据当前状态计算对每条 ray 的响应分数，并通过 softmax 得到对应的响应权重。
 
-它不是把所有点压到某个固定形状上，而是**像扭动橡皮泥一样，对状态空间进行局部拉伸、折叠和重排**，使分类边界在最终空间中变得更简单。
+每条 ray 同时携带一组独立的径向和方向搬运值。模型使用响应权重对这些搬运值进行加权混合，并以残差形式更新当前状态。方向向量在每次更新后重新归一化。
+
+这一过程在多层之间重复进行，使样本状态逐步发生变化。
+
+------
+
+### 3. Linear Readout
+
+经过 $L$ 层搬运后，最终状态表示为：
+
+$$
+\mathbf{z}_L=[\rho_L,\mathbf{u}_L]
+$$
+
+AAT 使用一个简单的线性分类头直接读取最终状态并输出类别预测。训练过程因此会推动前面的搬运层，将样本转换为更容易被线性分类的状态表示。
 
 ## 当前实验观察
 
-初步实验显示：
+当前实验表明：
 
-- AATField 可以在二维几何分类任务中形成有效的非线性边界；
-- 在 moons、spiral 和 checkerboard 等低维几何任务中，AATField 展示出较强的几何归纳偏置；
-- 在部分小参数设置下，AATField 可以接近或超过参数相近的 MLP baseline；
-- 在 flat image 和 tabular 任务上，尚未稳定超过强 MLP/CNN baseline；
-- 搬运过程具有较好的可视化解释性，可以直接观察样本点如何在状态空间中逐层移动。
+- AAT 能够在 checkerboard、Swiss roll 和 triple helix 等低维任务上学习复杂的非线性分类边界，代表性测试准确率分别达到约 97.8%、97% 以上和 94%；
+- 在 Airline Satisfaction 等真实表格数据上，AAT 在相同或相近参数量下，尤其是在小参数规模下，展现出明显优于 MLP 的参数效率，并在部分设置中同时取得更高的分类性能。
+- 在展平后的 784 维 MNIST 上，8 层、每层 48 条 rays 的 AAT 达到了 98.51% 的最佳验证准确率和 98.26% 的测试准确率；
+- 这些结果表明，AAT 的建模能力并不局限于低维可视化任务，而能够扩展到表格数据和高维展平图像；
+- AAT 当前训练速度和硬件执行效率仍有改进空间；
+- 搬运过程可以被逐层可视化，从而直接观察样本状态如何在多层 transport 中发生变化并逐渐变得更容易分类。如MNIST
+
+<img src="Imgs\mnist_visual.png" alt="mnist_visual" style="zoom: 25%;" />
 
 ## 许可证
 
