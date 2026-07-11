@@ -8,7 +8,7 @@ from pathlib import Path
 
 import torch
 
-from aatfield import AAT
+from AAT import AAT
 
 
 POINTS = 3000

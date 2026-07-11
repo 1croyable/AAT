@@ -6,7 +6,7 @@ import math
 import torch
 import torch.nn.functional as F
 
-from aatfield import AAT, AATConfig
+from AAT import AAT, AATConfig
 
 
 def make_swissroll(

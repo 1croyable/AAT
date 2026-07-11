@@ -3,9 +3,9 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aatfield"
+name = "aat"
 version = "0.1.0"
-description = "Anchor-based Additive Transport Field for PyTorch."
+description = "Anchor-based Additive Transport model for PyTorch."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
@@ -15,7 +15,7 @@ keywords = [
     "pytorch",
     "neural-network",
     "classification",
-    "transport-field",
+    "transport",
     "representation-learning"
 ]
 
@@ -29,8 +29,8 @@ classifiers = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["aatfield*"]
+include = ["aat*"]
 
 [project.urls]
-Homepage = "https://github.com/1croyable/AATField"
-Repository = "https://github.com/1croyable/AATField"
+Homepage = "https://github.com/1croyable/AAT"
+Repository = "https://github.com/1croyable/AAT"

@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader, TensorDataset
 from torchvision import datasets, transforms
 
-from aatfield import AAT, AATConfig
+from AAT import AAT, AATConfig
 
 
 @torch.no_grad()

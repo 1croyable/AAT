@@ -5,7 +5,7 @@ from pathlib import Path
 import torch
 import torch.nn.functional as F
 
-from aatfield import AAT, AATConfig
+from AAT import AAT, AATConfig
 
 
 def make_checkerboard(n: int, grid_size: int = 4, seed: int = 0):

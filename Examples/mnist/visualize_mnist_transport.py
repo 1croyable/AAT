@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import torch
 from torchvision import datasets, transforms
 
-from aatfield import AAT
+from AAT import AAT
 
 
 def load_one_per_digit(data_root: Path, device: torch.device):

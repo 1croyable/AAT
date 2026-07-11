@@ -5,7 +5,7 @@ AAT 是一种非线性分类算法。它首先将输入转换为归一化的径�
 简单来说：*输入特征 → 中心化与极坐标变换 → ray 响应与权重计算 → 加性搬运 → 线性读出*
 
 <p align="center">
-  <img src="Imgs/2d_classification.gif" alt="2D classification demo" width="45%" />
+  <img src="Imgs/2d_classification.gif" alt="2D classification demo" width="70%" />
 </p>
 <p align="center">  <em>Visualization of sample transport in AAT on 2D Checkerboard classification task.</em></p>
 
@@ -28,7 +28,7 @@ AAT 不以堆叠大规模稠密矩阵作为主要建模方式，而是通过状�
 建议在虚拟环境中安装依赖：
 
 ```bash
-pip install git+https://github.com/1croyable/AATField.git@main
+pip install git+https://github.com/1croyable/AAT.git@main
 ```
 
 如果项目已经配置了本地包安装，也可以使用：
@@ -43,7 +43,7 @@ pip install -e .
 import torch
 import torch.nn.functional as F
 
-from aatfield import AAT, AATConfig
+from AAT import AAT, AATConfig
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

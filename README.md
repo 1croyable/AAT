@@ -7,7 +7,7 @@ AAT is a nonlinear classification algorithm. It first transforms the input into 
 In simple terms: *input features → centering and polar transform → ray response and weight computation → additive transport → linear readout*
 
 <p align="center">
-  <img src="Docs/Imgs/2d_classification.gif" alt="2D classification demo" width="45%" />
+  <img src="Docs/Imgs/2d_classification.gif" alt="2D classification demo" width="70%" />
 </p>
 <p align="center">  <em>Visualization of sample transport in AAT on a 2D checkerboard classification task.</em></p>
 
@@ -30,7 +30,7 @@ This gives the model a very intuitive interpretation: **each layer computes how 
 It is recommended to install the dependencies in a virtual environment:
 
 ```bash
-pip install git+https://github.com/1croyable/AATField.git@main
+pip install git+https://github.com/1croyable/AAT.git@main
 ```
 
 If the project has already been configured for local package installation, you can also use:
@@ -45,7 +45,7 @@ pip install -e .
 import torch
 import torch.nn.functional as F
 
-from aatfield import AAT, AATConfig
+from aat import AAT, AATConfig
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
