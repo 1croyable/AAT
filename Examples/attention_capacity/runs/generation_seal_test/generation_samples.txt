@@ -1,0 +1,685 @@
+==============================================================================================================
+L01__greedy | source=legacy | decoding=greedy
+==============================================================================================================
+PROMPT:
+The history of science
+
+[AAT] flag=True distinct4=0.117 repeat4=0.883 max_run=54 max_cycle=54
+ is the history of science , science , science , science , science , science , science , science , science , science , science , science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ fiction . 
+
+
+==============================================================================================================
+L01__sampling_seed_1000 | source=legacy | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+The history of science
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ had a strong focus on science fiction and fiction , which he was inspired by a series of novels by John R. B. S. White and published in the following years . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ was an increase of the scope of the United States ' economy . 
+
+
+==============================================================================================================
+L01__sampling_seed_1001 | source=legacy | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+The history of science
+
+[AAT] flag=True distinct4=0.805 repeat4=0.195 max_run=3 max_cycle=5
+ , particularly those that would go to the attention of human life is not a human . In science the science of science fiction , science science science fiction science fiction science fiction has never been described as science fiction , science fiction , science fiction , science fiction , science fiction , science fiction and science fiction ; science fiction ( science fiction ) , fiction and science fiction writers ( science fiction ) and science fiction fiction novels
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ and religion , he had studied in the 1930s . 
+
+
+==============================================================================================================
+L01__sampling_seed_1002 | source=legacy | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+The history of science
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ , the film was praised by critics as the story of its own , who praised its story . 
+
+
+[TRANSFORMER] flag=False distinct4=0.961 repeat4=0.039 max_run=1 max_cycle=1
+ and literature , the school was designed as an open @-@ school football team with the exception of both universities and universities . The College of Notre Dame established an organization in the University of North Carolina and the College of South Carolina , and was formed in 1851 with the school , and it is one of the largest University of North Carolina . It is the university of the University of North Carolina , but
+
+==============================================================================================================
+L02__greedy | source=legacy | decoding=greedy
+==============================================================================================================
+PROMPT:
+In the city of London
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ . 
+
+
+==============================================================================================================
+L02__sampling_seed_1000 | source=legacy | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+In the city of London
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ , but this was also built , and the construction of the first modern building on the site of the Great Western Railway between 1809 and 1808 , and the city is one of the largest and most recent major cities in the country . 
+
+
+[TRANSFORMER] flag=False distinct4=0.911 repeat4=0.089 max_run=1 max_cycle=1
+ . It was the site of the first railway building that opened in 1910 . It was the site of the first building opened in 1899 . The station opened in 1881 as part of a new plan for the new station , which is now the centre of the New York City Station . 
+
+
+==============================================================================================================
+L02__sampling_seed_1001 | source=legacy | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+In the city of London
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ was created . It became known as the " Black Flag " . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ " by an unknown end to the 20th century . 
+
+
+==============================================================================================================
+L02__sampling_seed_1002 | source=legacy | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+In the city of London
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ is named the " The Great North , " and said of the name . In 2011 the city had the name " Todasim " , a name given by English Heritage . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ in order to make a more expensive environment for the church 's interior and buildings . As a result , the city was designed by Richard and the City of London for an additional £ 1 @.@ 5 million in 2014 . The building also included a new entrance to the village . 
+
+
+==============================================================================================================
+L03__greedy | source=legacy | decoding=greedy
+==============================================================================================================
+PROMPT:
+Researchers discovered that
+
+[AAT] flag=True distinct4=0.247 repeat4=0.753 max_run=62 max_cycle=62
+ the " first " of the first two episodes of the series , " The Last of the Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last Last
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ the film was " a very good film " . 
+
+
+==============================================================================================================
+L03__sampling_seed_1000 | source=legacy | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+Researchers discovered that
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ this species is unknown . However , the same plant remains still in size , and was never completely complete and can be found in the same genus . 
+
+
+[TRANSFORMER] flag=False distinct4=0.922 repeat4=0.078 max_run=1 max_cycle=1
+ they may have worked with his team . On 2 November 1881 the company was established on an industrial firm named S.H.E.D. , which had been purchased by the S.H.E.D. and its first owner . In 1879 the company established the " Big Bang " , which was renamed a S.H.B.L.C. , which they merged
+
+==============================================================================================================
+L03__sampling_seed_1001 | source=legacy | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+Researchers discovered that
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ they were not interested " on " [ their ] " sound and so could get a story . " 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ it was not possible " with no apparent concern " . He found a total of 588 people to be able to spend " the second half of the week " and " the last day " ; he considered the total number of families to be about 70 . By 2008 , the number of children at the end of the year increased at $ 3 to 75 , and it has been reported that there were 30
+
+==============================================================================================================
+L03__sampling_seed_1002 | source=legacy | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+Researchers discovered that
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ the band 's members were not only able to see a new band , but they were not aware of their own beliefs , they felt they decided it was " very important to bring music from our lives " . 
+
+
+[TRANSFORMER] flag=False distinct4=0.986 repeat4=0.014 max_run=1 max_cycle=1
+ the company 's location had been extended to accommodate the use of the " water @-@ covered water @-@ top " to allow customers to move on to the floor @-@ control process . The team also reported that the area 's proximity to the space was high , as the power of the station was less effective and was more likely to maintain . 
+
+
+==============================================================================================================
+W01__greedy | source=wikitext | decoding=greedy
+==============================================================================================================
+PROMPT:
+In early November the catapults were removed from both ships , and they loaded troops and munitions later that month . While en route they were diverted to the Spr
+
+REFERENCE:
+atly Islands upon reports of heavy air raids at Manila . After off @-@ loading their cargo , they sailed for Lingga Island , near Singapore , on 20 November . They transferred to Cam Ranh Bay , French Indochina and Hyūga became flagship of the 5th Fleet there on 14 December . The division sailed for Singapore on 30 December and Vice Admiral Kiyohide Shima
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ague River , they were forced to return to the island . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+inter , where they were used as a training ship for the rest of the war . 
+
+
+==============================================================================================================
+W01__sampling_seed_1000 | source=wikitext | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+In early November the catapults were removed from both ships , and they loaded troops and munitions later that month . While en route they were diverted to the Spr
+
+REFERENCE:
+atly Islands upon reports of heavy air raids at Manila . After off @-@ loading their cargo , they sailed for Lingga Island , near Singapore , on 20 November . They transferred to Cam Ranh Bay , French Indochina and Hyūga became flagship of the 5th Fleet there on 14 December . The division sailed for Singapore on 30 December and Vice Admiral Kiyohide Shima
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ague de France , they arrived in the early days of October . The first wave of French ships arrived at Alamein on 9 November , and on 12 November the Italian steaming of the Italian ships were spotted . Over 4 @,@ 000 French naval personnel joined the French fleet in a sweep toward the French . The ships had been stationed in the Mediterranean and in early January 1940 , while the Italian
+
+[TRANSFORMER] flag=False distinct4=0.974 repeat4=0.026 max_run=1 max_cycle=1
+astopol to the north , but the fleet continued to the north , returning to the west , where they moved to the east , crossing the Taurus Strait . On 31 December 1919 , the fleet escorted the fleet to Greece by sailing across the Suez Islands to help her return to the Gulf of Okeech . The ships sailed to the Gulf of Mexico , and then embarked out to intercept the Allied
+
+==============================================================================================================
+W01__sampling_seed_1001 | source=wikitext | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+In early November the catapults were removed from both ships , and they loaded troops and munitions later that month . While en route they were diverted to the Spr
+
+REFERENCE:
+atly Islands upon reports of heavy air raids at Manila . After off @-@ loading their cargo , they sailed for Lingga Island , near Singapore , on 20 November . They transferred to Cam Ranh Bay , French Indochina and Hyūga became flagship of the 5th Fleet there on 14 December . The division sailed for Singapore on 30 December and Vice Admiral Kiyohide Shima
+
+[AAT] flag=False distinct4=0.971 repeat4=0.029 max_run=1 max_cycle=1
+ague River . The ship was transferred to Narrowsby in August 1883 , when the ship was transferred to the Channel Fleet on 13 January 1883 , and was renamed HMS Eagle , which was the fifth ship , HMS Eagle , carrying an additional 10 @,@ 000 tonnes of fuel and 5 @,@ 000 tons of the British cargo . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+apishi for the first time in April 1919 , and they were decommissioned in September 1911 . The ship was stricken during the early stages of the war in August 1914 and was decommissioned on 28 August 1915 to serve as a patrol ship . At the time she was recommissioned for scrap in 1912 and was scrapped . During the first period of the World War I , Queen Elizabeth and Queen
+
+==============================================================================================================
+W01__sampling_seed_1002 | source=wikitext | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+In early November the catapults were removed from both ships , and they loaded troops and munitions later that month . While en route they were diverted to the Spr
+
+REFERENCE:
+atly Islands upon reports of heavy air raids at Manila . After off @-@ loading their cargo , they sailed for Lingga Island , near Singapore , on 20 November . They transferred to Cam Ranh Bay , French Indochina and Hyūga became flagship of the 5th Fleet there on 14 December . The division sailed for Singapore on 30 December and Vice Admiral Kiyohide Shima
+
+[AAT] flag=False distinct4=0.920 repeat4=0.080 max_run=1 max_cycle=1
+ague Peninsula , the squadron was ordered to rejoin operations in the southern part of the island . After crossing the island , the ships were transferred to the island , the island of Réunion on 26 January 1883 , and the island of Réunion , and by February 19 shelled the island to the island . After they moved inland , the island was transferred to the island . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+interk River and were subsequently used as their main artillery battery . They were replaced by the 3rd Infantry Brigade , the 2nd Infantry Division . In September they advanced from the north and attacked a platoon of four light infantry and a cavalry regiment . 
+
+
+==============================================================================================================
+W02__greedy | source=wikitext | decoding=greedy
+==============================================================================================================
+PROMPT:
+The suicide of Nero on 9 June 68 brought the Julio @-@ Claudian dynasty to an end , leading to the chaotic Year of the Four Emperors ,
+
+REFERENCE:
+ which saw the successive rise and fall of the emperors Galba , Otho and Vitellius , until the accession of Vespasian on 21 December 69 . Virtually nothing is known of Nerva 's whereabouts during 69 , but despite the fact that Otho was his brother @-@ in @-@ law , he appears to have been one of the earliest
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ and the Emperor of the Emperor . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ the first time the Emperor 's death . 
+
+
+==============================================================================================================
+W02__sampling_seed_1000 | source=wikitext | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+The suicide of Nero on 9 June 68 brought the Julio @-@ Claudian dynasty to an end , leading to the chaotic Year of the Four Emperors ,
+
+REFERENCE:
+ which saw the successive rise and fall of the emperors Galba , Otho and Vitellius , until the accession of Vespasian on 21 December 69 . Virtually nothing is known of Nerva 's whereabouts during 69 , but despite the fact that Otho was his brother @-@ in @-@ law , he appears to have been one of the earliest
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=2 max_cycle=2
+ and the Senate of Prokola . After the death of Titus and Titus Titus , Titus , Titus and Titus , who were in this manner , were held to the throne once a year , he was given two days in command of the new king . Caesar was also a friend , whose mother , Caesar Caesar , had the head of the imperial royal family , and a military service commander . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ the first new emperor and second royal governor , and the last in his reign , the Empress of Jerusalem . 
+
+
+==============================================================================================================
+W02__sampling_seed_1001 | source=wikitext | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+The suicide of Nero on 9 June 68 brought the Julio @-@ Claudian dynasty to an end , leading to the chaotic Year of the Four Emperors ,
+
+REFERENCE:
+ which saw the successive rise and fall of the emperors Galba , Otho and Vitellius , until the accession of Vespasian on 21 December 69 . Virtually nothing is known of Nerva 's whereabouts during 69 , but despite the fact that Otho was his brother @-@ in @-@ law , he appears to have been one of the earliest
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=3 max_cycle=3
+ the Emperor and the Emperor , Emperor Zetrai of Emperor Zia , who had succeeded by other Emperor A. Zeti , who returned to the East . In his later years , Ziaetia was the first Emperor , and was one of Emperor Aetia ; in 1415 , he succeeded Emperor Emperor Emperor Zia to become Emperor Emperor . Emperor Emperor Emperor ( Viaia
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ which was divided into three sections . Although the second of these two parts of the empire were a common role , their influence was not always made by Christian leaders . During the late 16th and early 20th centuries , the Ming dynasty was incorporated into the central world in Europe , which brought about a revival of the Chinese . 
+
+
+==============================================================================================================
+W02__sampling_seed_1002 | source=wikitext | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+The suicide of Nero on 9 June 68 brought the Julio @-@ Claudian dynasty to an end , leading to the chaotic Year of the Four Emperors ,
+
+REFERENCE:
+ which saw the successive rise and fall of the emperors Galba , Otho and Vitellius , until the accession of Vespasian on 21 December 69 . Virtually nothing is known of Nerva 's whereabouts during 69 , but despite the fact that Otho was his brother @-@ in @-@ law , he appears to have been one of the earliest
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ who had ruled that the emperor had ruled at the last year . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ and the birth of the Emperor , the First Bulgarian king . This was the first time the Ottoman invasion had begun , and during the period the Ottoman – Lithuanian War had reached Poland since the 1920s . 
+
+
+==============================================================================================================
+W03__greedy | source=wikitext | decoding=greedy
+==============================================================================================================
+PROMPT:
+Determined to promote the work of the Imagists , and particularly of Aldington and H.D. , Pound decided to publish an anthology under the title Des
+
+REFERENCE:
+ Imagistes . It was first published in Alfred Kreymborg 's little magazine The Glebe and was later published in 1914 by Alfred and Charles Boni in New York and by Harold Monro at the Poetry Bookshop in London . It became one of the most important and influential English @-@ language collections of modernist verse . Included in the thirty @-@ seven poems were
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+penser . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+cent . 
+
+
+==============================================================================================================
+W03__sampling_seed_1000 | source=wikitext | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+Determined to promote the work of the Imagists , and particularly of Aldington and H.D. , Pound decided to publish an anthology under the title Des
+
+REFERENCE:
+ Imagistes . It was first published in Alfred Kreymborg 's little magazine The Glebe and was later published in 1914 by Alfred and Charles Boni in New York and by Harold Monro at the Poetry Bookshop in London . It became one of the most important and influential English @-@ language collections of modernist verse . Included in the thirty @-@ seven poems were
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+perate House of Commons , a position which he did not receive the title . He was a professor of the Royal Society and also contributed the research to the development of science and science of science . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+fourn . He decided to complete the book on a two @-@ year contract , then signed with the company to replace them on several issues . He proposed it to be produced by the publisher , M. C. " The book would be published as the first in the company with the title 's title . " The books be published in order to be edited and included new volumes . The book
+
+==============================================================================================================
+W03__sampling_seed_1001 | source=wikitext | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+Determined to promote the work of the Imagists , and particularly of Aldington and H.D. , Pound decided to publish an anthology under the title Des
+
+REFERENCE:
+ Imagistes . It was first published in Alfred Kreymborg 's little magazine The Glebe and was later published in 1914 by Alfred and Charles Boni in New York and by Harold Monro at the Poetry Bookshop in London . It became one of the most important and influential English @-@ language collections of modernist verse . Included in the thirty @-@ seven poems were
+
+[AAT] flag=False distinct4=0.974 repeat4=0.026 max_run=1 max_cycle=1
+cent of the Humber , in which he was published in 1874 . Humboldt published a volume of Poetry in 1874 , the last of which was a publication . Humboldt would then publish the poems " Poetches " . Described in 1878 , Despland became one of the first Poets of Poet . He began to write for Poetches
+
+[TRANSFORMER] flag=False distinct4=0.986 repeat4=0.014 max_run=1 max_cycle=2
+penser . The story was not well received , and the book 's script remained incomplete . The book was released from March to November 2007 , and received mixed reviews . In 2005 , it was reported that Clarke and H.M.M. would be able to release no more material , though she was denied release due to the book 's release . 
+
+
+==============================================================================================================
+W03__sampling_seed_1002 | source=wikitext | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+Determined to promote the work of the Imagists , and particularly of Aldington and H.D. , Pound decided to publish an anthology under the title Des
+
+REFERENCE:
+ Imagistes . It was first published in Alfred Kreymborg 's little magazine The Glebe and was later published in 1914 by Alfred and Charles Boni in New York and by Harold Monro at the Poetry Bookshop in London . It became one of the most important and influential English @-@ language collections of modernist verse . Included in the thirty @-@ seven poems were
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=2
+cartes . He also founded The W.D. in the United States , a group of writers , writers , writers and writers . The editor of the publication was LeMond in the US , but he was unable to work on the English translation so that they were " very important but in what he thought and thought it might be the work . " The first writers of the American science fiction series
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+hnes . In his lifetime he wrote several books , including a short book , and a collection of books . 
+
+
+==============================================================================================================
+W04__greedy | source=wikitext | decoding=greedy
+==============================================================================================================
+PROMPT:
+Five singles have been released from the album . The lead single , " El Amor " , became a commercial success in several Latin American countries and was number one
+
+REFERENCE:
+ on the Billboard Latin Songs and Latin Pop Songs charts . It was followed by " Fuiste Tú " ( featuring Gaby Moreno ) , which reached number one on the Latin Pop Songs , number two on the Latin Songs charts and topped several other national charts . " Mi Novia Se Me Está Poniendo Vieja " was released in May 2012 ; " Te Quiero " in July
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ in the United States . The album was certified gold by the Recording Industry Association of America ( RIAA ) for shipments of over 100 @,@ 000 copies . 
+
+
+[TRANSFORMER] flag=True distinct4=0.627 repeat4=0.373 max_run=1 max_cycle=1
+ on the Billboard Hot 100 . The song was certified platinum by the Recording Industry Association of America ( RIAA ) for shipments of 100 @,@ 000 copies . It was certified platinum by the Recording Industry Association of America ( RIAA ) for shipments of 100 @,@ 000 copies . 
+
+
+==============================================================================================================
+W04__sampling_seed_1000 | source=wikitext | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+Five singles have been released from the album . The lead single , " El Amor " , became a commercial success in several Latin American countries and was number one
+
+REFERENCE:
+ on the Billboard Latin Songs and Latin Pop Songs charts . It was followed by " Fuiste Tú " ( featuring Gaby Moreno ) , which reached number one on the Latin Pop Songs , number two on the Latin Songs charts and topped several other national charts . " Mi Novia Se Me Está Poniendo Vieja " was released in May 2012 ; " Te Quiero " in July
+
+[AAT] flag=False distinct4=0.957 repeat4=0.043 max_run=1 max_cycle=1
+ in Australia , Belgium , and Spain in the United States , and Canada . The album reached number one on the Canadian Albums Chart , where it peaked at number 12 and peaked at number one on the Canadian Music Club Play chart . 
+
+
+[TRANSFORMER] flag=False distinct4=0.974 repeat4=0.026 max_run=1 max_cycle=1
+ on the Billboard Latin Pop Songs chart for one week . In its second week , the song reached number three on the Billboard Hot 100 chart . It peaked at number nine , and was the first single on the American pop charts of the 1990s . " El Amor " also debuted and peaked at number two on the US Billboard Hot 100 . It also peaked at number three on the US Billboard Bubbling
+
+==============================================================================================================
+W04__sampling_seed_1001 | source=wikitext | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+Five singles have been released from the album . The lead single , " El Amor " , became a commercial success in several Latin American countries and was number one
+
+REFERENCE:
+ on the Billboard Latin Songs and Latin Pop Songs charts . It was followed by " Fuiste Tú " ( featuring Gaby Moreno ) , which reached number one on the Latin Pop Songs , number two on the Latin Songs charts and topped several other national charts . " Mi Novia Se Me Está Poniendo Vieja " was released in May 2012 ; " Te Quiero " in July
+
+[AAT] flag=False distinct4=0.987 repeat4=0.013 max_run=1 max_cycle=1
+ and reached top @-@ five on the Billboard Hot 100 . In New Zealand , the single entered the Billboard Hot 100 and sold 500 @,@ 000 copies in the US . The single was certified platinum in the country for sales of 7 @.@ 5 million copies . It also reached a peak of number 17 in South Korea , and achieved platinum by selling over 18 million copies . At the conclusion
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ in Italy for the first time . " El Amor " , also the fourth single from his fifth studio album , was certified Gold by the Recording Industry Association of America ( RIAA ) for shipments of 7 @.@ 5 million copies . Billboard magazine 's Chris E. Williams called the song " a major , influential and commercial success from the 1980s , a rock @-@ pop beat
+
+==============================================================================================================
+W04__sampling_seed_1002 | source=wikitext | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+Five singles have been released from the album . The lead single , " El Amor " , became a commercial success in several Latin American countries and was number one
+
+REFERENCE:
+ on the Billboard Latin Songs and Latin Pop Songs charts . It was followed by " Fuiste Tú " ( featuring Gaby Moreno ) , which reached number one on the Latin Pop Songs , number two on the Latin Songs charts and topped several other national charts . " Mi Novia Se Me Está Poniendo Vieja " was released in May 2012 ; " Te Quiero " in July
+
+[AAT] flag=False distinct4=0.961 repeat4=0.039 max_run=1 max_cycle=1
+ on the Canadian Hot 100 . In Canada , the song debuted atop the Billboard 200 , selling 200 @,@ 000 downloads . The song is listed on the US Billboard Music Awards . The song peaked at number one on the Hot Christian Songs chart , and stayed at number one . The song charted at number one on the US Billboard Hot 100 , and stayed together for one week , becoming one of the
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ on the Swiss Albums Chart and number 10 on the Dutch Songs chart . In the United States , the single was covered by " El Amor " , the latter that peaked at number nine . It became the second single in Austria , and the second song to be released to air on the chart . The song was also included on several European radio stations in United States , including Sweden , Austria , the
+
+==============================================================================================================
+W05__greedy | source=wikitext | decoding=greedy
+==============================================================================================================
+PROMPT:
+Despite the expensive reconstructions , both vessels were considered obsolete by the eve of the Pacific War , and neither saw significant action in the early years of the war .
+
+REFERENCE:
+ Following the loss of most of the IJN 's large aircraft carriers during the Battle of Midway in mid @-@ 1942 , they were rebuilt with a flight deck replacing the rear pair of gun turrets to give them the ability to operate an air group of floatplanes . A lack of aircraft and qualified pilots , however , meant that they never actually operated their aircraft in combat . While awaiting their
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ 
+
+
+==============================================================================================================
+W05__sampling_seed_1000 | source=wikitext | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+Despite the expensive reconstructions , both vessels were considered obsolete by the eve of the Pacific War , and neither saw significant action in the early years of the war .
+
+REFERENCE:
+ Following the loss of most of the IJN 's large aircraft carriers during the Battle of Midway in mid @-@ 1942 , they were rebuilt with a flight deck replacing the rear pair of gun turrets to give them the ability to operate an air group of floatplanes . A lack of aircraft and qualified pilots , however , meant that they never actually operated their aircraft in combat . While awaiting their
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ In June 1917 , the United States entered service at the Battle of Tsarina , and the French Army , and by 1918 the French government of the United Kingdom were captured or captured by the British . 
+
+
+[TRANSFORMER] flag=False distinct4=0.985 repeat4=0.015 max_run=2 max_cycle=2
+ In 1868 , the ship was refitted , and the Naval Dockyard was converted into a double gun . The ship was stricken from the Navy List on 27 February 1846 . The ship was sold to the Royal Navy by the Royal Navy on 21 April 1869 , and became flagship of the fleet USS Admiral George George . 
+
+
+==============================================================================================================
+W05__sampling_seed_1001 | source=wikitext | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+Despite the expensive reconstructions , both vessels were considered obsolete by the eve of the Pacific War , and neither saw significant action in the early years of the war .
+
+REFERENCE:
+ Following the loss of most of the IJN 's large aircraft carriers during the Battle of Midway in mid @-@ 1942 , they were rebuilt with a flight deck replacing the rear pair of gun turrets to give them the ability to operate an air group of floatplanes . A lack of aircraft and qualified pilots , however , meant that they never actually operated their aircraft in combat . While awaiting their
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ 
+
+
+==============================================================================================================
+W05__sampling_seed_1002 | source=wikitext | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+Despite the expensive reconstructions , both vessels were considered obsolete by the eve of the Pacific War , and neither saw significant action in the early years of the war .
+
+REFERENCE:
+ Following the loss of most of the IJN 's large aircraft carriers during the Battle of Midway in mid @-@ 1942 , they were rebuilt with a flight deck replacing the rear pair of gun turrets to give them the ability to operate an air group of floatplanes . A lack of aircraft and qualified pilots , however , meant that they never actually operated their aircraft in combat . While awaiting their
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ 
+
+
+==============================================================================================================
+W06__greedy | source=wikitext | decoding=greedy
+==============================================================================================================
+PROMPT:
+On April 2 , 2007 , Lickliter resigned in order to take the head @-@ coaching position at the University of Iowa . The Butler players had a
+
+REFERENCE:
+ meeting with athletic director Barry Collier , urging him to promote from within . Collier , having spent the entire season observing the assistant coaches ' interaction with the team , agreed . The day after Lickliter resigned Stevens and Butler 's two other assistant coaches interviewed for the job . Within 24 hours of the interviews Stevens was named Butler 's new head coach . According to Collier , Stevens had something
+
+[AAT] flag=True distinct4=0.769 repeat4=0.231 max_run=1 max_cycle=1
+ chance to play in the first half of the season , but the team was unable to play in the first half of the season . 
+
+
+[TRANSFORMER] flag=True distinct4=0.312 repeat4=0.688 max_run=1 max_cycle=1
+ chance to play in the game , but the team had to play in the game . The team had a chance to play in the game , but the team had to play in the game . The team had to play in the game , but the team had to play in the game . The team had to play in the game , and the team had to play in the game . The team had to
+
+==============================================================================================================
+W06__sampling_seed_1000 | source=wikitext | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+On April 2 , 2007 , Lickliter resigned in order to take the head @-@ coaching position at the University of Iowa . The Butler players had a
+
+REFERENCE:
+ meeting with athletic director Barry Collier , urging him to promote from within . Collier , having spent the entire season observing the assistant coaches ' interaction with the team , agreed . The day after Lickliter resigned Stevens and Butler 's two other assistant coaches interviewed for the job . Within 24 hours of the interviews Stevens was named Butler 's new head coach . According to Collier , Stevens had something
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ number of coaching positions . He had been a regular starter for the team , and had been replaced with former Chicago Bears coach Eric Scholes . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ successful season in 2007 , winning four games and losing two games . 
+
+
+==============================================================================================================
+W06__sampling_seed_1001 | source=wikitext | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+On April 2 , 2007 , Lickliter resigned in order to take the head @-@ coaching position at the University of Iowa . The Butler players had a
+
+REFERENCE:
+ meeting with athletic director Barry Collier , urging him to promote from within . Collier , having spent the entire season observing the assistant coaches ' interaction with the team , agreed . The day after Lickliter resigned Stevens and Butler 's two other assistant coaches interviewed for the job . Within 24 hours of the interviews Stevens was named Butler 's new head coach . According to Collier , Stevens had something
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=2 max_cycle=2
+ strong strong style , as well as an overall presence on the team . The New York Times had been a strong one throughout the league , but the team retained a spot in the championship game against the Chicago Chicago Cubs . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ total of 36 players from the school 's secondary schools . The team 's coaches did not have a chance to secure a major league record , but not for a regular season , and would have a more modern team . When the team could lose four , it went into the final of the 2014 – 12 NCAA season . 
+
+
+==============================================================================================================
+W06__sampling_seed_1002 | source=wikitext | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+On April 2 , 2007 , Lickliter resigned in order to take the head @-@ coaching position at the University of Iowa . The Butler players had a
+
+REFERENCE:
+ meeting with athletic director Barry Collier , urging him to promote from within . Collier , having spent the entire season observing the assistant coaches ' interaction with the team , agreed . The day after Lickliter resigned Stevens and Butler 's two other assistant coaches interviewed for the job . Within 24 hours of the interviews Stevens was named Butler 's new head coach . According to Collier , Stevens had something
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ number of coaching staff ; as of May 2010 , he received eight consecutive coaching stars , for example , a team of Michigan defensive backs coach Jim J. L. Davis ( Steve Lachin ) , who was later an Australian coach ( MCA ) , who won the championship . By 2011 , Latelynall was the only player in that team . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ significant impact on the college staff and the coaches , but a limited majority of fans were convinced the students to make a strong replacement for the team that was expected to have some minor changes in the game . The team selected former teammate John McNamara , a team that became the first team All @-@ National at the time . 
+
+
+==============================================================================================================
+W07__greedy | source=wikitext | decoding=greedy
+==============================================================================================================
+PROMPT:
+The Royal Navy had not been keen to sacrifice its advantage in steam ships of the line , but was determined that the first British ironclad would outmatch the French
+
+REFERENCE:
+ ships in every respect , particularly speed . A fast ship would have the advantage of being able to choose a range of engagement which could make her invulnerable to enemy fire . The British specification was more a large , powerful frigate than a ship @-@ of @-@ the @-@ line . The requirement for speed meant a very long vessel , which had to be built from iron . The
+
+[AAT] flag=True distinct4=0.325 repeat4=0.675 max_run=1 max_cycle=1
+ ships . The French ships were able to reach the French port of the French port , but the French ships were able to reach the French port . The French ships were able to reach the French port of the French port , but the French ships were able to reach the port of the French port . The French ships were able to reach the port of the French port , but the French ships were able to
+
+[TRANSFORMER] flag=True distinct4=0.273 repeat4=0.727 max_run=1 max_cycle=1
+ ships . The British ships were able to reach the British ships , but the British ships were unable to reach the British ships . The British ships were able to reach the British ships , but the British ships were unable to reach the British ships . The British ships were able to reach the British ships , but the British ships were unable to reach the British ships . The British ships were able to reach the British
+
+==============================================================================================================
+W07__sampling_seed_1000 | source=wikitext | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+The Royal Navy had not been keen to sacrifice its advantage in steam ships of the line , but was determined that the first British ironclad would outmatch the French
+
+REFERENCE:
+ ships in every respect , particularly speed . A fast ship would have the advantage of being able to choose a range of engagement which could make her invulnerable to enemy fire . The British specification was more a large , powerful frigate than a ship @-@ of @-@ the @-@ line . The requirement for speed meant a very long vessel , which had to be built from iron . The
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ and Mediterranean fleet in the autumn of 1819 . For the third time , the French fleet consisted of four of the largest Spanish fleet that was under construction , with a fleet of 4 @,@ 000 vessels , and twenty smaller warships . The main battery consisted of twenty @-@ three 18 @-@ inch ( 410 mm ) guns , eight 45 @-@ millimeter ( 7 @.@
+
+[TRANSFORMER] flag=False distinct4=0.967 repeat4=0.033 max_run=1 max_cycle=1
+ cruisers at a speed of 3 @.@ 45 knots ( 3 @.@ 62 km / h ; 4 @.@ 91 mph ) . 
+
+
+==============================================================================================================
+W07__sampling_seed_1001 | source=wikitext | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+The Royal Navy had not been keen to sacrifice its advantage in steam ships of the line , but was determined that the first British ironclad would outmatch the French
+
+REFERENCE:
+ ships in every respect , particularly speed . A fast ship would have the advantage of being able to choose a range of engagement which could make her invulnerable to enemy fire . The British specification was more a large , powerful frigate than a ship @-@ of @-@ the @-@ line . The requirement for speed meant a very long vessel , which had to be built from iron . The
+
+[AAT] flag=False distinct4=0.974 repeat4=0.026 max_run=1 max_cycle=1
+ port , and was able to steam it up to reach the French ships . In early October , Royal Navy sent the British to the Mediterranean against a French naval squadron , but on 10 October was able to reach the French fleet , this was intercepted by British forces in the area . After the loss of the French fleet , the French steamer Étienne had to be used to force British forces , which
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ merchant ship . 
+
+
+==============================================================================================================
+W07__sampling_seed_1002 | source=wikitext | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+The Royal Navy had not been keen to sacrifice its advantage in steam ships of the line , but was determined that the first British ironclad would outmatch the French
+
+REFERENCE:
+ ships in every respect , particularly speed . A fast ship would have the advantage of being able to choose a range of engagement which could make her invulnerable to enemy fire . The British specification was more a large , powerful frigate than a ship @-@ of @-@ the @-@ line . The requirement for speed meant a very long vessel , which had to be built from iron . The
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ line at the center of the line to the west , with a main battery of four 20 @-@ inch guns . With a length of 100 yards ( 91 m ) for the ships on the eastern side of the bridgehead at the west end of the line was a very short line to provide a line of fire . The German line to the south was called for three of the line from the east
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ fleet of the war . 
+
+
+==============================================================================================================
+W08__greedy | source=wikitext | decoding=greedy
+==============================================================================================================
+PROMPT:
+In 64 AD , most of Rome was destroyed in the Great Fire of Rome , which many Romans believed Nero himself had started in order to clear land for his planned
+
+REFERENCE:
+ palatial complex , the Domus Aurea . In 68 , the rebellion of Vindex in Gaul and later the acclamation of Galba in Hispania drove Nero from the throne . Facing a false report of being denounced as a public enemy who was to be executed , he committed suicide on 9 June 68 ( the first Roman emperor to do so ) . His death ended the Julio @
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ invasion of Rome . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ invasion of the Roman Empire . 
+
+
+==============================================================================================================
+W08__sampling_seed_1000 | source=wikitext | decoding=sampling_seed_1000
+==============================================================================================================
+PROMPT:
+In 64 AD , most of Rome was destroyed in the Great Fire of Rome , which many Romans believed Nero himself had started in order to clear land for his planned
+
+REFERENCE:
+ palatial complex , the Domus Aurea . In 68 , the rebellion of Vindex in Gaul and later the acclamation of Galba in Hispania drove Nero from the throne . Facing a false report of being denounced as a public enemy who was to be executed , he committed suicide on 9 June 68 ( the first Roman emperor to do so ) . His death ended the Julio @
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=2 max_cycle=2
+ invasion of Rome . In 1221 , Rome was the son of Roman Roman Rome 's son . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ victory . The Roman Empire also lost its own power in the Byzantine Empire . 
+
+
+==============================================================================================================
+W08__sampling_seed_1001 | source=wikitext | decoding=sampling_seed_1001
+==============================================================================================================
+PROMPT:
+In 64 AD , most of Rome was destroyed in the Great Fire of Rome , which many Romans believed Nero himself had started in order to clear land for his planned
+
+REFERENCE:
+ palatial complex , the Domus Aurea . In 68 , the rebellion of Vindex in Gaul and later the acclamation of Galba in Hispania drove Nero from the throne . Facing a false report of being denounced as a public enemy who was to be executed , he committed suicide on 9 June 68 ( the first Roman emperor to do so ) . His death ended the Julio @
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ invasion of Rome . 
+
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ invasion of Rome . 
+
+
+==============================================================================================================
+W08__sampling_seed_1002 | source=wikitext | decoding=sampling_seed_1002
+==============================================================================================================
+PROMPT:
+In 64 AD , most of Rome was destroyed in the Great Fire of Rome , which many Romans believed Nero himself had started in order to clear land for his planned
+
+REFERENCE:
+ palatial complex , the Domus Aurea . In 68 , the rebellion of Vindex in Gaul and later the acclamation of Galba in Hispania drove Nero from the throne . Facing a false report of being denounced as a public enemy who was to be executed , he committed suicide on 9 June 68 ( the first Roman emperor to do so ) . His death ended the Julio @
+
+[AAT] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ invasion . With Rome taking control of Rome , Rome quickly began to fall in Rome . Rome continued to fight the War of Rome in about 604 or 461 , but Rome was forced to leave Rome . Rome 's defeat in a series of wars against Rome and Rome were defeated by Rome in July 471 . Rome failed in Rome to take place until Rome ended , with Rome in a disastrous fight
+
+[TRANSFORMER] flag=False distinct4=1.000 repeat4=0.000 max_run=1 max_cycle=1
+ invasion of Palestine . Following the end of the Byzantine dynasty , the Byzantine Empire was conquered by the Byzantine Empire and Rome .

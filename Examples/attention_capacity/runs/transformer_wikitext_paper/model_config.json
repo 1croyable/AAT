@@ -1,0 +1,9 @@
+{
+  "blocks": 12,
+  "d_model": 384,
+  "dropout": 0.1,
+  "ffn_hidden": 1664,
+  "gradient_checkpointing": true,
+  "heads": 8,
+  "vocab_size": 50257
+}

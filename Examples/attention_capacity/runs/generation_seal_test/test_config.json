@@ -1,0 +1,30 @@
+{
+  "blind_seed": 20260727,
+  "common_context": 256,
+  "cuda_runtime": "12.6",
+  "dataset_config": "wikitext-103-raw-v1",
+  "dataset_name": "Salesforce/wikitext",
+  "dataset_split": "test",
+  "device": "cuda",
+  "generate_tokens": 80,
+  "gpu_name": "NVIDIA GeForce RTX 3060",
+  "include_legacy_prompts": true,
+  "no_repeat_ngram_rule_used": false,
+  "precision": "bf16",
+  "prompt_selection_seed": 20260727,
+  "prompt_tokens": 32,
+  "python": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 16:37:03) [MSC v.1929 64 bit (AMD64)]",
+  "reference_tokens": 80,
+  "repetition_penalty_used": false,
+  "sampling_seeds": [
+    1000,
+    1001,
+    1002
+  ],
+  "temperature": 0.9,
+  "test_version": "wikitext103-controlled-generation-seal-v1",
+  "tokenizer": "gpt2",
+  "top_k": 40,
+  "torch": "2.12.0+cu126",
+  "wiki_prompts": 8
+}

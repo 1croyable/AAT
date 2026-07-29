@@ -1,0 +1,110 @@
+{
+  "architecture_stats": {
+    "kappa_mean": 11.514206852231707,
+    "key_projection_delta": 0.027764780446887016,
+    "ordered_chunk_size": 32.0,
+    "phase_scale_rms": 0.1281786859035492,
+    "position_scale": 255.0,
+    "ray_strength_max": 2.080920457839966,
+    "ray_strength_mean": 0.8621417284011841,
+    "ray_strength_min": -0.1516934335231781,
+    "ray_strength_std": 0.2121676504611969,
+    "read_gate_mean": 0.3924817132453124,
+    "value_projection_delta": 0.024105677381157875
+  },
+  "best_validation_loss": 3.8495834574979892,
+  "best_validation_perplexity": 46.97349269970577,
+  "environment": {
+    "cuda_runtime": "12.6",
+    "cudnn": 91002,
+    "datasets": "5.0.0",
+    "device": "cuda",
+    "gpu_name": "NVIDIA GeForce RTX 3060",
+    "python": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 16:37:03) [MSC v.1929 64 bit (AMD64)]",
+    "torch": "2.12.0+cu126",
+    "transformers": "5.14.1"
+  },
+  "generated_samples": [
+    {
+      "prompt": "The history of science",
+      "text": "The history of science for science is called the \" best work \" . The Science Foundation 's science department is a \" science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science science"
+    },
+    {
+      "prompt": "In the city of London",
+      "text": "In the city of London , and became a centre of the Roman city . He is now known as the Thessaloniki in the city of the city ( the city centre ) in the city . \n"
+    },
+    {
+      "prompt": "Researchers discovered that",
+      "text": "Researchers discovered that this was still alive by the time this could be discovered in the future . \n"
+    }
+  ],
+  "implementation_version": "canonical-complex-dual-memory-chunkwise-v1.1",
+  "long_validation": {
+    "bits_per_token": 5.6366096254038105,
+    "loss": 3.9070000697657004,
+    "perplexity": 49.74948290920194,
+    "seconds": 15.468233799998416,
+    "split": "validation_long_512",
+    "token_accuracy": 0.3382852770618557,
+    "tokens": 248320,
+    "tokens_per_second": 16053.545815943475
+  },
+  "model_config": {
+    "blocks": 12,
+    "d_model": 512,
+    "dropout": 0.1,
+    "ffn_hidden": 464,
+    "gradient_checkpointing": true,
+    "heads": 8,
+    "initial_kappa": 6.0,
+    "ordered_chunk_size": 32,
+    "position_scale": 255.0,
+    "rays_per_head": 32,
+    "score_clip": 30.0,
+    "vocab_size": 50257
+  },
+  "parameter_breakdown": {
+    "decoder_memory_mixers": 9667716,
+    "fixed_encoder_memories": 559632,
+    "normalization": 51200,
+    "parameter_matched_ffn": 5713344,
+    "tied_token_embedding_and_lm_head": 25731584,
+    "total": 41723476
+  },
+  "source_sha256": "9fafacd3ed07bbe9f90800d2fa3c87444f449ba6a8ec977191d294c35deeb9e6",
+  "test": {
+    "bits_per_token": 5.567080048069294,
+    "loss": 3.858805839270756,
+    "perplexity": 47.408703940048206,
+    "seconds": 17.313214399997378,
+    "split": "test",
+    "token_accuracy": 0.34597561318631864,
+    "tokens": 284416,
+    "tokens_per_second": 16427.68312278528
+  },
+  "train_config": {
+    "batch_size": 8,
+    "dataset_config": "wikitext-103-raw-v1",
+    "dataset_name": "Salesforce/wikitext",
+    "epochs": 3,
+    "eval_batches": null,
+    "eval_every": 1000,
+    "grad_accum_steps": 8,
+    "grad_clip": 1.0,
+    "learning_rate": 0.0002,
+    "log_every": 25,
+    "long_sequence_length": 512,
+    "max_eval_blocks": null,
+    "max_train_blocks": null,
+    "min_lr_ratio": 0.1,
+    "num_workers": 0,
+    "preprocessing_workers": 4,
+    "save_every": 500,
+    "seed": 0,
+    "sequence_length": 256,
+    "tokenizer_name": "gpt2",
+    "warmup_fraction": 0.02,
+    "weight_decay": 0.1
+  },
+  "training_seconds_this_invocation": 94763.9858199
+}

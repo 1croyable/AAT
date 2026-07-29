@@ -1,0 +1,103 @@
+{
+  "architecture_stats": {
+    "blocks": 12.0,
+    "ffn_expansion": 4.333333333333333,
+    "head_dim": 48.0,
+    "heads": 8.0
+  },
+  "best_validation_loss": 3.928143442230697,
+  "best_validation_perplexity": 50.81255360328632,
+  "environment": {
+    "cuda_runtime": "12.6",
+    "cudnn": 91002,
+    "datasets": "5.0.0",
+    "device": "cuda",
+    "gpu_name": "NVIDIA GeForce RTX 3060",
+    "python": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 16:37:03) [MSC v.1929 64 bit (AMD64)]",
+    "torch": "2.12.0+cu126",
+    "transformers": "5.14.1"
+  },
+  "generated_samples": [
+    {
+      "prompt": "The history of science",
+      "text": "The history of science fiction . It uses the character and protagonist 's \" power in a world that is only one of the most intelligent aspects of real @-@ time comics in science . \" The game 's setting is divided into two subquel characters , a pair called The Lord of the Rings , and three stories ; there are two episodes in which the Doctor has been killed . The Doctor is killed by the monster"
+    },
+    {
+      "prompt": "In the city of London",
+      "text": "In the city of London , and also in a larger area with the town and town of the city of Lancashire , a major town in the town area . It has also been suggested that residents of the building were the largest city and the largest settlement that was founded by the City of Manchester . \n"
+    },
+    {
+      "prompt": "Researchers discovered that",
+      "text": "Researchers discovered that they had had a serious impact on the American public and had a profound impact on their political views . \" \n"
+    }
+  ],
+  "implementation_version": "parameter-matched-transformer-sdpa-v1",
+  "long_validation": {
+    "bits_per_token": 8.5762419969851,
+    "loss": 5.944597960010017,
+    "perplexity": 381.68587746006335,
+    "seconds": 2.408975799990003,
+    "split": "validation_long_512",
+    "token_accuracy": 0.2311009987113402,
+    "tokens": 248320,
+    "tokens_per_second": 103081.15174964834
+  },
+  "model_config": {
+    "blocks": 12,
+    "d_model": 384,
+    "dropout": 0.1,
+    "ffn_hidden": 1664,
+    "gradient_checkpointing": true,
+    "heads": 8,
+    "vocab_size": 50257
+  },
+  "parameter_breakdown": {
+    "causal_self_attention": 7096320,
+    "feed_forward": 15360000,
+    "normalization": 19968,
+    "tied_token_embedding_and_lm_head": 19298688,
+    "total": 41774976
+  },
+  "parameter_match": {
+    "difference": 54452,
+    "difference_percent": 0.13051609802408043,
+    "reference_aat_total": 41720524,
+    "transformer_total": 41774976
+  },
+  "source_sha256": "3b0c1f837a2c772e6a98964198ddbcca2309223b13ef523b3023528031257654",
+  "test": {
+    "bits_per_token": 5.667980081698801,
+    "loss": 3.928744413099452,
+    "perplexity": 50.84309964549036,
+    "seconds": 2.7029492000001483,
+    "split": "test",
+    "token_accuracy": 0.35096126800180016,
+    "tokens": 284416,
+    "tokens_per_second": 105224.32312082831
+  },
+  "train_config": {
+    "batch_size": 8,
+    "dataset_config": "wikitext-103-raw-v1",
+    "dataset_name": "Salesforce/wikitext",
+    "epochs": 3,
+    "eval_batches": null,
+    "eval_every": 1000,
+    "grad_accum_steps": 8,
+    "grad_clip": 1.0,
+    "learning_rate": 0.0002,
+    "log_every": 25,
+    "long_sequence_length": 512,
+    "max_eval_blocks": null,
+    "max_train_blocks": null,
+    "min_lr_ratio": 0.1,
+    "num_workers": 0,
+    "preprocessing_workers": 4,
+    "save_every": 500,
+    "seed": 0,
+    "sequence_length": 256,
+    "tokenizer_name": "gpt2",
+    "warmup_fraction": 0.02,
+    "weight_decay": 0.1
+  },
+  "training_seconds_this_invocation": 11989.677141500011
+}
