@@ -1,0 +1,14 @@
+{
+  "blocks": 12,
+  "d_model": 512,
+  "dropout": 0.1,
+  "ffn_hidden": 464,
+  "gradient_checkpointing": true,
+  "heads": 8,
+  "initial_kappa": 6.0,
+  "ordered_chunk_size": 32,
+  "position_scale": 255.0,
+  "rays_per_head": 32,
+  "score_clip": 30.0,
+  "vocab_size": 50257
+}

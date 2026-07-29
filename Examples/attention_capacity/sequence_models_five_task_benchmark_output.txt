@@ -1,0 +1,1254 @@
+python .\Examples\attention_capacity\sequence_models_five_task_benchmark.py
+
+####################################################################################################################################
+COMMON SEQUENCE-MODEL FIVE-TASK ATTENTION-CAPACITY BENCHMARK
+####################################################################################################################################
+device=cuda seeds=[0, 1, 2]
+AAT encoder_layers=[1, 4] decoder_layers=4
+d_model=96 heads=8 rays=8 aat_ffn_dim=222 chunk_size=32
+train_config=TrainConfig(train_count=6000, val_count=1000, test_count=1000, long_count=1000, stress_count=1000, batch_size=128, epochs=10, learning_rate=0.0008, weight_decay=0.0001, warmup_fraction=0.08, grad_clip=1.0)
+tasks=['associative_retrieval', 'latest_value_retrieval', 'relative_order', 'global_majority', 'boolean_listops']
+causal layout: the original leading query/CLS token is moved to the last valid position before every model
+
+------------------------------------------------------------------------------------------------------------------------------------
+TASK: associative_retrieval
+Retrieve the value associated with a queried key.
+chance=0.2500 train/test=8 records long=16 records stress=32 records
+
+------------------------------------------------------------------------------------------------------------------------------------
+TASK: latest_value_retrieval
+Retrieve the value from the last occurrence of a repeated key.
+chance=0.2500 train/test=12 records / 3 occurrences long=24 records / 5 occurrences stress=48 records / 8 occurrences
+
+------------------------------------------------------------------------------------------------------------------------------------
+TASK: relative_order
+Decide whether marker A occurs before marker B.
+chance=0.5000 train/test=24 items long=64 items stress=128 items
+
+------------------------------------------------------------------------------------------------------------------------------------
+TASK: global_majority
+Classify a binary majority near the decision boundary.
+chance=0.5000 train/test=15 bits long=63 bits stress=127 bits
+
+------------------------------------------------------------------------------------------------------------------------------------
+TASK: boolean_listops
+Nested Boolean composition with unseen-depth generalization.
+chance=0.5000 train/test=depth <= 3 long=unseen depth 4 stress=unseen depth 5
+C:\Projets\AATField\Examples\attention_capacity\sequence_models_five_task_benchmark.py:697: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.sequence = nn.TransformerEncoder(
+
+------------------------------------------------------------------------------------------------------------------------------------
+PARAMETER MATCH: associative_retrieval | target=423,345
+aat_e1_d4      params=  423,345 delta= +0.000% | encoder=1, decoder=4
+aat_e4_d4      params=  703,164 delta=+66.097% | encoder=4, decoder=4
+transformer    params=  423,272 delta= -0.017% | layers=4, ffn=329
+rnn            params=  424,571 delta= +0.290% | layers=4, hidden=227
+lstm           params=  420,288 delta= -0.722% | layers=4, hidden=111
+
+------------------------------------------------------------------------------------------------------------------------------------
+PARAMETER MATCH: latest_value_retrieval | target=419,249
+aat_e1_d4      params=  419,249 delta= +0.000% | encoder=1, decoder=4
+aat_e4_d4      params=  699,068 delta=+66.743% | encoder=4, decoder=4
+transformer    params=  419,176 delta= -0.017% | layers=4, ffn=329
+rnn            params=  420,475 delta= +0.292% | layers=4, hidden=227
+lstm           params=  416,192 delta= -0.729% | layers=4, hidden=111
+
+------------------------------------------------------------------------------------------------------------------------------------
+PARAMETER MATCH: relative_order | target=415,151
+aat_e1_d4      params=  415,151 delta= +0.000% | encoder=1, decoder=4
+aat_e4_d4      params=  694,970 delta=+67.402% | encoder=4, decoder=4
+transformer    params=  415,078 delta= -0.018% | layers=4, ffn=329
+rnn            params=  416,377 delta= +0.295% | layers=4, hidden=227
+lstm           params=  412,094 delta= -0.736% | layers=4, hidden=111
+
+------------------------------------------------------------------------------------------------------------------------------------
+PARAMETER MATCH: global_majority | target=414,895
+aat_e1_d4      params=  414,895 delta= +0.000% | encoder=1, decoder=4
+aat_e4_d4      params=  694,714 delta=+67.443% | encoder=4, decoder=4
+transformer    params=  414,822 delta= -0.018% | layers=4, ffn=329
+rnn            params=  416,121 delta= +0.295% | layers=4, hidden=227
+lstm           params=  411,838 delta= -0.737% | layers=4, hidden=111
+
+------------------------------------------------------------------------------------------------------------------------------------
+PARAMETER MATCH: boolean_listops | target=414,991
+aat_e1_d4      params=  414,991 delta= +0.000% | encoder=1, decoder=4
+aat_e4_d4      params=  694,810 delta=+67.428% | encoder=4, decoder=4
+transformer    params=  414,918 delta= -0.018% | layers=4, ffn=329
+rnn            params=  416,217 delta= +0.295% | layers=4, hidden=227
+lstm           params=  411,934 delta= -0.737% | layers=4, hidden=111
+
+All included models passed forward/backward checks.
+
+====================================================================================================================================
+associative_retrieval | aat_e1_d4 | seed=0 | parameters=423,345
+====================================================================================================================================
+epoch=01/10 loss=1.4168 train=0.2743 val=0.3210 best=0.3210 lr=7.99e-04
+epoch=02/10 loss=0.9285 train=0.6065 val=0.9430 best=0.9430 lr=7.66e-04
+epoch=03/10 loss=0.2165 train=0.9313 val=0.9900 best=0.9900 lr=6.91e-04
+epoch=04/10 loss=0.0795 train=0.9757 val=0.9960 best=0.9960 lr=5.83e-04
+epoch=05/10 loss=0.0447 train=0.9888 val=0.9960 best=0.9960 lr=4.54e-04
+epoch=06/10 loss=0.0315 train=0.9922 val=0.9970 best=0.9970 lr=3.18e-04
+epoch=07/10 loss=0.0179 train=0.9952 val=0.9970 best=0.9970 lr=1.92e-04
+epoch=08/10 loss=0.0127 train=0.9975 val=0.9990 best=0.9990 lr=8.95e-05
+epoch=09/10 loss=0.0108 train=0.9975 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0082 train=0.9983 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=9 best_val=1.0000 test=0.9990 long=0.9670 stress=0.7970 train_seconds=47.9
+
+====================================================================================================================================
+associative_retrieval | aat_e1_d4 | seed=1 | parameters=423,345
+====================================================================================================================================
+epoch=01/10 loss=1.4083 train=0.2762 val=0.4040 best=0.4040 lr=7.99e-04
+epoch=02/10 loss=0.7300 train=0.7142 val=0.9590 best=0.9590 lr=7.66e-04
+epoch=03/10 loss=0.1636 train=0.9475 val=0.9850 best=0.9850 lr=6.91e-04
+epoch=04/10 loss=0.0747 train=0.9797 val=0.9880 best=0.9880 lr=5.83e-04
+epoch=05/10 loss=0.0396 train=0.9893 val=0.9960 best=0.9960 lr=4.54e-04
+epoch=06/10 loss=0.0235 train=0.9938 val=0.9950 best=0.9960 lr=3.18e-04
+epoch=07/10 loss=0.0178 train=0.9950 val=0.9970 best=0.9970 lr=1.92e-04
+epoch=08/10 loss=0.0129 train=0.9963 val=0.9970 best=0.9970 lr=8.95e-05
+epoch=09/10 loss=0.0095 train=0.9977 val=0.9960 best=0.9970 lr=2.30e-05
+epoch=10/10 loss=0.0077 train=0.9983 val=0.9970 best=0.9970 lr=0.00e+00
+best_epoch=7 best_val=0.9970 test=1.0000 long=0.9420 stress=0.7680 train_seconds=33.7
+
+====================================================================================================================================
+associative_retrieval | aat_e1_d4 | seed=2 | parameters=423,345
+====================================================================================================================================
+epoch=01/10 loss=1.4051 train=0.2808 val=0.4190 best=0.4190 lr=7.99e-04
+epoch=02/10 loss=0.7453 train=0.7030 val=0.9570 best=0.9570 lr=7.66e-04
+epoch=03/10 loss=0.1461 train=0.9542 val=0.9730 best=0.9730 lr=6.91e-04
+epoch=04/10 loss=0.0777 train=0.9783 val=0.9950 best=0.9950 lr=5.83e-04
+epoch=05/10 loss=0.0374 train=0.9902 val=0.9960 best=0.9960 lr=4.54e-04
+epoch=06/10 loss=0.0297 train=0.9925 val=0.9950 best=0.9960 lr=3.18e-04
+epoch=07/10 loss=0.0157 train=0.9955 val=0.9980 best=0.9980 lr=1.92e-04
+epoch=08/10 loss=0.0103 train=0.9970 val=0.9990 best=0.9990 lr=8.95e-05
+epoch=09/10 loss=0.0096 train=0.9975 val=0.9990 best=0.9990 lr=2.30e-05
+epoch=10/10 loss=0.0082 train=0.9980 val=0.9990 best=0.9990 lr=0.00e+00
+best_epoch=8 best_val=0.9990 test=0.9990 long=0.9360 stress=0.7620 train_seconds=59.4
+
+====================================================================================================================================
+associative_retrieval | aat_e4_d4 | seed=0 | parameters=703,164
+====================================================================================================================================
+epoch=01/10 loss=1.4012 train=0.2878 val=0.4390 best=0.4390 lr=7.99e-04
+epoch=02/10 loss=0.7450 train=0.7017 val=0.9780 best=0.9780 lr=7.66e-04
+epoch=03/10 loss=0.1040 train=0.9707 val=0.9960 best=0.9960 lr=6.91e-04
+epoch=04/10 loss=0.0396 train=0.9902 val=0.9970 best=0.9970 lr=5.83e-04
+epoch=05/10 loss=0.0173 train=0.9960 val=0.9980 best=0.9980 lr=4.54e-04
+epoch=06/10 loss=0.0120 train=0.9977 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0061 train=0.9985 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0050 train=0.9988 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0032 train=0.9998 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0039 train=0.9997 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=6 best_val=1.0000 test=0.9990 long=0.9700 stress=0.8110 train_seconds=78.4
+
+====================================================================================================================================
+associative_retrieval | aat_e4_d4 | seed=1 | parameters=703,164
+====================================================================================================================================
+epoch=01/10 loss=1.4070 train=0.2822 val=0.4100 best=0.4100 lr=7.99e-04
+epoch=02/10 loss=0.6651 train=0.7387 val=0.9760 best=0.9760 lr=7.66e-04
+epoch=03/10 loss=0.0958 train=0.9740 val=0.9890 best=0.9890 lr=6.91e-04
+epoch=04/10 loss=0.0492 train=0.9862 val=0.9980 best=0.9980 lr=5.83e-04
+epoch=05/10 loss=0.0217 train=0.9950 val=0.9960 best=0.9980 lr=4.54e-04
+epoch=06/10 loss=0.0132 train=0.9972 val=0.9980 best=0.9980 lr=3.18e-04
+epoch=07/10 loss=0.0067 train=0.9985 val=0.9990 best=0.9990 lr=1.92e-04
+epoch=08/10 loss=0.0073 train=0.9982 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0037 train=0.9993 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0037 train=0.9993 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=8 best_val=1.0000 test=1.0000 long=0.9710 stress=0.8220 train_seconds=130.5
+
+====================================================================================================================================
+associative_retrieval | aat_e4_d4 | seed=2 | parameters=703,164
+====================================================================================================================================
+epoch=01/10 loss=1.3990 train=0.2888 val=0.4240 best=0.4240 lr=7.99e-04
+epoch=02/10 loss=0.5988 train=0.7755 val=0.9730 best=0.9730 lr=7.66e-04
+epoch=03/10 loss=0.0973 train=0.9727 val=0.9920 best=0.9920 lr=6.91e-04
+epoch=04/10 loss=0.0418 train=0.9883 val=0.9980 best=0.9980 lr=5.83e-04
+epoch=05/10 loss=0.0213 train=0.9942 val=0.9970 best=0.9980 lr=4.54e-04
+epoch=06/10 loss=0.0123 train=0.9975 val=0.9960 best=0.9980 lr=3.18e-04
+epoch=07/10 loss=0.0073 train=0.9983 val=0.9970 best=0.9980 lr=1.92e-04
+epoch=08/10 loss=0.0082 train=0.9980 val=0.9980 best=0.9980 lr=8.95e-05
+epoch=09/10 loss=0.0036 train=0.9997 val=0.9990 best=0.9990 lr=2.30e-05
+epoch=10/10 loss=0.0031 train=0.9995 val=0.9990 best=0.9990 lr=0.00e+00
+best_epoch=9 best_val=0.9990 test=0.9990 long=0.9790 stress=0.8130 train_seconds=136.6
+C:\Projets\AATField\Examples\attention_capacity\sequence_models_five_task_benchmark.py:697: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.sequence = nn.TransformerEncoder(
+
+====================================================================================================================================
+associative_retrieval | transformer | seed=0 | parameters=423,272
+====================================================================================================================================
+epoch=01/10 loss=1.4126 train=0.2472 val=0.2500 best=0.2500 lr=7.99e-04
+epoch=02/10 loss=1.3931 train=0.2515 val=0.2540 best=0.2540 lr=7.66e-04
+epoch=03/10 loss=1.3910 train=0.2578 val=0.2500 best=0.2540 lr=6.91e-04
+epoch=04/10 loss=1.3896 train=0.2560 val=0.2420 best=0.2540 lr=5.83e-04
+epoch=05/10 loss=1.3822 train=0.2823 val=0.2440 best=0.2540 lr=4.54e-04
+epoch=06/10 loss=1.3761 train=0.2937 val=0.2500 best=0.2540 lr=3.18e-04
+epoch=07/10 loss=1.3358 train=0.3417 val=0.3350 best=0.3350 lr=1.92e-04
+epoch=08/10 loss=1.2398 train=0.4232 val=0.4460 best=0.4460 lr=8.95e-05
+epoch=09/10 loss=1.1472 train=0.4877 val=0.5050 best=0.5050 lr=2.30e-05
+epoch=10/10 loss=1.1061 train=0.5102 val=0.5240 best=0.5240 lr=0.00e+00
+best_epoch=10 best_val=0.5240 test=0.5230 long=0.3820 stress=0.3310 train_seconds=12.8
+
+====================================================================================================================================
+associative_retrieval | transformer | seed=1 | parameters=423,272
+====================================================================================================================================
+epoch=01/10 loss=1.4322 train=0.2413 val=0.2540 best=0.2540 lr=7.99e-04
+epoch=02/10 loss=1.3916 train=0.2570 val=0.2490 best=0.2540 lr=7.66e-04
+epoch=03/10 loss=1.3908 train=0.2588 val=0.2530 best=0.2540 lr=6.91e-04
+epoch=04/10 loss=1.3894 train=0.2630 val=0.2430 best=0.2540 lr=5.83e-04
+epoch=05/10 loss=1.3790 train=0.2812 val=0.2950 best=0.2950 lr=4.54e-04
+epoch=06/10 loss=1.2556 train=0.4003 val=0.6610 best=0.6610 lr=3.18e-04
+epoch=07/10 loss=0.7136 train=0.7342 val=0.9240 best=0.9240 lr=1.92e-04
+epoch=08/10 loss=0.4033 train=0.8593 val=0.9660 best=0.9660 lr=8.95e-05
+epoch=09/10 loss=0.3059 train=0.8943 val=0.9720 best=0.9720 lr=2.30e-05
+epoch=10/10 loss=0.2785 train=0.9050 val=0.9730 best=0.9730 lr=0.00e+00
+best_epoch=10 best_val=0.9730 test=0.9740 long=0.7990 stress=0.5480 train_seconds=13.2
+
+====================================================================================================================================
+associative_retrieval | transformer | seed=2 | parameters=423,272
+====================================================================================================================================
+epoch=01/10 loss=1.4132 train=0.2533 val=0.2490 best=0.2490 lr=7.99e-04
+epoch=02/10 loss=1.3938 train=0.2612 val=0.2480 best=0.2490 lr=7.66e-04
+epoch=03/10 loss=1.3917 train=0.2603 val=0.2500 best=0.2500 lr=6.91e-04
+epoch=04/10 loss=1.3866 train=0.2760 val=0.2580 best=0.2580 lr=5.83e-04
+epoch=05/10 loss=1.3830 train=0.2855 val=0.2620 best=0.2620 lr=4.54e-04
+epoch=06/10 loss=1.3675 train=0.3148 val=0.2990 best=0.2990 lr=3.18e-04
+epoch=07/10 loss=1.2886 train=0.3918 val=0.4480 best=0.4480 lr=1.92e-04
+epoch=08/10 loss=1.0603 train=0.5502 val=0.6480 best=0.6480 lr=8.95e-05
+epoch=09/10 loss=0.8879 train=0.6417 val=0.7230 best=0.7230 lr=2.30e-05
+epoch=10/10 loss=0.8352 train=0.6748 val=0.7390 best=0.7390 lr=0.00e+00
+best_epoch=10 best_val=0.7390 test=0.7080 long=0.4740 stress=0.2600 train_seconds=12.1
+
+====================================================================================================================================
+associative_retrieval | rnn | seed=0 | parameters=424,571
+====================================================================================================================================
+epoch=01/10 loss=1.4157 train=0.2475 val=0.2650 best=0.2650 lr=7.99e-04
+epoch=02/10 loss=1.3932 train=0.2510 val=0.2500 best=0.2650 lr=7.66e-04
+epoch=03/10 loss=1.3900 train=0.2632 val=0.2500 best=0.2650 lr=6.91e-04
+epoch=04/10 loss=1.3845 train=0.2683 val=0.2520 best=0.2650 lr=5.83e-04
+epoch=05/10 loss=1.3764 train=0.2913 val=0.2490 best=0.2650 lr=4.54e-04
+epoch=06/10 loss=1.3683 train=0.3158 val=0.2440 best=0.2650 lr=3.18e-04
+epoch=07/10 loss=1.3582 train=0.3288 val=0.2370 best=0.2650 lr=1.92e-04
+epoch=08/10 loss=1.3438 train=0.3455 val=0.2350 best=0.2650 lr=8.95e-05
+epoch=09/10 loss=1.3311 train=0.3552 val=0.2340 best=0.2650 lr=2.30e-05
+epoch=10/10 loss=1.3223 train=0.3673 val=0.2250 best=0.2650 lr=0.00e+00
+best_epoch=1 best_val=0.2650 test=0.2500 long=0.2650 stress=0.2530 train_seconds=4.6
+
+====================================================================================================================================
+associative_retrieval | rnn | seed=1 | parameters=424,571
+====================================================================================================================================
+epoch=01/10 loss=1.4225 train=0.2527 val=0.2500 best=0.2500 lr=7.99e-04
+epoch=02/10 loss=1.3957 train=0.2533 val=0.2460 best=0.2500 lr=7.66e-04
+epoch=03/10 loss=1.3874 train=0.2705 val=0.2440 best=0.2500 lr=6.91e-04
+epoch=04/10 loss=1.3853 train=0.2848 val=0.2360 best=0.2500 lr=5.83e-04
+epoch=05/10 loss=1.3756 train=0.2995 val=0.2410 best=0.2500 lr=4.54e-04
+epoch=06/10 loss=1.3691 train=0.3115 val=0.2530 best=0.2530 lr=3.18e-04
+epoch=07/10 loss=1.3570 train=0.3290 val=0.2350 best=0.2530 lr=1.92e-04
+epoch=08/10 loss=1.3430 train=0.3425 val=0.2540 best=0.2540 lr=8.95e-05
+epoch=09/10 loss=1.3305 train=0.3595 val=0.2500 best=0.2540 lr=2.30e-05
+epoch=10/10 loss=1.3205 train=0.3707 val=0.2510 best=0.2540 lr=0.00e+00
+best_epoch=8 best_val=0.2540 test=0.2450 long=0.2610 stress=0.2660 train_seconds=4.7
+
+====================================================================================================================================
+associative_retrieval | rnn | seed=2 | parameters=424,571
+====================================================================================================================================
+epoch=01/10 loss=1.4193 train=0.2418 val=0.2670 best=0.2670 lr=7.99e-04
+epoch=02/10 loss=1.3952 train=0.2495 val=0.2440 best=0.2670 lr=7.66e-04
+epoch=03/10 loss=1.3926 train=0.2580 val=0.2510 best=0.2670 lr=6.91e-04
+epoch=04/10 loss=1.3847 train=0.2670 val=0.2450 best=0.2670 lr=5.83e-04
+epoch=05/10 loss=1.3806 train=0.2817 val=0.2370 best=0.2670 lr=4.54e-04
+epoch=06/10 loss=1.3691 train=0.3000 val=0.2620 best=0.2670 lr=3.18e-04
+epoch=07/10 loss=1.3599 train=0.3215 val=0.2470 best=0.2670 lr=1.92e-04
+epoch=08/10 loss=1.3467 train=0.3408 val=0.2170 best=0.2670 lr=8.95e-05
+epoch=09/10 loss=1.3319 train=0.3582 val=0.2330 best=0.2670 lr=2.30e-05
+epoch=10/10 loss=1.3224 train=0.3667 val=0.2320 best=0.2670 lr=0.00e+00
+best_epoch=1 best_val=0.2670 test=0.2510 long=0.2360 stress=0.2560 train_seconds=4.6
+
+====================================================================================================================================
+associative_retrieval | lstm | seed=0 | parameters=420,288
+====================================================================================================================================
+epoch=01/10 loss=1.4068 train=0.2532 val=0.2500 best=0.2500 lr=7.99e-04
+epoch=02/10 loss=1.3912 train=0.2448 val=0.2500 best=0.2500 lr=7.66e-04
+epoch=03/10 loss=1.3909 train=0.2410 val=0.2500 best=0.2500 lr=6.91e-04
+epoch=04/10 loss=1.3898 train=0.2537 val=0.2530 best=0.2530 lr=5.83e-04
+epoch=05/10 loss=1.3842 train=0.2725 val=0.2420 best=0.2530 lr=4.54e-04
+epoch=06/10 loss=1.3794 train=0.2930 val=0.2320 best=0.2530 lr=3.18e-04
+epoch=07/10 loss=1.3693 train=0.3073 val=0.2480 best=0.2530 lr=1.92e-04
+epoch=08/10 loss=1.3612 train=0.3145 val=0.2500 best=0.2530 lr=8.95e-05
+epoch=09/10 loss=1.3543 train=0.3242 val=0.2580 best=0.2580 lr=2.30e-05
+epoch=10/10 loss=1.3522 train=0.3285 val=0.2540 best=0.2580 lr=0.00e+00
+best_epoch=9 best_val=0.2580 test=0.2640 long=0.2280 stress=0.2370 train_seconds=5.0
+
+====================================================================================================================================
+associative_retrieval | lstm | seed=1 | parameters=420,288
+====================================================================================================================================
+epoch=01/10 loss=1.3983 train=0.2452 val=0.2500 best=0.2500 lr=7.99e-04
+epoch=02/10 loss=1.3922 train=0.2480 val=0.2500 best=0.2500 lr=7.66e-04
+epoch=03/10 loss=1.3901 train=0.2567 val=0.2470 best=0.2500 lr=6.91e-04
+epoch=04/10 loss=1.3920 train=0.2553 val=0.2410 best=0.2500 lr=5.83e-04
+epoch=05/10 loss=1.3842 train=0.2715 val=0.2450 best=0.2500 lr=4.54e-04
+epoch=06/10 loss=1.3786 train=0.2913 val=0.2330 best=0.2500 lr=3.18e-04
+epoch=07/10 loss=1.3713 train=0.3017 val=0.2360 best=0.2500 lr=1.92e-04
+epoch=08/10 loss=1.3629 train=0.3115 val=0.2280 best=0.2500 lr=8.95e-05
+epoch=09/10 loss=1.3570 train=0.3157 val=0.2310 best=0.2500 lr=2.30e-05
+epoch=10/10 loss=1.3545 train=0.3223 val=0.2180 best=0.2500 lr=0.00e+00
+best_epoch=1 best_val=0.2500 test=0.2500 long=0.2500 stress=0.2500 train_seconds=5.3
+
+====================================================================================================================================
+associative_retrieval | lstm | seed=2 | parameters=420,288
+====================================================================================================================================
+epoch=01/10 loss=1.3931 train=0.2508 val=0.2500 best=0.2500 lr=7.99e-04
+epoch=02/10 loss=1.3926 train=0.2618 val=0.2500 best=0.2500 lr=7.66e-04
+epoch=03/10 loss=1.3946 train=0.2540 val=0.2500 best=0.2500 lr=6.91e-04
+epoch=04/10 loss=1.3897 train=0.2573 val=0.2500 best=0.2500 lr=5.83e-04
+epoch=05/10 loss=1.3858 train=0.2735 val=0.2700 best=0.2700 lr=4.54e-04
+epoch=06/10 loss=1.3817 train=0.2700 val=0.2680 best=0.2700 lr=3.18e-04
+epoch=07/10 loss=1.3736 train=0.2990 val=0.2610 best=0.2700 lr=1.92e-04
+epoch=08/10 loss=1.3683 train=0.3148 val=0.2710 best=0.2710 lr=8.95e-05
+epoch=09/10 loss=1.3602 train=0.3222 val=0.2680 best=0.2710 lr=2.30e-05
+epoch=10/10 loss=1.3579 train=0.3233 val=0.2720 best=0.2720 lr=0.00e+00
+best_epoch=10 best_val=0.2720 test=0.2500 long=0.2480 stress=0.2520 train_seconds=5.0
+
+====================================================================================================================================
+latest_value_retrieval | aat_e1_d4 | seed=100000 | parameters=419,249
+====================================================================================================================================
+epoch=01/10 loss=1.3578 train=0.3297 val=0.5010 best=0.5010 lr=7.99e-04
+epoch=02/10 loss=0.8605 train=0.6490 val=0.8740 best=0.8740 lr=7.66e-04
+epoch=03/10 loss=0.3268 train=0.8905 val=0.9470 best=0.9470 lr=6.91e-04
+epoch=04/10 loss=0.1528 train=0.9518 val=0.9730 best=0.9730 lr=5.83e-04
+epoch=05/10 loss=0.0994 train=0.9650 val=0.9760 best=0.9760 lr=4.54e-04
+epoch=06/10 loss=0.0565 train=0.9832 val=0.9760 best=0.9760 lr=3.18e-04
+epoch=07/10 loss=0.0481 train=0.9858 val=0.9820 best=0.9820 lr=1.92e-04
+epoch=08/10 loss=0.0297 train=0.9920 val=0.9830 best=0.9830 lr=8.95e-05
+epoch=09/10 loss=0.0246 train=0.9933 val=0.9820 best=0.9830 lr=2.30e-05
+epoch=10/10 loss=0.0255 train=0.9930 val=0.9820 best=0.9830 lr=0.00e+00
+best_epoch=8 best_val=0.9830 test=0.9920 long=0.9520 stress=0.9270 train_seconds=72.4
+
+====================================================================================================================================
+latest_value_retrieval | aat_e1_d4 | seed=100001 | parameters=419,249
+====================================================================================================================================
+epoch=01/10 loss=1.3559 train=0.3387 val=0.5010 best=0.5010 lr=7.99e-04
+epoch=02/10 loss=0.8274 train=0.6658 val=0.8890 best=0.8890 lr=7.66e-04
+epoch=03/10 loss=0.3136 train=0.8915 val=0.9380 best=0.9380 lr=6.91e-04
+epoch=04/10 loss=0.1753 train=0.9437 val=0.9770 best=0.9770 lr=5.83e-04
+epoch=05/10 loss=0.0928 train=0.9720 val=0.9780 best=0.9780 lr=4.54e-04
+epoch=06/10 loss=0.0657 train=0.9795 val=0.9820 best=0.9820 lr=3.18e-04
+epoch=07/10 loss=0.0455 train=0.9873 val=0.9830 best=0.9830 lr=1.92e-04
+epoch=08/10 loss=0.0314 train=0.9902 val=0.9810 best=0.9830 lr=8.95e-05
+epoch=09/10 loss=0.0266 train=0.9927 val=0.9840 best=0.9840 lr=2.30e-05
+epoch=10/10 loss=0.0208 train=0.9963 val=0.9840 best=0.9840 lr=0.00e+00
+best_epoch=9 best_val=0.9840 test=0.9890 long=0.9620 stress=0.9210 train_seconds=71.9
+
+====================================================================================================================================
+latest_value_retrieval | aat_e1_d4 | seed=100002 | parameters=419,249
+====================================================================================================================================
+epoch=01/10 loss=1.3173 train=0.3452 val=0.5320 best=0.5320 lr=7.99e-04
+epoch=02/10 loss=0.7863 train=0.6912 val=0.8570 best=0.8570 lr=7.66e-04
+epoch=03/10 loss=0.3557 train=0.8743 val=0.9580 best=0.9580 lr=6.91e-04
+epoch=04/10 loss=0.1856 train=0.9410 val=0.9740 best=0.9740 lr=5.83e-04
+epoch=05/10 loss=0.1013 train=0.9678 val=0.9840 best=0.9840 lr=4.54e-04
+epoch=06/10 loss=0.0635 train=0.9803 val=0.9820 best=0.9840 lr=3.18e-04
+epoch=07/10 loss=0.0482 train=0.9838 val=0.9840 best=0.9840 lr=1.92e-04
+epoch=08/10 loss=0.0353 train=0.9897 val=0.9840 best=0.9840 lr=8.95e-05
+epoch=09/10 loss=0.0292 train=0.9915 val=0.9840 best=0.9840 lr=2.30e-05
+epoch=10/10 loss=0.0244 train=0.9942 val=0.9840 best=0.9840 lr=0.00e+00
+best_epoch=5 best_val=0.9840 test=0.9810 long=0.9430 stress=0.9100 train_seconds=69.8
+
+====================================================================================================================================
+latest_value_retrieval | aat_e4_d4 | seed=100000 | parameters=699,068
+====================================================================================================================================
+epoch=01/10 loss=1.3205 train=0.3610 val=0.5280 best=0.5280 lr=7.99e-04
+epoch=02/10 loss=0.7013 train=0.7198 val=0.9250 best=0.9250 lr=7.66e-04
+epoch=03/10 loss=0.1838 train=0.9415 val=0.9850 best=0.9850 lr=6.91e-04
+epoch=04/10 loss=0.0727 train=0.9787 val=0.9920 best=0.9920 lr=5.83e-04
+epoch=05/10 loss=0.0366 train=0.9907 val=0.9930 best=0.9930 lr=4.54e-04
+epoch=06/10 loss=0.0213 train=0.9950 val=0.9980 best=0.9980 lr=3.18e-04
+epoch=07/10 loss=0.0138 train=0.9965 val=0.9960 best=0.9980 lr=1.92e-04
+epoch=08/10 loss=0.0111 train=0.9980 val=0.9980 best=0.9980 lr=8.95e-05
+epoch=09/10 loss=0.0075 train=0.9988 val=0.9970 best=0.9980 lr=2.30e-05
+epoch=10/10 loss=0.0073 train=0.9987 val=0.9970 best=0.9980 lr=0.00e+00
+best_epoch=6 best_val=0.9980 test=0.9990 long=0.9890 stress=0.9740 train_seconds=120.8
+
+====================================================================================================================================
+latest_value_retrieval | aat_e4_d4 | seed=100001 | parameters=699,068
+====================================================================================================================================
+epoch=01/10 loss=1.3114 train=0.3630 val=0.5390 best=0.5390 lr=7.99e-04
+epoch=02/10 loss=0.7190 train=0.7157 val=0.9470 best=0.9470 lr=7.66e-04
+epoch=03/10 loss=0.1795 train=0.9440 val=0.9860 best=0.9860 lr=6.91e-04
+epoch=04/10 loss=0.0756 train=0.9760 val=0.9950 best=0.9950 lr=5.83e-04
+epoch=05/10 loss=0.0369 train=0.9900 val=0.9920 best=0.9950 lr=4.54e-04
+epoch=06/10 loss=0.0206 train=0.9952 val=0.9980 best=0.9980 lr=3.18e-04
+epoch=07/10 loss=0.0111 train=0.9977 val=0.9980 best=0.9980 lr=1.92e-04
+epoch=08/10 loss=0.0083 train=0.9982 val=0.9980 best=0.9980 lr=8.95e-05
+epoch=09/10 loss=0.0052 train=0.9992 val=0.9970 best=0.9980 lr=2.30e-05
+epoch=10/10 loss=0.0059 train=0.9988 val=0.9970 best=0.9980 lr=0.00e+00
+best_epoch=6 best_val=0.9980 test=0.9970 long=0.9890 stress=0.9680 train_seconds=124.3
+
+====================================================================================================================================
+latest_value_retrieval | aat_e4_d4 | seed=100002 | parameters=699,068
+====================================================================================================================================
+epoch=01/10 loss=1.2870 train=0.3788 val=0.5460 best=0.5460 lr=7.99e-04
+epoch=02/10 loss=0.6681 train=0.7345 val=0.9480 best=0.9480 lr=7.66e-04
+epoch=03/10 loss=0.1696 train=0.9487 val=0.9890 best=0.9890 lr=6.91e-04
+epoch=04/10 loss=0.0583 train=0.9853 val=0.9950 best=0.9950 lr=5.83e-04
+epoch=05/10 loss=0.0340 train=0.9900 val=0.9990 best=0.9990 lr=4.54e-04
+epoch=06/10 loss=0.0201 train=0.9932 val=0.9950 best=0.9990 lr=3.18e-04
+epoch=07/10 loss=0.0099 train=0.9975 val=0.9970 best=0.9990 lr=1.92e-04
+epoch=08/10 loss=0.0078 train=0.9990 val=0.9960 best=0.9990 lr=8.95e-05
+epoch=09/10 loss=0.0052 train=0.9993 val=0.9970 best=0.9990 lr=2.30e-05
+epoch=10/10 loss=0.0049 train=0.9992 val=0.9970 best=0.9990 lr=0.00e+00
+best_epoch=5 best_val=0.9990 test=0.9990 long=0.9940 stress=0.9670 train_seconds=122.5
+
+====================================================================================================================================
+latest_value_retrieval | transformer | seed=100000 | parameters=419,176
+====================================================================================================================================
+epoch=01/10 loss=1.4165 train=0.2562 val=0.2510 best=0.2510 lr=7.99e-04
+epoch=02/10 loss=1.2828 train=0.3933 val=0.4690 best=0.4690 lr=7.66e-04
+epoch=03/10 loss=1.1575 train=0.4803 val=0.5250 best=0.5250 lr=6.91e-04
+epoch=04/10 loss=0.9827 train=0.5840 val=0.7780 best=0.7780 lr=5.83e-04
+epoch=05/10 loss=0.4901 train=0.8265 val=0.9620 best=0.9620 lr=4.54e-04
+epoch=06/10 loss=0.1946 train=0.9365 val=0.9890 best=0.9890 lr=3.18e-04
+epoch=07/10 loss=0.1214 train=0.9623 val=0.9960 best=0.9960 lr=1.92e-04
+epoch=08/10 loss=0.0767 train=0.9777 val=0.9940 best=0.9960 lr=8.95e-05
+epoch=09/10 loss=0.0707 train=0.9787 val=0.9960 best=0.9960 lr=2.30e-05
+epoch=10/10 loss=0.0585 train=0.9837 val=0.9960 best=0.9960 lr=0.00e+00
+best_epoch=7 best_val=0.9960 test=0.9940 long=0.5220 stress=0.2190 train_seconds=11.5
+
+====================================================================================================================================
+latest_value_retrieval | transformer | seed=100001 | parameters=419,176
+====================================================================================================================================
+epoch=01/10 loss=1.3898 train=0.2825 val=0.3690 best=0.3690 lr=7.99e-04
+epoch=02/10 loss=1.2228 train=0.4372 val=0.4720 best=0.4720 lr=7.66e-04
+epoch=03/10 loss=1.1196 train=0.4932 val=0.5760 best=0.5760 lr=6.91e-04
+epoch=04/10 loss=0.7821 train=0.6872 val=0.8690 best=0.8690 lr=5.83e-04
+epoch=05/10 loss=0.3853 train=0.8690 val=0.9600 best=0.9600 lr=4.54e-04
+epoch=06/10 loss=0.1835 train=0.9405 val=0.9850 best=0.9850 lr=3.18e-04
+epoch=07/10 loss=0.1098 train=0.9652 val=0.9830 best=0.9850 lr=1.92e-04
+epoch=08/10 loss=0.0805 train=0.9753 val=0.9890 best=0.9890 lr=8.95e-05
+epoch=09/10 loss=0.0746 train=0.9753 val=0.9910 best=0.9910 lr=2.30e-05
+epoch=10/10 loss=0.0623 train=0.9815 val=0.9910 best=0.9910 lr=0.00e+00
+best_epoch=9 best_val=0.9910 test=0.9930 long=0.4470 stress=0.2350 train_seconds=11.6
+
+====================================================================================================================================
+latest_value_retrieval | transformer | seed=100002 | parameters=419,176
+====================================================================================================================================
+epoch=01/10 loss=1.4202 train=0.2703 val=0.3130 best=0.3130 lr=7.99e-04
+epoch=02/10 loss=1.2299 train=0.4380 val=0.4830 best=0.4830 lr=7.66e-04
+epoch=03/10 loss=1.1111 train=0.5073 val=0.5930 best=0.5930 lr=6.91e-04
+epoch=04/10 loss=0.7932 train=0.6870 val=0.8840 best=0.8840 lr=5.83e-04
+epoch=05/10 loss=0.3247 train=0.8952 val=0.9720 best=0.9720 lr=4.54e-04
+epoch=06/10 loss=0.1577 train=0.9523 val=0.9880 best=0.9880 lr=3.18e-04
+epoch=07/10 loss=0.1080 train=0.9643 val=0.9920 best=0.9920 lr=1.92e-04
+epoch=08/10 loss=0.0707 train=0.9798 val=0.9920 best=0.9920 lr=8.95e-05
+epoch=09/10 loss=0.0617 train=0.9798 val=0.9920 best=0.9920 lr=2.30e-05
+epoch=10/10 loss=0.0553 train=0.9842 val=0.9920 best=0.9920 lr=0.00e+00
+best_epoch=7 best_val=0.9920 test=0.9940 long=0.5480 stress=0.2710 train_seconds=11.6
+
+====================================================================================================================================
+latest_value_retrieval | rnn | seed=100000 | parameters=420,475
+====================================================================================================================================
+epoch=01/10 loss=1.3044 train=0.3797 val=0.4260 best=0.4260 lr=7.99e-04
+epoch=02/10 loss=1.2377 train=0.4428 val=0.4420 best=0.4420 lr=7.66e-04
+epoch=03/10 loss=1.2022 train=0.4532 val=0.4400 best=0.4420 lr=6.91e-04
+epoch=04/10 loss=1.1810 train=0.4597 val=0.4550 best=0.4550 lr=5.83e-04
+epoch=05/10 loss=1.1615 train=0.4665 val=0.4650 best=0.4650 lr=4.54e-04
+epoch=06/10 loss=1.1332 train=0.4792 val=0.4720 best=0.4720 lr=3.18e-04
+epoch=07/10 loss=1.1122 train=0.4915 val=0.4700 best=0.4720 lr=1.92e-04
+epoch=08/10 loss=1.0866 train=0.5032 val=0.4780 best=0.4780 lr=8.95e-05
+epoch=09/10 loss=1.0701 train=0.5083 val=0.4710 best=0.4780 lr=2.30e-05
+epoch=10/10 loss=1.0614 train=0.5157 val=0.4770 best=0.4780 lr=0.00e+00
+best_epoch=8 best_val=0.4780 test=0.4850 long=0.4100 stress=0.4160 train_seconds=4.6
+
+====================================================================================================================================
+latest_value_retrieval | rnn | seed=100001 | parameters=420,475
+====================================================================================================================================
+epoch=01/10 loss=1.2882 train=0.3997 val=0.4320 best=0.4320 lr=7.99e-04
+epoch=02/10 loss=1.2171 train=0.4532 val=0.4510 best=0.4510 lr=7.66e-04
+epoch=03/10 loss=1.1992 train=0.4537 val=0.4450 best=0.4510 lr=6.91e-04
+epoch=04/10 loss=1.1759 train=0.4677 val=0.4630 best=0.4630 lr=5.83e-04
+epoch=05/10 loss=1.1554 train=0.4710 val=0.4490 best=0.4630 lr=4.54e-04
+epoch=06/10 loss=1.1193 train=0.4898 val=0.4550 best=0.4630 lr=3.18e-04
+epoch=07/10 loss=1.1084 train=0.4932 val=0.4630 best=0.4630 lr=1.92e-04
+epoch=08/10 loss=1.0749 train=0.5085 val=0.4580 best=0.4630 lr=8.95e-05
+epoch=09/10 loss=1.0590 train=0.5228 val=0.4620 best=0.4630 lr=2.30e-05
+epoch=10/10 loss=1.0496 train=0.5218 val=0.4640 best=0.4640 lr=0.00e+00
+best_epoch=10 best_val=0.4640 test=0.4760 long=0.4130 stress=0.4100 train_seconds=4.7
+
+====================================================================================================================================
+latest_value_retrieval | rnn | seed=100002 | parameters=420,475
+====================================================================================================================================
+epoch=01/10 loss=1.2870 train=0.3987 val=0.4500 best=0.4500 lr=7.99e-04
+epoch=02/10 loss=1.2210 train=0.4478 val=0.4530 best=0.4530 lr=7.66e-04
+epoch=03/10 loss=1.1932 train=0.4528 val=0.4500 best=0.4530 lr=6.91e-04
+epoch=04/10 loss=1.1865 train=0.4553 val=0.4600 best=0.4600 lr=5.83e-04
+epoch=05/10 loss=1.1568 train=0.4663 val=0.4620 best=0.4620 lr=4.54e-04
+epoch=06/10 loss=1.1340 train=0.4822 val=0.4770 best=0.4770 lr=3.18e-04
+epoch=07/10 loss=1.1064 train=0.4915 val=0.4710 best=0.4770 lr=1.92e-04
+epoch=08/10 loss=1.0793 train=0.5022 val=0.4790 best=0.4790 lr=8.95e-05
+epoch=09/10 loss=1.0596 train=0.5158 val=0.4720 best=0.4790 lr=2.30e-05
+epoch=10/10 loss=1.0505 train=0.5193 val=0.4720 best=0.4790 lr=0.00e+00
+best_epoch=8 best_val=0.4790 test=0.4850 long=0.3860 stress=0.4190 train_seconds=4.9
+
+====================================================================================================================================
+latest_value_retrieval | lstm | seed=100000 | parameters=416,192
+====================================================================================================================================
+epoch=01/10 loss=1.3836 train=0.2885 val=0.3900 best=0.3900 lr=7.99e-04
+epoch=02/10 loss=1.2338 train=0.4255 val=0.4440 best=0.4440 lr=7.66e-04
+epoch=03/10 loss=1.1628 train=0.4588 val=0.4520 best=0.4520 lr=6.91e-04
+epoch=04/10 loss=1.1488 train=0.4623 val=0.4820 best=0.4820 lr=5.83e-04
+epoch=05/10 loss=1.1320 train=0.4725 val=0.4720 best=0.4820 lr=4.54e-04
+epoch=06/10 loss=1.1140 train=0.4827 val=0.4810 best=0.4820 lr=3.18e-04
+epoch=07/10 loss=1.1058 train=0.4878 val=0.4740 best=0.4820 lr=1.92e-04
+epoch=08/10 loss=1.0931 train=0.4917 val=0.4860 best=0.4860 lr=8.95e-05
+epoch=09/10 loss=1.0843 train=0.4948 val=0.4820 best=0.4860 lr=2.30e-05
+epoch=10/10 loss=1.0786 train=0.5015 val=0.4810 best=0.4860 lr=0.00e+00
+best_epoch=8 best_val=0.4860 test=0.4740 long=0.4250 stress=0.4110 train_seconds=5.2
+
+====================================================================================================================================
+latest_value_retrieval | lstm | seed=100001 | parameters=416,192
+====================================================================================================================================
+epoch=01/10 loss=1.3764 train=0.2775 val=0.3970 best=0.3970 lr=7.99e-04
+epoch=02/10 loss=1.2015 train=0.4388 val=0.4510 best=0.4510 lr=7.66e-04
+epoch=03/10 loss=1.1632 train=0.4585 val=0.4380 best=0.4510 lr=6.91e-04
+epoch=04/10 loss=1.1538 train=0.4627 val=0.4680 best=0.4680 lr=5.83e-04
+epoch=05/10 loss=1.1397 train=0.4677 val=0.4740 best=0.4740 lr=4.54e-04
+epoch=06/10 loss=1.1142 train=0.4807 val=0.4750 best=0.4750 lr=3.18e-04
+epoch=07/10 loss=1.0998 train=0.4917 val=0.4830 best=0.4830 lr=1.92e-04
+epoch=08/10 loss=1.0918 train=0.4955 val=0.4870 best=0.4870 lr=8.95e-05
+epoch=09/10 loss=1.0824 train=0.5032 val=0.4750 best=0.4870 lr=2.30e-05
+epoch=10/10 loss=1.0778 train=0.5003 val=0.4770 best=0.4870 lr=0.00e+00
+best_epoch=8 best_val=0.4870 test=0.4900 long=0.4220 stress=0.4220 train_seconds=5.1
+
+====================================================================================================================================
+latest_value_retrieval | lstm | seed=100002 | parameters=416,192
+====================================================================================================================================
+epoch=01/10 loss=1.3649 train=0.3023 val=0.4050 best=0.4050 lr=7.99e-04
+epoch=02/10 loss=1.2051 train=0.4430 val=0.4560 best=0.4560 lr=7.66e-04
+epoch=03/10 loss=1.1603 train=0.4582 val=0.4460 best=0.4560 lr=6.91e-04
+epoch=04/10 loss=1.1462 train=0.4612 val=0.4840 best=0.4840 lr=5.83e-04
+epoch=05/10 loss=1.1314 train=0.4683 val=0.4700 best=0.4840 lr=4.54e-04
+epoch=06/10 loss=1.1154 train=0.4808 val=0.4850 best=0.4850 lr=3.18e-04
+epoch=07/10 loss=1.0999 train=0.4905 val=0.4730 best=0.4850 lr=1.92e-04
+epoch=08/10 loss=1.0842 train=0.4967 val=0.4840 best=0.4850 lr=8.95e-05
+epoch=09/10 loss=1.0760 train=0.5050 val=0.4750 best=0.4850 lr=2.30e-05
+epoch=10/10 loss=1.0715 train=0.5075 val=0.4780 best=0.4850 lr=0.00e+00
+best_epoch=6 best_val=0.4850 test=0.4700 long=0.4000 stress=0.4220 train_seconds=5.0
+
+====================================================================================================================================
+relative_order | aat_e1_d4 | seed=200000 | parameters=415,151
+====================================================================================================================================
+epoch=01/10 loss=0.3588 train=0.8057 val=1.0000 best=1.0000 lr=7.99e-04
+epoch=02/10 loss=0.0015 train=0.9995 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0004 train=0.9998 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=1 best_val=1.0000 test=1.0000 long=1.0000 stress=1.0000 train_seconds=72.6
+
+====================================================================================================================================
+relative_order | aat_e1_d4 | seed=200001 | parameters=415,151
+====================================================================================================================================
+epoch=01/10 loss=0.4243 train=0.7645 val=1.0000 best=1.0000 lr=7.99e-04
+epoch=02/10 loss=0.0004 train=1.0000 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=1 best_val=1.0000 test=1.0000 long=1.0000 stress=1.0000 train_seconds=71.8
+
+====================================================================================================================================
+relative_order | aat_e1_d4 | seed=200002 | parameters=415,151
+====================================================================================================================================
+epoch=01/10 loss=0.4919 train=0.7065 val=1.0000 best=1.0000 lr=7.99e-04
+epoch=02/10 loss=0.0006 train=1.0000 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0014 train=0.9998 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=1 best_val=1.0000 test=1.0000 long=1.0000 stress=1.0000 train_seconds=71.5
+
+====================================================================================================================================
+relative_order | aat_e4_d4 | seed=200000 | parameters=694,970
+====================================================================================================================================
+epoch=01/10 loss=0.3730 train=0.7927 val=1.0000 best=1.0000 lr=7.99e-04
+epoch=02/10 loss=0.0005 train=1.0000 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=1 best_val=1.0000 test=1.0000 long=1.0000 stress=1.0000 train_seconds=124.8
+
+====================================================================================================================================
+relative_order | aat_e4_d4 | seed=200001 | parameters=694,970
+====================================================================================================================================
+epoch=01/10 loss=0.3776 train=0.7800 val=1.0000 best=1.0000 lr=7.99e-04
+epoch=02/10 loss=0.0045 train=0.9992 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0010 train=0.9997 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0013 train=0.9997 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=1 best_val=1.0000 test=1.0000 long=1.0000 stress=1.0000 train_seconds=126.6
+
+====================================================================================================================================
+relative_order | aat_e4_d4 | seed=200002 | parameters=694,970
+====================================================================================================================================
+epoch=01/10 loss=0.4736 train=0.7127 val=1.0000 best=1.0000 lr=7.99e-04
+epoch=02/10 loss=0.0023 train=0.9997 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=1 best_val=1.0000 test=1.0000 long=1.0000 stress=1.0000 train_seconds=63.8
+
+====================================================================================================================================
+relative_order | transformer | seed=200000 | parameters=415,078
+====================================================================================================================================
+epoch=01/10 loss=0.6241 train=0.6047 val=1.0000 best=1.0000 lr=7.99e-04
+epoch=02/10 loss=0.0114 train=0.9967 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0004 train=1.0000 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0005 train=0.9998 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0006 train=0.9997 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=1 best_val=1.0000 test=0.9990 long=0.8560 stress=0.8600 train_seconds=6.7
+
+====================================================================================================================================
+relative_order | transformer | seed=200001 | parameters=415,078
+====================================================================================================================================
+epoch=01/10 loss=0.6951 train=0.5588 val=0.9750 best=0.9750 lr=7.99e-04
+epoch=02/10 loss=0.0143 train=0.9965 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0005 train=1.0000 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=2 best_val=1.0000 test=1.0000 long=1.0000 stress=0.9930 train_seconds=11.0
+
+====================================================================================================================================
+relative_order | transformer | seed=200002 | parameters=415,078
+====================================================================================================================================
+epoch=01/10 loss=0.6062 train=0.6243 val=1.0000 best=1.0000 lr=7.99e-04
+epoch=02/10 loss=0.0046 train=0.9992 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0004 train=1.0000 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=1 best_val=1.0000 test=1.0000 long=0.7630 stress=0.6900 train_seconds=7.2
+
+====================================================================================================================================
+relative_order | rnn | seed=200000 | parameters=416,377
+====================================================================================================================================
+epoch=01/10 loss=0.7836 train=0.6318 val=0.7810 best=0.7810 lr=7.99e-04
+epoch=02/10 loss=0.5862 train=0.7892 val=0.9590 best=0.9590 lr=7.66e-04
+epoch=03/10 loss=0.2139 train=0.9303 val=0.9030 best=0.9590 lr=6.91e-04
+epoch=04/10 loss=0.0885 train=0.9748 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=4 best_val=1.0000 test=1.0000 long=0.9790 stress=0.8930 train_seconds=3.8
+
+====================================================================================================================================
+relative_order | rnn | seed=200001 | parameters=416,377
+====================================================================================================================================
+epoch=01/10 loss=0.5436 train=0.7110 val=0.8710 best=0.8710 lr=7.99e-04
+epoch=02/10 loss=0.2397 train=0.8890 val=0.9210 best=0.9210 lr=7.66e-04
+epoch=03/10 loss=0.1281 train=0.9440 val=0.9570 best=0.9570 lr=6.91e-04
+epoch=04/10 loss=0.0572 train=0.9755 val=0.9880 best=0.9880 lr=5.83e-04
+epoch=05/10 loss=0.0319 train=0.9913 val=0.9990 best=0.9990 lr=4.54e-04
+epoch=06/10 loss=0.0066 train=0.9987 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=6 best_val=1.0000 test=1.0000 long=1.0000 stress=1.0000 train_seconds=3.8
+
+====================================================================================================================================
+relative_order | rnn | seed=200002 | parameters=416,377
+====================================================================================================================================
+epoch=01/10 loss=0.5848 train=0.6940 val=0.7340 best=0.7340 lr=7.99e-04
+epoch=02/10 loss=0.3417 train=0.8597 val=0.9270 best=0.9270 lr=7.66e-04
+epoch=03/10 loss=0.2766 train=0.9003 val=0.8990 best=0.9270 lr=6.91e-04
+epoch=04/10 loss=0.1265 train=0.9625 val=0.9990 best=0.9990 lr=5.83e-04
+epoch=05/10 loss=0.0016 train=0.9998 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=5 best_val=1.0000 test=1.0000 long=1.0000 stress=1.0000 train_seconds=3.7
+
+====================================================================================================================================
+relative_order | lstm | seed=200000 | parameters=412,094
+====================================================================================================================================
+epoch=01/10 loss=0.6907 train=0.5608 val=0.7920 best=0.7920 lr=7.99e-04
+epoch=02/10 loss=0.2999 train=0.8663 val=0.9670 best=0.9670 lr=7.66e-04
+epoch=03/10 loss=0.0056 train=0.9980 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=3 best_val=1.0000 test=1.0000 long=1.0000 stress=0.9890 train_seconds=3.9
+
+====================================================================================================================================
+relative_order | lstm | seed=200001 | parameters=412,094
+====================================================================================================================================
+epoch=01/10 loss=0.6515 train=0.5717 val=0.8420 best=0.8420 lr=7.99e-04
+epoch=02/10 loss=0.2312 train=0.8952 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0005 train=1.0000 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=2 best_val=1.0000 test=1.0000 long=0.9990 stress=0.9680 train_seconds=3.9
+
+====================================================================================================================================
+relative_order | lstm | seed=200002 | parameters=412,094
+====================================================================================================================================
+epoch=01/10 loss=0.6842 train=0.5362 val=0.7710 best=0.7710 lr=7.99e-04
+epoch=02/10 loss=0.2875 train=0.8745 val=0.8960 best=0.8960 lr=7.66e-04
+epoch=03/10 loss=0.0109 train=0.9963 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=3 best_val=1.0000 test=1.0000 long=1.0000 stress=1.0000 train_seconds=3.8
+
+====================================================================================================================================
+global_majority | aat_e1_d4 | seed=300000 | parameters=414,895
+====================================================================================================================================
+epoch=01/10 loss=0.5485 train=0.6813 val=0.9650 best=0.9650 lr=7.99e-04
+epoch=02/10 loss=0.0271 train=0.9907 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0045 train=0.9983 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0021 train=0.9993 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=2 best_val=1.0000 test=1.0000 long=0.9530 stress=0.9510 train_seconds=30.8
+
+====================================================================================================================================
+global_majority | aat_e1_d4 | seed=300001 | parameters=414,895
+====================================================================================================================================
+epoch=01/10 loss=0.5675 train=0.6608 val=0.9970 best=0.9970 lr=7.99e-04
+epoch=02/10 loss=0.0459 train=0.9825 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0049 train=0.9990 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0020 train=0.9995 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0007 train=0.9998 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=2 best_val=1.0000 test=1.0000 long=0.9490 stress=0.9710 train_seconds=30.9
+
+====================================================================================================================================
+global_majority | aat_e1_d4 | seed=300002 | parameters=414,895
+====================================================================================================================================
+epoch=01/10 loss=0.6171 train=0.6298 val=1.0000 best=1.0000 lr=7.99e-04
+epoch=02/10 loss=0.0796 train=0.9713 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0019 train=0.9995 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=1 best_val=1.0000 test=1.0000 long=0.9630 stress=0.9720 train_seconds=30.8
+
+====================================================================================================================================
+global_majority | aat_e4_d4 | seed=300000 | parameters=694,714
+====================================================================================================================================
+epoch=01/10 loss=0.4183 train=0.7723 val=1.0000 best=1.0000 lr=7.99e-04
+epoch=02/10 loss=0.0208 train=0.9953 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0240 train=0.9942 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=1 best_val=1.0000 test=1.0000 long=0.9660 stress=0.9710 train_seconds=53.4
+
+====================================================================================================================================
+global_majority | aat_e4_d4 | seed=300001 | parameters=694,714
+====================================================================================================================================
+epoch=01/10 loss=0.5842 train=0.6372 val=0.7860 best=0.7860 lr=7.99e-04
+epoch=02/10 loss=0.0548 train=0.9775 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0026 train=0.9988 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=2 best_val=1.0000 test=1.0000 long=0.9660 stress=0.9690 train_seconds=53.5
+
+====================================================================================================================================
+global_majority | aat_e4_d4 | seed=300002 | parameters=694,714
+====================================================================================================================================
+epoch=01/10 loss=0.4777 train=0.7323 val=0.9090 best=0.9090 lr=7.99e-04
+epoch=02/10 loss=0.0137 train=0.9955 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0040 train=0.9988 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0047 train=0.9988 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0040 train=0.9988 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=2 best_val=1.0000 test=1.0000 long=0.9410 stress=0.9620 train_seconds=58.8
+
+====================================================================================================================================
+global_majority | transformer | seed=300000 | parameters=414,822
+====================================================================================================================================
+epoch=01/10 loss=0.6604 train=0.6195 val=0.5530 best=0.5530 lr=7.99e-04
+epoch=02/10 loss=0.3781 train=0.8348 val=0.9810 best=0.9810 lr=7.66e-04
+epoch=03/10 loss=0.0774 train=0.9702 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0599 train=0.9778 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0112 train=0.9963 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0025 train=0.9993 val=0.9990 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0156 train=0.9953 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0010 train=0.9997 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0013 train=0.9995 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0007 train=0.9998 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=3 best_val=1.0000 test=1.0000 long=0.8100 stress=0.8650 train_seconds=5.8
+
+====================================================================================================================================
+global_majority | transformer | seed=300001 | parameters=414,822
+====================================================================================================================================
+epoch=01/10 loss=0.7229 train=0.5227 val=0.7330 best=0.7330 lr=7.99e-04
+epoch=02/10 loss=0.2957 train=0.8682 val=0.8370 best=0.8370 lr=7.66e-04
+epoch=03/10 loss=0.1154 train=0.9610 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0558 train=0.9810 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0192 train=0.9938 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0757 train=0.9780 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0022 train=0.9992 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0023 train=0.9992 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0023 train=0.9995 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0004 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=3 best_val=1.0000 test=1.0000 long=0.8730 stress=0.9070 train_seconds=5.9
+
+====================================================================================================================================
+global_majority | transformer | seed=300002 | parameters=414,822
+====================================================================================================================================
+epoch=01/10 loss=0.5854 train=0.6503 val=0.9690 best=0.9690 lr=7.99e-04
+epoch=02/10 loss=0.2330 train=0.8908 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.1033 train=0.9655 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0507 train=0.9812 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0325 train=0.9897 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0079 train=0.9975 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0023 train=0.9997 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0017 train=0.9995 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0004 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0004 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=2 best_val=1.0000 test=1.0000 long=0.9110 stress=0.8450 train_seconds=5.9
+
+====================================================================================================================================
+global_majority | rnn | seed=300000 | parameters=416,121
+====================================================================================================================================
+epoch=01/10 loss=0.6950 train=0.6147 val=0.7120 best=0.7120 lr=7.99e-04
+epoch=02/10 loss=0.3269 train=0.8670 val=0.9060 best=0.9060 lr=7.66e-04
+epoch=03/10 loss=0.3323 train=0.8893 val=0.9770 best=0.9770 lr=6.91e-04
+epoch=04/10 loss=0.3138 train=0.9122 val=0.9670 best=0.9770 lr=5.83e-04
+epoch=05/10 loss=0.0533 train=0.9815 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0005 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=5 best_val=1.0000 test=1.0000 long=0.8890 stress=0.8490 train_seconds=2.9
+
+====================================================================================================================================
+global_majority | rnn | seed=300001 | parameters=416,121
+====================================================================================================================================
+epoch=01/10 loss=0.7231 train=0.6030 val=0.8090 best=0.8090 lr=7.99e-04
+epoch=02/10 loss=0.5271 train=0.7948 val=0.7910 best=0.8090 lr=7.66e-04
+epoch=03/10 loss=0.2798 train=0.8862 val=0.9130 best=0.9130 lr=6.91e-04
+epoch=04/10 loss=0.0284 train=0.9908 val=0.9950 best=0.9950 lr=5.83e-04
+epoch=05/10 loss=0.0831 train=0.9775 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0193 train=0.9957 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0004 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=5 best_val=1.0000 test=1.0000 long=0.8710 stress=0.8430 train_seconds=2.9
+
+====================================================================================================================================
+global_majority | rnn | seed=300002 | parameters=416,121
+====================================================================================================================================
+epoch=01/10 loss=0.6928 train=0.5867 val=0.6280 best=0.6280 lr=7.99e-04
+epoch=02/10 loss=0.3318 train=0.8735 val=0.9500 best=0.9500 lr=7.66e-04
+epoch=03/10 loss=0.1747 train=0.9458 val=0.9990 best=0.9990 lr=6.91e-04
+epoch=04/10 loss=0.1061 train=0.9793 val=0.9580 best=0.9990 lr=5.83e-04
+epoch=05/10 loss=0.1821 train=0.9515 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0053 train=0.9990 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0011 train=0.9998 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0006 train=0.9998 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0003 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=5 best_val=1.0000 test=1.0000 long=0.8830 stress=0.8410 train_seconds=2.8
+
+====================================================================================================================================
+global_majority | lstm | seed=300000 | parameters=411,838
+====================================================================================================================================
+epoch=01/10 loss=0.6504 train=0.6313 val=0.8160 best=0.8160 lr=7.99e-04
+epoch=02/10 loss=0.1614 train=0.9315 val=0.9690 best=0.9690 lr=7.66e-04
+epoch=03/10 loss=0.0041 train=0.9985 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=3 best_val=1.0000 test=1.0000 long=0.8150 stress=0.8040 train_seconds=2.8
+
+====================================================================================================================================
+global_majority | lstm | seed=300001 | parameters=411,838
+====================================================================================================================================
+epoch=01/10 loss=0.7322 train=0.5160 val=0.5870 best=0.5870 lr=7.99e-04
+epoch=02/10 loss=0.2708 train=0.8875 val=0.9560 best=0.9560 lr=7.66e-04
+epoch=03/10 loss=0.0069 train=0.9983 val=0.9950 best=0.9950 lr=6.91e-04
+epoch=04/10 loss=0.0030 train=0.9990 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0025 train=0.9993 val=0.9960 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0019 train=0.9997 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0001 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=4 best_val=1.0000 test=1.0000 long=0.8330 stress=0.8280 train_seconds=2.8
+
+====================================================================================================================================
+global_majority | lstm | seed=300002 | parameters=411,838
+====================================================================================================================================
+epoch=01/10 loss=0.7787 train=0.5155 val=0.5600 best=0.5600 lr=7.99e-04
+epoch=02/10 loss=0.2595 train=0.8747 val=1.0000 best=1.0000 lr=7.66e-04
+epoch=03/10 loss=0.0178 train=0.9955 val=1.0000 best=1.0000 lr=6.91e-04
+epoch=04/10 loss=0.0016 train=0.9998 val=1.0000 best=1.0000 lr=5.83e-04
+epoch=05/10 loss=0.0008 train=0.9998 val=1.0000 best=1.0000 lr=4.54e-04
+epoch=06/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=3.18e-04
+epoch=07/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=1.92e-04
+epoch=08/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=8.95e-05
+epoch=09/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=2.30e-05
+epoch=10/10 loss=0.0002 train=1.0000 val=1.0000 best=1.0000 lr=0.00e+00
+best_epoch=2 best_val=1.0000 test=1.0000 long=0.8530 stress=0.8240 train_seconds=2.8
+
+====================================================================================================================================
+boolean_listops | aat_e1_d4 | seed=400000 | parameters=414,991
+====================================================================================================================================
+epoch=01/10 loss=0.6324 train=0.6240 val=0.6760 best=0.6760 lr=7.99e-04
+epoch=02/10 loss=0.5261 train=0.7093 val=0.7260 best=0.7260 lr=7.66e-04
+epoch=03/10 loss=0.4786 train=0.7348 val=0.7290 best=0.7290 lr=6.91e-04
+epoch=04/10 loss=0.4357 train=0.7703 val=0.7480 best=0.7480 lr=5.83e-04
+epoch=05/10 loss=0.4118 train=0.7818 val=0.7680 best=0.7680 lr=4.54e-04
+epoch=06/10 loss=0.3964 train=0.7940 val=0.7840 best=0.7840 lr=3.18e-04
+epoch=07/10 loss=0.3641 train=0.8123 val=0.8000 best=0.8000 lr=1.92e-04
+epoch=08/10 loss=0.3451 train=0.8190 val=0.8110 best=0.8110 lr=8.95e-05
+epoch=09/10 loss=0.3346 train=0.8288 val=0.8210 best=0.8210 lr=2.30e-05
+epoch=10/10 loss=0.3325 train=0.8298 val=0.8270 best=0.8270 lr=0.00e+00
+best_epoch=10 best_val=0.8270 test=0.8470 long=0.7630 stress=0.7120 train_seconds=31.5
+
+====================================================================================================================================
+boolean_listops | aat_e1_d4 | seed=400001 | parameters=414,991
+====================================================================================================================================
+epoch=01/10 loss=0.6375 train=0.6185 val=0.6850 best=0.6850 lr=7.99e-04
+epoch=02/10 loss=0.5879 train=0.6710 val=0.6940 best=0.6940 lr=7.66e-04
+epoch=03/10 loss=0.4808 train=0.7323 val=0.7380 best=0.7380 lr=6.91e-04
+epoch=04/10 loss=0.4339 train=0.7713 val=0.7820 best=0.7820 lr=5.83e-04
+epoch=05/10 loss=0.4143 train=0.7812 val=0.7690 best=0.7820 lr=4.54e-04
+epoch=06/10 loss=0.3759 train=0.8083 val=0.8030 best=0.8030 lr=3.18e-04
+epoch=07/10 loss=0.3560 train=0.8205 val=0.8300 best=0.8300 lr=1.92e-04
+epoch=08/10 loss=0.3384 train=0.8303 val=0.8270 best=0.8300 lr=8.95e-05
+epoch=09/10 loss=0.3194 train=0.8417 val=0.8300 best=0.8300 lr=2.30e-05
+epoch=10/10 loss=0.3203 train=0.8420 val=0.8350 best=0.8350 lr=0.00e+00
+best_epoch=10 best_val=0.8350 test=0.8500 long=0.7850 stress=0.7170 train_seconds=31.6
+
+====================================================================================================================================
+boolean_listops | aat_e1_d4 | seed=400002 | parameters=414,991
+====================================================================================================================================
+epoch=01/10 loss=0.6387 train=0.6253 val=0.6860 best=0.6860 lr=7.99e-04
+epoch=02/10 loss=0.5216 train=0.7095 val=0.7200 best=0.7200 lr=7.66e-04
+epoch=03/10 loss=0.4660 train=0.7465 val=0.7220 best=0.7220 lr=6.91e-04
+epoch=04/10 loss=0.4264 train=0.7768 val=0.7570 best=0.7570 lr=5.83e-04
+epoch=05/10 loss=0.4013 train=0.7908 val=0.7730 best=0.7730 lr=4.54e-04
+epoch=06/10 loss=0.3779 train=0.8035 val=0.7980 best=0.7980 lr=3.18e-04
+epoch=07/10 loss=0.3580 train=0.8232 val=0.8080 best=0.8080 lr=1.92e-04
+epoch=08/10 loss=0.3384 train=0.8288 val=0.8220 best=0.8220 lr=8.95e-05
+epoch=09/10 loss=0.3276 train=0.8365 val=0.8250 best=0.8250 lr=2.30e-05
+epoch=10/10 loss=0.3161 train=0.8448 val=0.8290 best=0.8290 lr=0.00e+00
+best_epoch=10 best_val=0.8290 test=0.8630 long=0.7590 stress=0.7120 train_seconds=31.7
+
+====================================================================================================================================
+boolean_listops | aat_e4_d4 | seed=400000 | parameters=694,810
+====================================================================================================================================
+epoch=01/10 loss=0.6350 train=0.6252 val=0.6820 best=0.6820 lr=7.99e-04
+epoch=02/10 loss=0.5111 train=0.7213 val=0.7310 best=0.7310 lr=7.66e-04
+epoch=03/10 loss=0.4491 train=0.7667 val=0.7640 best=0.7640 lr=6.91e-04
+epoch=04/10 loss=0.4001 train=0.7927 val=0.7960 best=0.7960 lr=5.83e-04
+epoch=05/10 loss=0.3706 train=0.8097 val=0.8030 best=0.8030 lr=4.54e-04
+epoch=06/10 loss=0.3325 train=0.8328 val=0.8310 best=0.8310 lr=3.18e-04
+epoch=07/10 loss=0.3087 train=0.8488 val=0.8400 best=0.8400 lr=1.92e-04
+epoch=08/10 loss=0.2731 train=0.8667 val=0.8580 best=0.8580 lr=8.95e-05
+epoch=09/10 loss=0.2573 train=0.8775 val=0.8830 best=0.8830 lr=2.30e-05
+epoch=10/10 loss=0.2484 train=0.8793 val=0.8750 best=0.8830 lr=0.00e+00
+best_epoch=9 best_val=0.8830 test=0.8790 long=0.7620 stress=0.7030 train_seconds=54.8
+
+====================================================================================================================================
+boolean_listops | aat_e4_d4 | seed=400001 | parameters=694,810
+====================================================================================================================================
+epoch=01/10 loss=0.6260 train=0.6330 val=0.6860 best=0.6860 lr=7.99e-04
+epoch=02/10 loss=0.5237 train=0.7137 val=0.7440 best=0.7440 lr=7.66e-04
+epoch=03/10 loss=0.4612 train=0.7557 val=0.7730 best=0.7730 lr=6.91e-04
+epoch=04/10 loss=0.3929 train=0.7975 val=0.8050 best=0.8050 lr=5.83e-04
+epoch=05/10 loss=0.3565 train=0.8205 val=0.8210 best=0.8210 lr=4.54e-04
+epoch=06/10 loss=0.3257 train=0.8372 val=0.8380 best=0.8380 lr=3.18e-04
+epoch=07/10 loss=0.2753 train=0.8638 val=0.8480 best=0.8480 lr=1.92e-04
+epoch=08/10 loss=0.2532 train=0.8805 val=0.8540 best=0.8540 lr=8.95e-05
+epoch=09/10 loss=0.2319 train=0.8890 val=0.8600 best=0.8600 lr=2.30e-05
+epoch=10/10 loss=0.2257 train=0.8883 val=0.8610 best=0.8610 lr=0.00e+00
+best_epoch=10 best_val=0.8610 test=0.8970 long=0.7650 stress=0.7190 train_seconds=54.8
+
+====================================================================================================================================
+boolean_listops | aat_e4_d4 | seed=400002 | parameters=694,810
+====================================================================================================================================
+epoch=01/10 loss=0.6162 train=0.6402 val=0.6870 best=0.6870 lr=7.99e-04
+epoch=02/10 loss=0.4996 train=0.7197 val=0.7300 best=0.7300 lr=7.66e-04
+epoch=03/10 loss=0.4567 train=0.7587 val=0.7620 best=0.7620 lr=6.91e-04
+epoch=04/10 loss=0.4013 train=0.7915 val=0.7950 best=0.7950 lr=5.83e-04
+epoch=05/10 loss=0.3609 train=0.8205 val=0.8120 best=0.8120 lr=4.54e-04
+epoch=06/10 loss=0.3392 train=0.8262 val=0.8320 best=0.8320 lr=3.18e-04
+epoch=07/10 loss=0.2948 train=0.8515 val=0.8400 best=0.8400 lr=1.92e-04
+epoch=08/10 loss=0.2581 train=0.8762 val=0.8670 best=0.8670 lr=8.95e-05
+epoch=09/10 loss=0.2351 train=0.8833 val=0.8700 best=0.8700 lr=2.30e-05
+epoch=10/10 loss=0.2240 train=0.8933 val=0.8680 best=0.8700 lr=0.00e+00
+best_epoch=9 best_val=0.8700 test=0.8980 long=0.7840 stress=0.7130 train_seconds=55.2
+
+====================================================================================================================================
+boolean_listops | transformer | seed=400000 | parameters=414,918
+====================================================================================================================================
+epoch=01/10 loss=0.6366 train=0.6127 val=0.6820 best=0.6820 lr=7.99e-04
+epoch=02/10 loss=0.5253 train=0.7020 val=0.7140 best=0.7140 lr=7.66e-04
+epoch=03/10 loss=0.4844 train=0.7273 val=0.7010 best=0.7140 lr=6.91e-04
+epoch=04/10 loss=0.4433 train=0.7573 val=0.7610 best=0.7610 lr=5.83e-04
+epoch=05/10 loss=0.4210 train=0.7783 val=0.7750 best=0.7750 lr=4.54e-04
+epoch=06/10 loss=0.3925 train=0.7990 val=0.7980 best=0.7980 lr=3.18e-04
+epoch=07/10 loss=0.3625 train=0.8183 val=0.8350 best=0.8350 lr=1.92e-04
+epoch=08/10 loss=0.3462 train=0.8288 val=0.8310 best=0.8350 lr=8.95e-05
+epoch=09/10 loss=0.3264 train=0.8415 val=0.8380 best=0.8380 lr=2.30e-05
+epoch=10/10 loss=0.3221 train=0.8387 val=0.8380 best=0.8380 lr=0.00e+00
+best_epoch=9 best_val=0.8380 test=0.8660 long=0.7660 stress=0.7230 train_seconds=6.1
+
+====================================================================================================================================
+boolean_listops | transformer | seed=400001 | parameters=414,918
+====================================================================================================================================
+epoch=01/10 loss=0.6285 train=0.6262 val=0.6800 best=0.6800 lr=7.99e-04
+epoch=02/10 loss=0.5523 train=0.6980 val=0.6820 best=0.6820 lr=7.66e-04
+epoch=03/10 loss=0.4852 train=0.7282 val=0.7090 best=0.7090 lr=6.91e-04
+epoch=04/10 loss=0.4360 train=0.7673 val=0.7810 best=0.7810 lr=5.83e-04
+epoch=05/10 loss=0.4009 train=0.7927 val=0.7960 best=0.7960 lr=4.54e-04
+epoch=06/10 loss=0.3784 train=0.8060 val=0.8180 best=0.8180 lr=3.18e-04
+epoch=07/10 loss=0.3517 train=0.8237 val=0.8190 best=0.8190 lr=1.92e-04
+epoch=08/10 loss=0.3377 train=0.8333 val=0.8320 best=0.8320 lr=8.95e-05
+epoch=09/10 loss=0.3270 train=0.8397 val=0.8290 best=0.8320 lr=2.30e-05
+epoch=10/10 loss=0.3157 train=0.8450 val=0.8300 best=0.8320 lr=0.00e+00
+best_epoch=8 best_val=0.8320 test=0.8580 long=0.7510 stress=0.7150 train_seconds=6.0
+
+====================================================================================================================================
+boolean_listops | transformer | seed=400002 | parameters=414,918
+====================================================================================================================================
+epoch=01/10 loss=0.6153 train=0.6412 val=0.6930 best=0.6930 lr=7.99e-04
+epoch=02/10 loss=0.5390 train=0.6987 val=0.6740 best=0.6930 lr=7.66e-04
+epoch=03/10 loss=0.4915 train=0.7203 val=0.6650 best=0.6930 lr=6.91e-04
+epoch=04/10 loss=0.4596 train=0.7500 val=0.7370 best=0.7370 lr=5.83e-04
+epoch=05/10 loss=0.4252 train=0.7727 val=0.7830 best=0.7830 lr=4.54e-04
+epoch=06/10 loss=0.3978 train=0.7945 val=0.7900 best=0.7900 lr=3.18e-04
+epoch=07/10 loss=0.3682 train=0.8127 val=0.8190 best=0.8190 lr=1.92e-04
+epoch=08/10 loss=0.3472 train=0.8243 val=0.8350 best=0.8350 lr=8.95e-05
+epoch=09/10 loss=0.3307 train=0.8312 val=0.8430 best=0.8430 lr=2.30e-05
+epoch=10/10 loss=0.3253 train=0.8378 val=0.8430 best=0.8430 lr=0.00e+00
+best_epoch=9 best_val=0.8430 test=0.8670 long=0.7780 stress=0.7260 train_seconds=6.1
+
+====================================================================================================================================
+boolean_listops | rnn | seed=400000 | parameters=416,217
+====================================================================================================================================
+epoch=01/10 loss=0.6843 train=0.5735 val=0.6850 best=0.6850 lr=7.99e-04
+epoch=02/10 loss=0.5957 train=0.6742 val=0.6710 best=0.6850 lr=7.66e-04
+epoch=03/10 loss=0.5614 train=0.6967 val=0.7170 best=0.7170 lr=6.91e-04
+epoch=04/10 loss=0.5164 train=0.7335 val=0.7330 best=0.7330 lr=5.83e-04
+epoch=05/10 loss=0.4815 train=0.7603 val=0.7610 best=0.7610 lr=4.54e-04
+epoch=06/10 loss=0.4438 train=0.7685 val=0.7720 best=0.7720 lr=3.18e-04
+epoch=07/10 loss=0.4177 train=0.7785 val=0.7750 best=0.7750 lr=1.92e-04
+epoch=08/10 loss=0.3848 train=0.7937 val=0.7790 best=0.7790 lr=8.95e-05
+epoch=09/10 loss=0.3664 train=0.7990 val=0.7950 best=0.7950 lr=2.30e-05
+epoch=10/10 loss=0.3562 train=0.8045 val=0.7950 best=0.7950 lr=0.00e+00
+best_epoch=9 best_val=0.7950 test=0.8150 long=0.7110 stress=0.7260 train_seconds=3.3
+
+====================================================================================================================================
+boolean_listops | rnn | seed=400001 | parameters=416,217
+====================================================================================================================================
+epoch=01/10 loss=0.6692 train=0.5920 val=0.6600 best=0.6600 lr=7.99e-04
+epoch=02/10 loss=0.6144 train=0.6583 val=0.6650 best=0.6650 lr=7.66e-04
+epoch=03/10 loss=0.5849 train=0.6757 val=0.7100 best=0.7100 lr=6.91e-04
+epoch=04/10 loss=0.5484 train=0.6997 val=0.7220 best=0.7220 lr=5.83e-04
+epoch=05/10 loss=0.5212 train=0.7262 val=0.7330 best=0.7330 lr=4.54e-04
+epoch=06/10 loss=0.4850 train=0.7517 val=0.7630 best=0.7630 lr=3.18e-04
+epoch=07/10 loss=0.4525 train=0.7700 val=0.7920 best=0.7920 lr=1.92e-04
+epoch=08/10 loss=0.4117 train=0.7922 val=0.7990 best=0.7990 lr=8.95e-05
+epoch=09/10 loss=0.3859 train=0.8033 val=0.8010 best=0.8010 lr=2.30e-05
+epoch=10/10 loss=0.3723 train=0.8077 val=0.8020 best=0.8020 lr=0.00e+00
+best_epoch=10 best_val=0.8020 test=0.8240 long=0.6850 stress=0.6680 train_seconds=3.3
+
+====================================================================================================================================
+boolean_listops | rnn | seed=400002 | parameters=416,217
+====================================================================================================================================
+epoch=01/10 loss=0.7059 train=0.5512 val=0.4080 best=0.4080 lr=7.99e-04
+epoch=02/10 loss=0.6250 train=0.6635 val=0.7140 best=0.7140 lr=7.66e-04
+epoch=03/10 loss=0.5703 train=0.7063 val=0.6900 best=0.7140 lr=6.91e-04
+epoch=04/10 loss=0.5338 train=0.7303 val=0.7380 best=0.7380 lr=5.83e-04
+epoch=05/10 loss=0.4975 train=0.7512 val=0.7460 best=0.7460 lr=4.54e-04
+epoch=06/10 loss=0.4617 train=0.7647 val=0.7790 best=0.7790 lr=3.18e-04
+epoch=07/10 loss=0.4285 train=0.7783 val=0.7840 best=0.7840 lr=1.92e-04
+epoch=08/10 loss=0.4029 train=0.7828 val=0.7880 best=0.7880 lr=8.95e-05
+epoch=09/10 loss=0.3848 train=0.7925 val=0.7910 best=0.7910 lr=2.30e-05
+epoch=10/10 loss=0.3742 train=0.7975 val=0.7930 best=0.7930 lr=0.00e+00
+best_epoch=10 best_val=0.7930 test=0.8170 long=0.7010 stress=0.7150 train_seconds=3.2
+
+====================================================================================================================================
+boolean_listops | lstm | seed=400000 | parameters=411,934
+====================================================================================================================================
+epoch=01/10 loss=0.6931 train=0.5353 val=0.5020 best=0.5020 lr=7.99e-04
+epoch=02/10 loss=0.5923 train=0.6712 val=0.7100 best=0.7100 lr=7.66e-04
+epoch=03/10 loss=0.5336 train=0.7287 val=0.7550 best=0.7550 lr=6.91e-04
+epoch=04/10 loss=0.4721 train=0.7647 val=0.7810 best=0.7810 lr=5.83e-04
+epoch=05/10 loss=0.3817 train=0.8033 val=0.7950 best=0.7950 lr=4.54e-04
+epoch=06/10 loss=0.3288 train=0.8458 val=0.8530 best=0.8530 lr=3.18e-04
+epoch=07/10 loss=0.2825 train=0.8718 val=0.8640 best=0.8640 lr=1.92e-04
+epoch=08/10 loss=0.2602 train=0.8735 val=0.8720 best=0.8720 lr=8.95e-05
+epoch=09/10 loss=0.2378 train=0.8828 val=0.8810 best=0.8810 lr=2.30e-05
+epoch=10/10 loss=0.2287 train=0.8852 val=0.8750 best=0.8810 lr=0.00e+00
+best_epoch=9 best_val=0.8810 test=0.9050 long=0.7910 stress=0.7480 train_seconds=3.2
+
+====================================================================================================================================
+boolean_listops | lstm | seed=400001 | parameters=411,934
+====================================================================================================================================
+epoch=01/10 loss=0.7297 train=0.5413 val=0.6500 best=0.6500 lr=7.99e-04
+epoch=02/10 loss=0.5897 train=0.6870 val=0.6880 best=0.6880 lr=7.66e-04
+epoch=03/10 loss=0.5276 train=0.7382 val=0.7420 best=0.7420 lr=6.91e-04
+epoch=04/10 loss=0.4823 train=0.7638 val=0.7420 best=0.7420 lr=5.83e-04
+epoch=05/10 loss=0.3961 train=0.8083 val=0.8470 best=0.8470 lr=4.54e-04
+epoch=06/10 loss=0.3261 train=0.8515 val=0.8460 best=0.8470 lr=3.18e-04
+epoch=07/10 loss=0.2852 train=0.8648 val=0.8590 best=0.8590 lr=1.92e-04
+epoch=08/10 loss=0.2562 train=0.8745 val=0.8730 best=0.8730 lr=8.95e-05
+epoch=09/10 loss=0.2309 train=0.8852 val=0.8730 best=0.8730 lr=2.30e-05
+epoch=10/10 loss=0.2235 train=0.8893 val=0.8770 best=0.8770 lr=0.00e+00
+best_epoch=10 best_val=0.8770 test=0.8930 long=0.8070 stress=0.7370 train_seconds=3.2
+
+====================================================================================================================================
+boolean_listops | lstm | seed=400002 | parameters=411,934
+====================================================================================================================================
+epoch=01/10 loss=0.6919 train=0.5478 val=0.6650 best=0.6650 lr=7.99e-04
+epoch=02/10 loss=0.5815 train=0.6928 val=0.6890 best=0.6890 lr=7.66e-04
+epoch=03/10 loss=0.5127 train=0.7345 val=0.7320 best=0.7320 lr=6.91e-04
+epoch=04/10 loss=0.4411 train=0.7663 val=0.7900 best=0.7900 lr=5.83e-04
+epoch=05/10 loss=0.3517 train=0.8330 val=0.8260 best=0.8260 lr=4.54e-04
+epoch=06/10 loss=0.3173 train=0.8555 val=0.8520 best=0.8520 lr=3.18e-04
+epoch=07/10 loss=0.2828 train=0.8713 val=0.8630 best=0.8630 lr=1.92e-04
+epoch=08/10 loss=0.2491 train=0.8777 val=0.8660 best=0.8660 lr=8.95e-05
+epoch=09/10 loss=0.2296 train=0.8850 val=0.8700 best=0.8700 lr=2.30e-05
+epoch=10/10 loss=0.2207 train=0.8857 val=0.8740 best=0.8740 lr=0.00e+00
+best_epoch=10 best_val=0.8740 test=0.8990 long=0.7940 stress=0.7100 train_seconds=3.2
+
+==============================================================================================================================================
+FINAL SEQUENCE-MODEL RESULTS ACROSS SEEDS
+==============================================================================================================================================
+task                     model               params       val      test      long    stress    test_sd   test_norm    train_s
+associative_retrieval    aat_e1_d4          423,345    0.9987    0.9993    0.9483    0.7757     0.0005      0.9991       47.0
+associative_retrieval    aat_e4_d4          703,164    0.9997    0.9993    0.9733    0.8153     0.0005      0.9991      115.2
+associative_retrieval    transformer        423,272    0.7453    0.7350    0.5517    0.3797     0.1851      0.6467       12.7
+associative_retrieval    rnn                424,571    0.2620    0.2487    0.2540    0.2583     0.0026     -0.0018        4.6
+associative_retrieval    lstm               420,288    0.2600    0.2547    0.2420    0.2463     0.0066      0.0062        5.1
+latest_value_retrieval   aat_e1_d4          419,249    0.9837    0.9873    0.9523    0.9193     0.0046      0.9831       71.4
+latest_value_retrieval   aat_e4_d4          699,068    0.9983    0.9983    0.9907    0.9697     0.0009      0.9978      122.5
+latest_value_retrieval   transformer        419,176    0.9930    0.9937    0.5057    0.2417     0.0005      0.9916       11.6
+latest_value_retrieval   rnn                420,475    0.4737    0.4820    0.4030    0.4150     0.0042      0.3093        4.7
+latest_value_retrieval   lstm               416,192    0.4860    0.4780    0.4157    0.4183     0.0086      0.3040        5.1
+relative_order           aat_e1_d4          415,151    1.0000    1.0000    1.0000    1.0000     0.0000      1.0000       72.0
+relative_order           aat_e4_d4          694,970    1.0000    1.0000    1.0000    1.0000     0.0000      1.0000      105.1
+relative_order           transformer        415,078    1.0000    0.9997    0.8730    0.8477     0.0005      0.9993        8.3
+relative_order           rnn                416,377    1.0000    1.0000    0.9930    0.9643     0.0000      1.0000        3.8
+relative_order           lstm               412,094    1.0000    1.0000    0.9997    0.9857     0.0000      1.0000        3.9
+global_majority          aat_e1_d4          414,895    1.0000    1.0000    0.9550    0.9647     0.0000      1.0000       30.8
+global_majority          aat_e4_d4          694,714    1.0000    1.0000    0.9577    0.9673     0.0000      1.0000       55.2
+global_majority          transformer        414,822    1.0000    1.0000    0.8647    0.8723     0.0000      1.0000        5.9
+global_majority          rnn                416,121    1.0000    1.0000    0.8810    0.8443     0.0000      1.0000        2.9
+global_majority          lstm               411,838    1.0000    1.0000    0.8337    0.8187     0.0000      1.0000        2.8
+boolean_listops          aat_e1_d4          414,991    0.8303    0.8533    0.7690    0.7137     0.0069      0.7067       31.6
+boolean_listops          aat_e4_d4          694,810    0.8713    0.8913    0.7703    0.7117     0.0087      0.7827       55.0
+boolean_listops          transformer        414,918    0.8377    0.8637    0.7650    0.7213     0.0040      0.7273        6.1
+boolean_listops          rnn                416,217    0.7967    0.8187    0.6990    0.7030     0.0039      0.6373        3.3
+boolean_listops          lstm               411,934    0.8773    0.8990    0.7973    0.7317     0.0049      0.7980        3.2
+
+==============================================================================================================================================
+MACRO NORMALIZED SCORE
+==============================================================================================================================================
+aat_e1_d4      test=0.9378 long=0.8631 stress=0.7900
+aat_e4_d4      test=0.9559 long=0.8816 stress=0.8143
+transformer    test=0.8730 long=0.5497 stress=0.4089
+rnn            test=0.5890 long=0.4711 stress=0.4509
+lstm           test=0.6216 long=0.4943 stress=0.4583
+
+==============================================================================================================================================
+DELTA AGAINST aat_e1_d4
+==============================================================================================================================================
+aat_e4_d4      test=+0.0181 long=+0.0185 stress=+0.0243
+transformer    test=-0.0648 long=-0.3134 stress=-0.3811
+rnn            test=-0.3488 long=-0.3920 stress=-0.3391
+lstm           test=-0.3161 long=-0.3688 stress=-0.3317

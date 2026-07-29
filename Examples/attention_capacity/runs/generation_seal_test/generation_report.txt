@@ -1,0 +1,35 @@
+==============================================================================================================
+WIKITEXT-103 CONTROLLED GENERATION SEAL TEST
+==============================================================================================================
+test_version=wikitext103-controlled-generation-seal-v1
+wiki_prompts=8 legacy_prompts=True prompt_tokens=32 reference_tokens=80 generate_tokens=80
+sampling: temperature=0.9 top_k=40 seeds=[1000, 1001, 1002]
+No repetition penalty or no-repeat-ngram constraint was used.
+
+RESTORED RUNS
+        aat: parameters=41,723,476 implementation=canonical-complex-dual-memory-chunkwise-v1.1 source=9fafacd3ed07 checkpoint=bac044a93c9b
+transformer: parameters=41,774,976 implementation=parameter-matched-transformer-sdpa-v1 source=3b0c1f837a2c checkpoint=54b25947bdae
+
+PRIMARY AUTOMATED SUMMARY
+model        source     decoding          n     flag  distinct4   repeat4  max_run  max_cycle   ref_ppl
+aat          wikitext   greedy            8   25.0%      0.887     0.113     1.00       1.00     46.48
+aat          wikitext   sampling_all     24    0.0%      0.989     0.011     1.21       1.25     46.48
+aat          legacy     greedy            3   66.7%      0.455     0.545    39.00      39.00         -
+aat          legacy     sampling_all      9   11.1%      0.978     0.022     1.22       1.44         -
+transformer  wikitext   greedy            8   37.5%      0.776     0.224     1.00       1.00     51.42
+transformer  wikitext   sampling_all     24    0.0%      0.995     0.005     1.04       1.08     51.42
+transformer  legacy     greedy            3    0.0%      1.000     0.000     1.00       1.00         -
+transformer  legacy     sampling_all      9    0.0%      0.976     0.024     1.00       1.00         -
+
+DECISION
+status=no_clear_aat_repetition_disadvantage
+The earlier repeated sample did not become a clear controlled AAT disadvantage. Keep the canonical architecture frozen.
+AAT flagged=0; Transformer flagged=0; rate delta=+0.0%
+
+Automatic severe-repetition flag:
+max identical-token run >= 4 OR max consecutive cycle repeats >= 4 OR repeated 4-gram fraction >= 0.20
+
+Limit:
+Automated repetition metrics do not measure semantic coherence; use blind_review.csv for the paired human judgment.
+
+Use generation_samples.txt for the complete paired text and blind_review.csv for a model-hidden human comparison.

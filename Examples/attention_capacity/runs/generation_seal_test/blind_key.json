@@ -1,0 +1,222 @@
+{
+  "B001": {
+    "pair_id": "L01__greedy",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B002": {
+    "pair_id": "L01__sampling_seed_1000",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B003": {
+    "pair_id": "L01__sampling_seed_1001",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B004": {
+    "pair_id": "L01__sampling_seed_1002",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B005": {
+    "pair_id": "L02__greedy",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B006": {
+    "pair_id": "L02__sampling_seed_1000",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B007": {
+    "pair_id": "L02__sampling_seed_1001",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B008": {
+    "pair_id": "L02__sampling_seed_1002",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B009": {
+    "pair_id": "L03__greedy",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B010": {
+    "pair_id": "L03__sampling_seed_1000",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B011": {
+    "pair_id": "L03__sampling_seed_1001",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B012": {
+    "pair_id": "L03__sampling_seed_1002",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B013": {
+    "pair_id": "W01__greedy",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B014": {
+    "pair_id": "W01__sampling_seed_1000",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B015": {
+    "pair_id": "W01__sampling_seed_1001",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B016": {
+    "pair_id": "W01__sampling_seed_1002",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B017": {
+    "pair_id": "W02__greedy",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B018": {
+    "pair_id": "W02__sampling_seed_1000",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B019": {
+    "pair_id": "W02__sampling_seed_1001",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B020": {
+    "pair_id": "W02__sampling_seed_1002",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B021": {
+    "pair_id": "W03__greedy",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B022": {
+    "pair_id": "W03__sampling_seed_1000",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B023": {
+    "pair_id": "W03__sampling_seed_1001",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B024": {
+    "pair_id": "W03__sampling_seed_1002",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B025": {
+    "pair_id": "W04__greedy",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B026": {
+    "pair_id": "W04__sampling_seed_1000",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B027": {
+    "pair_id": "W04__sampling_seed_1001",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B028": {
+    "pair_id": "W04__sampling_seed_1002",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B029": {
+    "pair_id": "W05__greedy",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B030": {
+    "pair_id": "W05__sampling_seed_1000",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B031": {
+    "pair_id": "W05__sampling_seed_1001",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B032": {
+    "pair_id": "W05__sampling_seed_1002",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B033": {
+    "pair_id": "W06__greedy",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B034": {
+    "pair_id": "W06__sampling_seed_1000",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B035": {
+    "pair_id": "W06__sampling_seed_1001",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B036": {
+    "pair_id": "W06__sampling_seed_1002",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B037": {
+    "pair_id": "W07__greedy",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B038": {
+    "pair_id": "W07__sampling_seed_1000",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B039": {
+    "pair_id": "W07__sampling_seed_1001",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B040": {
+    "pair_id": "W07__sampling_seed_1002",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B041": {
+    "pair_id": "W08__greedy",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B042": {
+    "pair_id": "W08__sampling_seed_1000",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  },
+  "B043": {
+    "pair_id": "W08__sampling_seed_1001",
+    "sample_A_model": "aat",
+    "sample_B_model": "transformer"
+  },
+  "B044": {
+    "pair_id": "W08__sampling_seed_1002",
+    "sample_A_model": "transformer",
+    "sample_B_model": "aat"
+  }
+}

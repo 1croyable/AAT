@@ -1,0 +1,10 @@
+{
+  "cuda_runtime": "12.6",
+  "cudnn": 91002,
+  "datasets": "5.0.0",
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce RTX 3060",
+  "python": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 16:37:03) [MSC v.1929 64 bit (AMD64)]",
+  "torch": "2.12.0+cu126",
+  "transformers": "5.14.1"
+}
