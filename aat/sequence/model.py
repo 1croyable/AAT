@@ -21,6 +21,27 @@ from .utils import (
 )
 
 
+def polar_score(
+    *,
+    rho: torch.Tensor,
+    direction: torch.Tensor,
+    base: torch.Tensor,
+    bias: torch.Tensor,
+    radial_weight: torch.Tensor,
+    log_kappa: torch.Tensor,
+) -> torch.Tensor:
+    rays = F.normalize(base, dim=-1, eps=1e-8)
+    cosine = torch.einsum("bhtd,hrd->bhtr", direction, rays)
+    radial = torch.exp(
+        (rho * radial_weight[None, :, None, :]).clamp(-8.0, 8.0)
+    )
+    kappa = log_kappa.exp().clamp(0.25, 50.0)
+    return (
+        kappa[None, :, None, None] * radial * cosine
+        + bias[None, :, None, :]
+    )
+
+
 class RayResponse(nn.Module):
     def __init__(self, cfg: AATConfig):
         super().__init__()
@@ -36,15 +57,100 @@ class RayResponse(nn.Module):
         radius = x.norm(dim=-1, keepdim=True).clamp_min(1e-8)
         direction = x / radius
         rho = radius / self.sqrt_dim - 1.0
-        rays = F.normalize(self.base, dim=-1, eps=1e-8)
-        cosine = torch.einsum("bhtd,hrd->bhtr", direction, rays)
-        radial = torch.exp(
-            (rho * self.radial_weight[None, :, None, :]).clamp(-8.0, 8.0)
+        return polar_score(
+            rho=rho,
+            direction=direction,
+            base=self.base,
+            bias=self.bias,
+            radial_weight=self.radial_weight,
+            log_kappa=self.log_kappa,
         )
-        kappa = self.log_kappa.exp().clamp(0.25, 50.0)
-        return (
-            kappa[None, :, None, None] * radial * cosine
-            + self.bias[None, :, None, :]
+
+
+class GeometricTransport(nn.Module):
+    """One headwise polar AAT move without reading or writing memory."""
+
+    def __init__(self, cfg: AATConfig):
+        super().__init__()
+        self.base = nn.Parameter(
+            torch.randn(cfg.heads, cfg.rays, cfg.head_dim)
+            / math.sqrt(cfg.head_dim)
+        )
+        self.bias = nn.Parameter(torch.zeros(cfg.heads, cfg.rays))
+        self.radial_weight = nn.Parameter(torch.zeros(cfg.heads, cfg.rays))
+        self.log_kappa = nn.Parameter(
+            torch.full((cfg.heads,), math.log(cfg.kappa))
+        )
+        self.delta_rho = nn.Parameter(
+            torch.randn(cfg.heads, cfg.rays) * 0.02
+        )
+        self.delta_direction = nn.Parameter(
+            torch.randn(cfg.heads, cfg.rays, cfg.head_dim)
+            * 0.02
+            / math.sqrt(cfg.head_dim)
+        )
+        self.gate = nn.Parameter(torch.tensor(1.0))
+
+    def forward(
+        self,
+        rho: torch.Tensor,
+        direction: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        scores = polar_score(
+            rho=rho,
+            direction=direction,
+            base=self.base,
+            bias=self.bias,
+            radial_weight=self.radial_weight,
+            log_kappa=self.log_kappa,
+        )
+        address = F.softmax(scores, dim=-1)
+        radial_move = torch.einsum(
+            "bhtr,hr->bht",
+            address,
+            self.delta_rho,
+        ).unsqueeze(-1)
+        directional_move = torch.einsum(
+            "bhtr,hrd->bhtd",
+            address,
+            self.delta_direction,
+        )
+        rho = rho + radial_move * self.gate
+        direction = F.normalize(
+            direction + directional_move * self.gate,
+            dim=-1,
+            eps=1e-8,
+        )
+        return rho, direction
+
+
+class DeepRayResponse(nn.Module):
+    """Transport geometry several times, then score the memory rays once."""
+
+    def __init__(self, cfg: AATConfig):
+        super().__init__()
+        self.sqrt_dim = math.sqrt(cfg.head_dim)
+        self.transports = nn.ModuleList(
+            GeometricTransport(cfg)
+            for _ in range(cfg.transport_steps)
+        )
+        self.memory_response = RayResponse(cfg)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        radius = x.norm(dim=-1, keepdim=True).clamp_min(1e-8)
+        direction = x / radius
+        rho = radius / self.sqrt_dim - 1.0
+        for transport in self.transports:
+            rho, direction = transport(rho, direction)
+
+        response = self.memory_response
+        return polar_score(
+            rho=rho,
+            direction=direction,
+            base=response.base,
+            bias=response.bias,
+            radial_weight=response.radial_weight,
+            log_kappa=response.log_kappa,
         )
 
 
@@ -52,7 +158,7 @@ class OrderedMemory(nn.Module):
     def __init__(self, cfg: AATConfig):
         super().__init__()
         self.cfg = cfg
-        self.response = RayResponse(cfg)
+        self.response = DeepRayResponse(cfg)
         self.key = nn.Linear(cfg.d_model, cfg.d_model)
         self.value = nn.Linear(cfg.d_model, cfg.d_model)
         self.phase_scale = nn.Parameter(
@@ -95,7 +201,7 @@ class PositionMemory(nn.Module):
         super().__init__()
         self.cfg = cfg
         self.sqrt_dim = math.sqrt(cfg.head_dim)
-        self.response = RayResponse(cfg)
+        self.response = DeepRayResponse(cfg)
 
     def positions(
         self,
@@ -154,7 +260,7 @@ class PrefixReader(nn.Module):
     def __init__(self, cfg: AATConfig):
         super().__init__()
         self.cfg = cfg
-        self.response = RayResponse(cfg)
+        self.response = DeepRayResponse(cfg)
         self.strength = nn.Parameter(torch.ones(cfg.heads, cfg.rays))
         self.output = nn.Linear(cfg.d_model, cfg.d_model)
         self.gate = nn.Parameter(torch.tensor(1.0))
@@ -218,12 +324,16 @@ class OrderedReader(nn.Module):
 
 
 class PositionReader(nn.Module):
-    def __init__(self, cfg: AATConfig):
+    def __init__(self, cfg: AATConfig, output: nn.Linear):
         super().__init__()
+        object.__setattr__(self, "_output", output)
         self.strength = nn.Parameter(torch.ones(cfg.heads, cfg.rays))
-        self.output = nn.Linear(cfg.d_model, cfg.d_model)
         self.gate = nn.Parameter(torch.tensor(1.0))
         self.dropout = nn.Dropout(cfg.dropout)
+
+    @property
+    def output(self) -> nn.Linear:
+        return self._output
 
     def forward(
         self,
@@ -241,19 +351,6 @@ class PositionReader(nn.Module):
         return self.dropout(delta).masked_fill(mask.unsqueeze(-1), 0.0)
 
 
-class FeedForward(nn.Module):
-    def __init__(self, cfg: AATConfig):
-        super().__init__()
-        self.input = nn.Linear(cfg.d_model, cfg.ffn_dim)
-        self.output = nn.Linear(cfg.ffn_dim, cfg.d_model)
-        self.dropout = nn.Dropout(cfg.dropout)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.output(
-            self.dropout(F.gelu(self.input(x), approximate="tanh"))
-        )
-
-
 class AATDecoderLayer(nn.Module):
     def __init__(self, cfg: AATConfig, writer: OrderedMemory):
         super().__init__()
@@ -261,11 +358,9 @@ class AATDecoderLayer(nn.Module):
         self.prefix_norm = nn.LayerNorm(cfg.d_model)
         self.ordered_norm = nn.LayerNorm(cfg.d_model)
         self.position_norm = nn.LayerNorm(cfg.d_model)
-        self.ffn_norm = nn.LayerNorm(cfg.d_model)
         self.prefix_reader = PrefixReader(cfg)
         self.ordered_reader = OrderedReader(cfg)
-        self.position_reader = PositionReader(cfg)
-        self.feed_forward = FeedForward(cfg)
+        self.position_reader = PositionReader(cfg, self.prefix_reader.output)
         self.dropout = nn.Dropout(cfg.dropout)
 
     def forward(
@@ -300,9 +395,6 @@ class AATDecoderLayer(nn.Module):
                 position_address,
                 mask,
             )
-        )
-        x = x + self.dropout(
-            self.feed_forward(self.ffn_norm(x))
         )
         return x.masked_fill(mask.unsqueeze(-1), 0.0)
 

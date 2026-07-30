@@ -11,13 +11,16 @@ class AATConfig:
     decoder_layers: int
     heads: int
     rays: int
-    ffn_dim: int
     chunk_size: int
     position_scale: float
+    transport_steps: int = 3
     dropout: float = 0.10
     kappa: float = 6.0
     score_clip: float = 30.0
     gradient_checkpointing: bool = True
+    # Kept only so older keyword-based configs can still be loaded. Sequence
+    # AAT no longer contains a feed-forward branch.
+    ffn_dim: int | None = None
 
     @property
     def head_dim(self) -> int:
@@ -32,8 +35,12 @@ class AATConfig:
             raise ValueError("encoder_layers and decoder_layers must be non-negative.")
         if int(self.encoder_layers) + int(self.decoder_layers) == 0:
             raise ValueError("at least one encoder or decoder layer is required.")
-        if min(int(self.rays), int(self.ffn_dim), int(self.chunk_size)) <= 0:
-            raise ValueError("rays, ffn_dim, and chunk_size must be positive.")
+        if min(int(self.rays), int(self.chunk_size)) <= 0:
+            raise ValueError("rays and chunk_size must be positive.")
+        if int(self.transport_steps) < 0:
+            raise ValueError("transport_steps must be non-negative.")
+        if self.ffn_dim is not None and int(self.ffn_dim) <= 0:
+            raise ValueError("ffn_dim must be positive when provided.")
         if float(self.position_scale) <= 0.0:
             raise ValueError("position_scale must be positive.")
         if not 0.0 <= float(self.dropout) < 1.0:
