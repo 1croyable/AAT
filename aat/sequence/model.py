@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import math
 from pathlib import Path
-from typing import Any
 
 import torch
 import torch.nn as nn
@@ -526,53 +525,25 @@ class AAT(nn.Module):
         x = self.decoder(*encoded, mask)
         return self.output_norm(x).masked_fill(mask.unsqueeze(-1), 0.0)
 
-    def config_dict(self) -> dict[str, Any]:
-        return self.cfg.to_dict()
-
     def save_checkpoint(self, path: str | Path) -> None:
         torch.save(
             {
-                "config": self.config_dict(),
+                "config": self.cfg.to_dict(),
                 "state_dict": self.state_dict(),
             },
             path,
         )
 
-    @staticmethod
-    def torch_load(path: str | Path, map_location=None):
-        try:
-            return torch.load(path, map_location=map_location, weights_only=False)
-        except TypeError:
-            return torch.load(path, map_location=map_location)
-
     @classmethod
     def from_checkpoint(cls, path: str | Path, map_location=None) -> "AAT":
-        checkpoint = cls.torch_load(path, map_location=map_location)
-        if not isinstance(checkpoint, dict) or "config" not in checkpoint:
-            raise RuntimeError("checkpoint must contain a config dictionary.")
-        model = cls(AATConfig(**dict(checkpoint["config"])))
-        state = checkpoint.get("state_dict", checkpoint.get("model_state_dict"))
-        if state is None:
-            raise RuntimeError("checkpoint contains no state_dict.")
-        model.load_state_dict(state)
-        return model
-
-    def load_checkpoint(
-        self,
-        path: str | Path,
-        map_location=None,
-        strict: bool = True,
-    ) -> None:
-        checkpoint = self.torch_load(path, map_location=map_location)
-        state = (
-            checkpoint.get(
-                "state_dict",
-                checkpoint.get("model_state_dict", checkpoint),
+        saved = torch.load(path, map_location=map_location, weights_only=True)
+        if not isinstance(saved, dict) or set(saved) != {"config", "state_dict"}:
+            raise RuntimeError(
+                "checkpoint must contain exactly 'config' and 'state_dict'."
             )
-            if isinstance(checkpoint, dict)
-            else checkpoint
-        )
-        self.load_state_dict(state, strict=strict)
+        model = cls(AATConfig(**saved["config"]))
+        model.load_state_dict(saved["state_dict"], strict=True)
+        return model
 
 
 __all__ = ["AAT"]
