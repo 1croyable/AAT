@@ -1,0 +1,15 @@
+{
+  "chunk_size": 32,
+  "d_model": 512,
+  "decoder_layers": 12,
+  "dropout": 0.1,
+  "encoder_layers": 6,
+  "gradient_checkpointing": true,
+  "heads": 16,
+  "kappa": 6.0,
+  "position_scale": 255.0,
+  "rays": 24,
+  "score_clip": 30.0,
+  "transport_steps": 3,
+  "vocab_size": 50257
+}

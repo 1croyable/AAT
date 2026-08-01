@@ -1,0 +1,10 @@
+{
+  "cuda_runtime": "12.8",
+  "cudnn": 91002,
+  "datasets": "5.0.1",
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce RTX 5090",
+  "python": "3.12.3 (main, Aug 14 2025, 17:47:21) [GCC 13.3.0]",
+  "torch": "2.8.0+cu128",
+  "transformers": "5.14.1"
+}

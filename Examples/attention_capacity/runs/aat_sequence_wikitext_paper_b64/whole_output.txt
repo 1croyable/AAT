@@ -1,0 +1,1001 @@
+Running sequence AAT causality, gradient, and checkpoint tests...
+All sequence AAT smoke tests: OK
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+==============================================================================================================
+Deep-Transport aat.sequence | causal language modeling
+==============================================================================================================
+implementation=deep-transport-sequence-aat-e6-d12-v1 source_sha256=9d1dd14806e8 device=cuda precision=bf16 compile=False
+dataset=Salesforce/wikitext/wikitext-103-raw-v1 tokenizer=gpt2 vocab=50,257
+model: d=512 encoder=6 decoder=12 heads=16 rays/head=24 transport_steps=3 chunk=32 seq=256 long_seq=512
+parameters: total=41,835,926 (41.84M), tied_token_embedding_and_lm_head=25,731,584 (25.73M), aat_sequence_core=16,104,342 (16.10M), encoder_refinement_layers=7,957,704 (7.96M), final_memory_writer=706,438 (706.44K), decoder_layers=7,438,152 (7.44M), input_output_norms=2,048 (2.05K)
+Causality checks passed. The frozen aat.sequence core uses no FFN and builds no T-by-T attention matrix.
+Loading WikiText splits...
+Tokenizing train with 4 process(es)...
+train: 462,790 blocks, 118,474,240 prediction tokens
+Tokenizing validation with 4 process(es)...
+validation: 969 blocks, 248,064 prediction tokens
+Tokenizing validation_long_512 with 4 process(es)...
+validation_long_512: 485 blocks, 248,320 prediction tokens
+Tokenizing test with 4 process(es)...
+test: 1,111 blocks, 284,416 prediction tokens
+epoch=01/3 batch=25/7,231 update=25/21,693 loss=10.8648 ppl=52300.01 acc=0.0093 lr=1.198e-05 grad=0.938 tok/s=11,045 elapsed=0m37s eta=8h55m
+epoch=01/3 batch=50/7,231 update=50/21,693 loss=10.5527 ppl=38280.66 acc=0.0594 lr=2.350e-05 grad=0.958 tok/s=11,071 elapsed=1m14s eta=8h54m
+epoch=01/3 batch=75/7,231 update=75/21,693 loss=10.0114 ppl=22278.94 acc=0.1052 lr=3.502e-05 grad=1.420 tok/s=11,056 elapsed=1m51s eta=8h53m
+epoch=01/3 batch=100/7,231 update=100/21,693 loss=9.2084 ppl=9980.84 acc=0.1277 lr=4.654e-05 grad=1.687 tok/s=11,220 elapsed=2m27s eta=8h51m
+epoch=01/3 batch=125/7,231 update=125/21,693 loss=8.5456 ppl=5144.17 acc=0.1337 lr=5.806e-05 grad=1.497 tok/s=11,116 elapsed=3m04s eta=8h50m
+epoch=01/3 batch=150/7,231 update=150/21,693 loss=7.9427 ppl=2814.81 acc=0.1361 lr=6.959e-05 grad=1.213 tok/s=11,075 elapsed=3m41s eta=8h50m
+epoch=01/3 batch=175/7,231 update=175/21,693 loss=7.4000 ppl=1635.91 acc=0.1387 lr=8.111e-05 grad=0.739 tok/s=11,139 elapsed=4m18s eta=8h49m
+epoch=01/3 batch=200/7,231 update=200/21,693 loss=7.0411 ppl=1142.60 acc=0.1461 lr=9.263e-05 grad=0.446 tok/s=11,217 elapsed=4m54s eta=8h47m
+epoch=01/3 batch=225/7,231 update=225/21,693 loss=6.8336 ppl=928.50 acc=0.1634 lr=1.041e-04 grad=0.387 tok/s=11,112 elapsed=5m31s eta=8h47m
+epoch=01/3 batch=250/7,231 update=250/21,693 loss=6.6939 ppl=807.45 acc=0.1741 lr=1.157e-04 grad=0.390 tok/s=10,963 elapsed=6m08s eta=8h47m
+epoch=01/3 batch=275/7,231 update=275/21,693 loss=6.5711 ppl=714.18 acc=0.1829 lr=1.272e-04 grad=0.396 tok/s=11,155 elapsed=6m45s eta=8h46m
+epoch=01/3 batch=300/7,231 update=300/21,693 loss=6.4759 ppl=649.28 acc=0.1880 lr=1.387e-04 grad=0.438 tok/s=11,056 elapsed=7m22s eta=8h46m
+epoch=01/3 batch=325/7,231 update=325/21,693 loss=6.3898 ppl=595.72 acc=0.1931 lr=1.502e-04 grad=0.389 tok/s=11,218 elapsed=7m59s eta=8h45m
+epoch=01/3 batch=350/7,231 update=350/21,693 loss=6.2938 ppl=541.21 acc=0.1981 lr=1.618e-04 grad=0.434 tok/s=11,176 elapsed=8m35s eta=8h44m
+epoch=01/3 batch=375/7,231 update=375/21,693 loss=6.2225 ppl=503.97 acc=0.2007 lr=1.733e-04 grad=0.473 tok/s=11,167 elapsed=9m12s eta=8h43m
+epoch=01/3 batch=400/7,231 update=400/21,693 loss=6.1536 ppl=470.41 acc=0.2025 lr=1.848e-04 grad=0.500 tok/s=10,999 elapsed=9m49s eta=8h43m
+epoch=01/3 batch=425/7,231 update=425/21,693 loss=6.0809 ppl=437.41 acc=0.2074 lr=1.963e-04 grad=0.472 tok/s=11,099 elapsed=10m26s eta=8h42m
+epoch=01/3 batch=450/7,231 update=450/21,693 loss=6.0223 ppl=412.52 acc=0.2092 lr=2.000e-04 grad=0.477 tok/s=10,797 elapsed=11m04s eta=8h42m
+epoch=01/3 batch=475/7,231 update=475/21,693 loss=5.9718 ppl=392.20 acc=0.2109 lr=2.000e-04 grad=0.481 tok/s=11,117 elapsed=11m41s eta=8h42m
+epoch=01/3 batch=500/7,231 update=500/21,693 loss=5.9344 ppl=377.80 acc=0.2114 lr=2.000e-04 grad=0.495 tok/s=11,092 elapsed=12m18s eta=8h41m
+Saved latest checkpoint at update 500
+epoch=01/3 batch=525/7,231 update=525/21,693 loss=5.8568 ppl=349.60 acc=0.2179 lr=2.000e-04 grad=0.436 tok/s=10,200 elapsed=12m58s eta=8h43m
+epoch=01/3 batch=550/7,231 update=550/21,693 loss=5.8481 ppl=346.57 acc=0.2180 lr=2.000e-04 grad=0.462 tok/s=11,077 elapsed=13m35s eta=8h42m
+epoch=01/3 batch=575/7,231 update=575/21,693 loss=5.7962 ppl=329.06 acc=0.2201 lr=2.000e-04 grad=0.488 tok/s=11,154 elapsed=14m12s eta=8h41m
+epoch=01/3 batch=600/7,231 update=600/21,693 loss=5.7653 ppl=319.02 acc=0.2221 lr=2.000e-04 grad=0.484 tok/s=11,145 elapsed=14m49s eta=8h40m
+epoch=01/3 batch=625/7,231 update=625/21,693 loss=5.7349 ppl=309.50 acc=0.2222 lr=2.000e-04 grad=0.480 tok/s=11,136 elapsed=15m25s eta=8h40m
+epoch=01/3 batch=650/7,231 update=650/21,693 loss=5.6884 ppl=295.43 acc=0.2255 lr=2.000e-04 grad=0.515 tok/s=11,193 elapsed=16m02s eta=8h39m
+epoch=01/3 batch=675/7,231 update=675/21,693 loss=5.6608 ppl=287.38 acc=0.2269 lr=1.999e-04 grad=0.496 tok/s=11,126 elapsed=16m39s eta=8h38m
+epoch=01/3 batch=700/7,231 update=700/21,693 loss=5.6322 ppl=279.26 acc=0.2283 lr=1.999e-04 grad=0.496 tok/s=11,177 elapsed=17m15s eta=8h37m
+epoch=01/3 batch=725/7,231 update=725/21,693 loss=5.6112 ppl=273.46 acc=0.2294 lr=1.999e-04 grad=0.505 tok/s=11,121 elapsed=17m52s eta=8h37m
+epoch=01/3 batch=750/7,231 update=750/21,693 loss=5.5783 ppl=264.62 acc=0.2303 lr=1.999e-04 grad=0.527 tok/s=11,108 elapsed=18m29s eta=8h36m
+epoch=01/3 batch=775/7,231 update=775/21,693 loss=5.5735 ppl=263.36 acc=0.2309 lr=1.999e-04 grad=0.531 tok/s=11,039 elapsed=19m06s eta=8h35m
+epoch=01/3 batch=800/7,231 update=800/21,693 loss=5.5149 ppl=248.37 acc=0.2353 lr=1.999e-04 grad=0.507 tok/s=11,006 elapsed=19m43s eta=8h35m
+epoch=01/3 batch=825/7,231 update=825/21,693 loss=5.5144 ppl=248.25 acc=0.2348 lr=1.998e-04 grad=0.505 tok/s=11,176 elapsed=20m20s eta=8h34m
+epoch=01/3 batch=850/7,231 update=850/21,693 loss=5.4893 ppl=242.08 acc=0.2353 lr=1.998e-04 grad=0.468 tok/s=10,909 elapsed=20m58s eta=8h34m
+epoch=01/3 batch=875/7,231 update=875/21,693 loss=5.4600 ppl=235.11 acc=0.2383 lr=1.998e-04 grad=0.510 tok/s=11,036 elapsed=21m35s eta=8h33m
+epoch=01/3 batch=900/7,231 update=900/21,693 loss=5.4466 ppl=231.98 acc=0.2381 lr=1.998e-04 grad=0.499 tok/s=11,029 elapsed=22m12s eta=8h33m
+epoch=01/3 batch=925/7,231 update=925/21,693 loss=5.4013 ppl=221.69 acc=0.2405 lr=1.998e-04 grad=0.506 tok/s=11,025 elapsed=22m49s eta=8h32m
+epoch=01/3 batch=950/7,231 update=950/21,693 loss=5.4225 ppl=226.44 acc=0.2395 lr=1.997e-04 grad=0.506 tok/s=11,162 elapsed=23m26s eta=8h31m
+epoch=01/3 batch=975/7,231 update=975/21,693 loss=5.3743 ppl=215.78 acc=0.2415 lr=1.997e-04 grad=0.550 tok/s=11,152 elapsed=24m02s eta=8h31m
+epoch=01/3 batch=1,000/7,231 update=1,000/21,693 loss=5.3606 ppl=212.86 acc=0.2438 lr=1.997e-04 grad=0.528 tok/s=11,175 elapsed=24m39s eta=8h30m
+Saved latest checkpoint at update 1,000
+[validation] loss=5.2530 ppl=191.14 bpt=7.579 token_acc=0.2522 tokens=248,064 tok/s=54,943
+New best validation perplexity: 191.14
+epoch=01/3 batch=1,025/7,231 update=1,025/21,693 loss=5.3631 ppl=213.39 acc=0.2428 lr=1.997e-04 grad=0.528 tok/s=8,818 elapsed=25m26s eta=8h32m
+epoch=01/3 batch=1,050/7,231 update=1,050/21,693 loss=5.3371 ppl=207.91 acc=0.2454 lr=1.996e-04 grad=0.504 tok/s=11,217 elapsed=26m02s eta=8h32m
+epoch=01/3 batch=1,075/7,231 update=1,075/21,693 loss=5.3221 ppl=204.82 acc=0.2457 lr=1.996e-04 grad=0.560 tok/s=11,124 elapsed=26m39s eta=8h31m
+epoch=01/3 batch=1,100/7,231 update=1,100/21,693 loss=5.2954 ppl=199.43 acc=0.2469 lr=1.996e-04 grad=0.532 tok/s=11,136 elapsed=27m16s eta=8h30m
+epoch=01/3 batch=1,125/7,231 update=1,125/21,693 loss=5.2955 ppl=199.43 acc=0.2460 lr=1.995e-04 grad=0.504 tok/s=11,148 elapsed=27m52s eta=8h29m
+epoch=01/3 batch=1,150/7,231 update=1,150/21,693 loss=5.2664 ppl=193.72 acc=0.2475 lr=1.995e-04 grad=0.531 tok/s=11,061 elapsed=28m29s eta=8h29m
+epoch=01/3 batch=1,175/7,231 update=1,175/21,693 loss=5.2653 ppl=193.50 acc=0.2475 lr=1.995e-04 grad=0.519 tok/s=11,156 elapsed=29m06s eta=8h28m
+epoch=01/3 batch=1,200/7,231 update=1,200/21,693 loss=5.2382 ppl=188.32 acc=0.2480 lr=1.994e-04 grad=0.520 tok/s=11,193 elapsed=29m43s eta=8h27m
+epoch=01/3 batch=1,225/7,231 update=1,225/21,693 loss=5.2302 ppl=186.82 acc=0.2513 lr=1.994e-04 grad=0.520 tok/s=11,131 elapsed=30m20s eta=8h26m
+epoch=01/3 batch=1,250/7,231 update=1,250/21,693 loss=5.2003 ppl=181.33 acc=0.2520 lr=1.993e-04 grad=0.580 tok/s=10,944 elapsed=30m57s eta=8h26m
+epoch=01/3 batch=1,275/7,231 update=1,275/21,693 loss=5.1982 ppl=180.94 acc=0.2522 lr=1.993e-04 grad=0.525 tok/s=10,818 elapsed=31m35s eta=8h25m
+epoch=01/3 batch=1,300/7,231 update=1,300/21,693 loss=5.1850 ppl=178.57 acc=0.2533 lr=1.993e-04 grad=0.507 tok/s=11,125 elapsed=32m12s eta=8h25m
+epoch=01/3 batch=1,325/7,231 update=1,325/21,693 loss=5.1527 ppl=172.90 acc=0.2562 lr=1.992e-04 grad=0.528 tok/s=11,110 elapsed=32m49s eta=8h24m
+epoch=01/3 batch=1,350/7,231 update=1,350/21,693 loss=5.1543 ppl=173.18 acc=0.2551 lr=1.992e-04 grad=0.544 tok/s=11,034 elapsed=33m26s eta=8h23m
+epoch=01/3 batch=1,375/7,231 update=1,375/21,693 loss=5.1597 ppl=174.11 acc=0.2544 lr=1.991e-04 grad=0.540 tok/s=11,102 elapsed=34m03s eta=8h23m
+epoch=01/3 batch=1,400/7,231 update=1,400/21,693 loss=5.1016 ppl=164.29 acc=0.2587 lr=1.991e-04 grad=0.578 tok/s=11,133 elapsed=34m39s eta=8h22m
+epoch=01/3 batch=1,425/7,231 update=1,425/21,693 loss=5.1041 ppl=164.69 acc=0.2589 lr=1.990e-04 grad=0.555 tok/s=11,194 elapsed=35m16s eta=8h21m
+epoch=01/3 batch=1,450/7,231 update=1,450/21,693 loss=5.1267 ppl=168.47 acc=0.2573 lr=1.990e-04 grad=0.544 tok/s=11,193 elapsed=35m53s eta=8h20m
+epoch=01/3 batch=1,475/7,231 update=1,475/21,693 loss=5.1034 ppl=164.59 acc=0.2572 lr=1.989e-04 grad=0.533 tok/s=11,122 elapsed=36m29s eta=8h20m
+epoch=01/3 batch=1,500/7,231 update=1,500/21,693 loss=5.0841 ppl=161.43 acc=0.2603 lr=1.989e-04 grad=0.537 tok/s=10,872 elapsed=37m07s eta=8h19m
+Saved latest checkpoint at update 1,500
+epoch=01/3 batch=1,525/7,231 update=1,525/21,693 loss=5.0898 ppl=162.35 acc=0.2585 lr=1.988e-04 grad=0.569 tok/s=10,638 elapsed=37m46s eta=8h19m
+epoch=01/3 batch=1,550/7,231 update=1,550/21,693 loss=5.0657 ppl=158.50 acc=0.2602 lr=1.988e-04 grad=0.578 tok/s=11,098 elapsed=38m22s eta=8h18m
+epoch=01/3 batch=1,575/7,231 update=1,575/21,693 loss=5.0439 ppl=155.07 acc=0.2624 lr=1.987e-04 grad=0.528 tok/s=11,163 elapsed=38m59s eta=8h18m
+epoch=01/3 batch=1,600/7,231 update=1,600/21,693 loss=5.0483 ppl=155.75 acc=0.2609 lr=1.987e-04 grad=0.597 tok/s=11,133 elapsed=39m36s eta=8h17m
+epoch=01/3 batch=1,625/7,231 update=1,625/21,693 loss=5.0532 ppl=156.52 acc=0.2600 lr=1.986e-04 grad=0.567 tok/s=11,161 elapsed=40m13s eta=8h16m
+epoch=01/3 batch=1,650/7,231 update=1,650/21,693 loss=5.0143 ppl=150.55 acc=0.2634 lr=1.986e-04 grad=0.547 tok/s=11,134 elapsed=40m49s eta=8h15m
+epoch=01/3 batch=1,675/7,231 update=1,675/21,693 loss=5.0293 ppl=152.83 acc=0.2630 lr=1.985e-04 grad=0.540 tok/s=11,128 elapsed=41m26s eta=8h15m
+epoch=01/3 batch=1,700/7,231 update=1,700/21,693 loss=5.0328 ppl=153.37 acc=0.2631 lr=1.984e-04 grad=0.513 tok/s=11,045 elapsed=42m03s eta=8h14m
+epoch=01/3 batch=1,725/7,231 update=1,725/21,693 loss=4.9864 ppl=146.41 acc=0.2667 lr=1.984e-04 grad=0.524 tok/s=10,853 elapsed=42m41s eta=8h14m
+epoch=01/3 batch=1,750/7,231 update=1,750/21,693 loss=4.9890 ppl=146.78 acc=0.2659 lr=1.983e-04 grad=0.578 tok/s=11,068 elapsed=43m18s eta=8h13m
+epoch=01/3 batch=1,775/7,231 update=1,775/21,693 loss=4.9721 ppl=144.32 acc=0.2658 lr=1.982e-04 grad=0.559 tok/s=11,154 elapsed=43m55s eta=8h12m
+epoch=01/3 batch=1,800/7,231 update=1,800/21,693 loss=4.9886 ppl=146.73 acc=0.2623 lr=1.982e-04 grad=0.550 tok/s=11,102 elapsed=44m32s eta=8h12m
+epoch=01/3 batch=1,825/7,231 update=1,825/21,693 loss=4.9736 ppl=144.54 acc=0.2648 lr=1.981e-04 grad=0.530 tok/s=11,137 elapsed=45m08s eta=8h11m
+epoch=01/3 batch=1,850/7,231 update=1,850/21,693 loss=4.9581 ppl=142.32 acc=0.2675 lr=1.980e-04 grad=0.544 tok/s=11,091 elapsed=45m45s eta=8h10m
+epoch=01/3 batch=1,875/7,231 update=1,875/21,693 loss=4.9316 ppl=138.61 acc=0.2689 lr=1.980e-04 grad=0.558 tok/s=11,187 elapsed=46m22s eta=8h10m
+epoch=01/3 batch=1,900/7,231 update=1,900/21,693 loss=4.9556 ppl=141.97 acc=0.2669 lr=1.979e-04 grad=0.537 tok/s=11,122 elapsed=46m59s eta=8h09m
+epoch=01/3 batch=1,925/7,231 update=1,925/21,693 loss=4.9271 ppl=137.97 acc=0.2706 lr=1.978e-04 grad=0.512 tok/s=10,242 elapsed=47m39s eta=8h09m
+epoch=01/3 batch=1,950/7,231 update=1,950/21,693 loss=4.9379 ppl=139.48 acc=0.2669 lr=1.978e-04 grad=0.529 tok/s=11,013 elapsed=48m16s eta=8h08m
+epoch=01/3 batch=1,975/7,231 update=1,975/21,693 loss=4.9312 ppl=138.54 acc=0.2676 lr=1.977e-04 grad=0.566 tok/s=11,129 elapsed=48m53s eta=8h08m
+epoch=01/3 batch=2,000/7,231 update=2,000/21,693 loss=4.8978 ppl=133.99 acc=0.2705 lr=1.976e-04 grad=0.510 tok/s=11,172 elapsed=49m29s eta=8h07m
+Saved latest checkpoint at update 2,000
+[validation] loss=4.7813 ppl=119.26 bpt=6.898 token_acc=0.2808 tokens=248,064 tok/s=54,688
+New best validation perplexity: 119.26
+epoch=01/3 batch=2,025/7,231 update=2,025/21,693 loss=4.8949 ppl=133.60 acc=0.2712 lr=1.975e-04 grad=0.539 tok/s=8,763 elapsed=50m16s eta=8h08m
+epoch=01/3 batch=2,050/7,231 update=2,050/21,693 loss=4.8974 ppl=133.94 acc=0.2694 lr=1.974e-04 grad=0.518 tok/s=11,010 elapsed=50m53s eta=8h07m
+epoch=01/3 batch=2,075/7,231 update=2,075/21,693 loss=4.8861 ppl=132.44 acc=0.2724 lr=1.974e-04 grad=0.555 tok/s=11,179 elapsed=51m30s eta=8h06m
+epoch=01/3 batch=2,100/7,231 update=2,100/21,693 loss=4.8737 ppl=130.80 acc=0.2732 lr=1.973e-04 grad=0.542 tok/s=11,026 elapsed=52m07s eta=8h06m
+epoch=01/3 batch=2,125/7,231 update=2,125/21,693 loss=4.8717 ppl=130.55 acc=0.2722 lr=1.972e-04 grad=0.520 tok/s=11,029 elapsed=52m44s eta=8h05m
+epoch=01/3 batch=2,150/7,231 update=2,150/21,693 loss=4.8383 ppl=126.25 acc=0.2753 lr=1.971e-04 grad=0.528 tok/s=10,542 elapsed=53m23s eta=8h05m
+epoch=01/3 batch=2,175/7,231 update=2,175/21,693 loss=4.8380 ppl=126.22 acc=0.2751 lr=1.970e-04 grad=0.562 tok/s=11,004 elapsed=54m00s eta=8h04m
+epoch=01/3 batch=2,200/7,231 update=2,200/21,693 loss=4.8567 ppl=128.60 acc=0.2731 lr=1.970e-04 grad=0.557 tok/s=11,166 elapsed=54m37s eta=8h04m
+epoch=01/3 batch=2,225/7,231 update=2,225/21,693 loss=4.8263 ppl=124.75 acc=0.2760 lr=1.969e-04 grad=0.555 tok/s=10,270 elapsed=55m17s eta=8h03m
+epoch=01/3 batch=2,250/7,231 update=2,250/21,693 loss=4.8363 ppl=126.00 acc=0.2737 lr=1.968e-04 grad=0.569 tok/s=11,118 elapsed=55m54s eta=8h03m
+epoch=01/3 batch=2,275/7,231 update=2,275/21,693 loss=4.8259 ppl=124.69 acc=0.2752 lr=1.967e-04 grad=0.549 tok/s=11,184 elapsed=56m30s eta=8h02m
+epoch=01/3 batch=2,300/7,231 update=2,300/21,693 loss=4.8060 ppl=122.24 acc=0.2765 lr=1.966e-04 grad=0.543 tok/s=11,158 elapsed=57m07s eta=8h01m
+epoch=01/3 batch=2,325/7,231 update=2,325/21,693 loss=4.8029 ppl=121.87 acc=0.2777 lr=1.965e-04 grad=0.560 tok/s=11,171 elapsed=57m44s eta=8h00m
+epoch=01/3 batch=2,350/7,231 update=2,350/21,693 loss=4.8411 ppl=126.61 acc=0.2739 lr=1.964e-04 grad=0.545 tok/s=11,201 elapsed=58m20s eta=8h00m
+epoch=01/3 batch=2,375/7,231 update=2,375/21,693 loss=4.8033 ppl=121.91 acc=0.2761 lr=1.963e-04 grad=0.597 tok/s=11,096 elapsed=58m57s eta=7h59m
+epoch=01/3 batch=2,400/7,231 update=2,400/21,693 loss=4.7921 ppl=120.56 acc=0.2765 lr=1.962e-04 grad=0.555 tok/s=11,215 elapsed=59m34s eta=7h58m
+epoch=01/3 batch=2,425/7,231 update=2,425/21,693 loss=4.7971 ppl=121.16 acc=0.2774 lr=1.961e-04 grad=0.550 tok/s=11,066 elapsed=1h00m eta=7h58m
+epoch=01/3 batch=2,450/7,231 update=2,450/21,693 loss=4.7805 ppl=119.16 acc=0.2790 lr=1.960e-04 grad=0.553 tok/s=11,085 elapsed=1h00m eta=7h57m
+epoch=01/3 batch=2,475/7,231 update=2,475/21,693 loss=4.7760 ppl=118.63 acc=0.2791 lr=1.959e-04 grad=0.541 tok/s=10,698 elapsed=1h01m eta=7h57m
+epoch=01/3 batch=2,500/7,231 update=2,500/21,693 loss=4.7783 ppl=118.90 acc=0.2775 lr=1.958e-04 grad=0.549 tok/s=10,871 elapsed=1h02m eta=7h56m
+Saved latest checkpoint at update 2,500
+epoch=01/3 batch=2,525/7,231 update=2,525/21,693 loss=4.7658 ppl=117.43 acc=0.2785 lr=1.957e-04 grad=0.531 tok/s=10,663 elapsed=1h02m eta=7h56m
+epoch=01/3 batch=2,550/7,231 update=2,550/21,693 loss=4.7368 ppl=114.07 acc=0.2825 lr=1.956e-04 grad=0.577 tok/s=11,138 elapsed=1h03m eta=7h55m
+epoch=01/3 batch=2,575/7,231 update=2,575/21,693 loss=4.7618 ppl=116.96 acc=0.2785 lr=1.955e-04 grad=0.575 tok/s=11,075 elapsed=1h03m eta=7h54m
+epoch=01/3 batch=2,600/7,231 update=2,600/21,693 loss=4.7576 ppl=116.47 acc=0.2787 lr=1.954e-04 grad=0.548 tok/s=11,080 elapsed=1h04m eta=7h54m
+epoch=01/3 batch=2,625/7,231 update=2,625/21,693 loss=4.7488 ppl=115.44 acc=0.2779 lr=1.953e-04 grad=0.577 tok/s=11,189 elapsed=1h05m eta=7h53m
+epoch=01/3 batch=2,650/7,231 update=2,650/21,693 loss=4.7609 ppl=116.86 acc=0.2802 lr=1.952e-04 grad=0.560 tok/s=11,139 elapsed=1h05m eta=7h52m
+epoch=01/3 batch=2,675/7,231 update=2,675/21,693 loss=4.7396 ppl=114.39 acc=0.2795 lr=1.951e-04 grad=0.539 tok/s=11,122 elapsed=1h06m eta=7h52m
+epoch=01/3 batch=2,700/7,231 update=2,700/21,693 loss=4.7396 ppl=114.39 acc=0.2796 lr=1.950e-04 grad=0.555 tok/s=10,874 elapsed=1h07m eta=7h51m
+epoch=01/3 batch=2,725/7,231 update=2,725/21,693 loss=4.7434 ppl=114.82 acc=0.2807 lr=1.949e-04 grad=0.558 tok/s=11,174 elapsed=1h07m eta=7h50m
+epoch=01/3 batch=2,750/7,231 update=2,750/21,693 loss=4.7164 ppl=111.76 acc=0.2831 lr=1.948e-04 grad=0.577 tok/s=11,217 elapsed=1h08m eta=7h50m
+epoch=01/3 batch=2,775/7,231 update=2,775/21,693 loss=4.6944 ppl=109.33 acc=0.2832 lr=1.947e-04 grad=0.548 tok/s=11,067 elapsed=1h08m eta=7h49m
+epoch=01/3 batch=2,800/7,231 update=2,800/21,693 loss=4.7083 ppl=110.86 acc=0.2813 lr=1.946e-04 grad=0.552 tok/s=11,172 elapsed=1h09m eta=7h48m
+epoch=01/3 batch=2,825/7,231 update=2,825/21,693 loss=4.7176 ppl=111.89 acc=0.2819 lr=1.944e-04 grad=0.560 tok/s=10,817 elapsed=1h10m eta=7h48m
+epoch=01/3 batch=2,850/7,231 update=2,850/21,693 loss=4.6785 ppl=107.61 acc=0.2852 lr=1.943e-04 grad=0.564 tok/s=11,082 elapsed=1h10m eta=7h47m
+epoch=01/3 batch=2,875/7,231 update=2,875/21,693 loss=4.6955 ppl=109.45 acc=0.2829 lr=1.942e-04 grad=0.558 tok/s=11,173 elapsed=1h11m eta=7h46m
+epoch=01/3 batch=2,900/7,231 update=2,900/21,693 loss=4.6974 ppl=109.66 acc=0.2842 lr=1.941e-04 grad=0.546 tok/s=10,998 elapsed=1h11m eta=7h46m
+epoch=01/3 batch=2,925/7,231 update=2,925/21,693 loss=4.6857 ppl=108.39 acc=0.2845 lr=1.940e-04 grad=0.592 tok/s=11,073 elapsed=1h12m eta=7h45m
+epoch=01/3 batch=2,950/7,231 update=2,950/21,693 loss=4.6883 ppl=108.67 acc=0.2836 lr=1.939e-04 grad=0.586 tok/s=11,015 elapsed=1h13m eta=7h44m
+epoch=01/3 batch=2,975/7,231 update=2,975/21,693 loss=4.6884 ppl=108.68 acc=0.2854 lr=1.937e-04 grad=0.550 tok/s=11,027 elapsed=1h13m eta=7h44m
+epoch=01/3 batch=3,000/7,231 update=3,000/21,693 loss=4.6745 ppl=107.18 acc=0.2835 lr=1.936e-04 grad=0.561 tok/s=11,140 elapsed=1h14m eta=7h43m
+Saved latest checkpoint at update 3,000
+[validation] loss=4.5497 ppl=94.61 bpt=6.564 token_acc=0.2956 tokens=248,064 tok/s=54,993
+New best validation perplexity: 94.61
+epoch=01/3 batch=3,025/7,231 update=3,025/21,693 loss=4.6586 ppl=105.49 acc=0.2868 lr=1.935e-04 grad=0.563 tok/s=8,313 elapsed=1h15m eta=7h44m
+epoch=01/3 batch=3,050/7,231 update=3,050/21,693 loss=4.6665 ppl=106.33 acc=0.2853 lr=1.934e-04 grad=0.549 tok/s=11,124 elapsed=1h15m eta=7h43m
+epoch=01/3 batch=3,075/7,231 update=3,075/21,693 loss=4.6574 ppl=105.36 acc=0.2858 lr=1.932e-04 grad=0.569 tok/s=10,818 elapsed=1h16m eta=7h43m
+epoch=01/3 batch=3,100/7,231 update=3,100/21,693 loss=4.6608 ppl=105.72 acc=0.2865 lr=1.931e-04 grad=0.566 tok/s=10,635 elapsed=1h17m eta=7h42m
+epoch=01/3 batch=3,125/7,231 update=3,125/21,693 loss=4.6689 ppl=106.58 acc=0.2832 lr=1.930e-04 grad=0.572 tok/s=11,108 elapsed=1h17m eta=7h41m
+epoch=01/3 batch=3,150/7,231 update=3,150/21,693 loss=4.6427 ppl=103.82 acc=0.2872 lr=1.928e-04 grad=0.561 tok/s=10,570 elapsed=1h18m eta=7h41m
+epoch=01/3 batch=3,175/7,231 update=3,175/21,693 loss=4.6174 ppl=101.23 acc=0.2883 lr=1.927e-04 grad=0.566 tok/s=11,082 elapsed=1h18m eta=7h40m
+epoch=01/3 batch=3,200/7,231 update=3,200/21,693 loss=4.6284 ppl=102.35 acc=0.2886 lr=1.926e-04 grad=0.577 tok/s=11,077 elapsed=1h19m eta=7h40m
+epoch=01/3 batch=3,225/7,231 update=3,225/21,693 loss=4.6201 ppl=101.51 acc=0.2887 lr=1.925e-04 grad=0.574 tok/s=11,095 elapsed=1h20m eta=7h39m
+epoch=01/3 batch=3,250/7,231 update=3,250/21,693 loss=4.6077 ppl=100.25 acc=0.2895 lr=1.923e-04 grad=0.566 tok/s=10,869 elapsed=1h20m eta=7h38m
+epoch=01/3 batch=3,275/7,231 update=3,275/21,693 loss=4.6588 ppl=105.51 acc=0.2849 lr=1.922e-04 grad=0.544 tok/s=10,945 elapsed=1h21m eta=7h38m
+epoch=01/3 batch=3,300/7,231 update=3,300/21,693 loss=4.6058 ppl=100.07 acc=0.2901 lr=1.920e-04 grad=0.553 tok/s=10,981 elapsed=1h22m eta=7h37m
+epoch=01/3 batch=3,325/7,231 update=3,325/21,693 loss=4.5946 ppl=98.95 acc=0.2900 lr=1.919e-04 grad=0.566 tok/s=11,072 elapsed=1h22m eta=7h36m
+epoch=01/3 batch=3,350/7,231 update=3,350/21,693 loss=4.6045 ppl=99.93 acc=0.2909 lr=1.918e-04 grad=0.568 tok/s=11,056 elapsed=1h23m eta=7h36m
+epoch=01/3 batch=3,375/7,231 update=3,375/21,693 loss=4.6026 ppl=99.75 acc=0.2891 lr=1.916e-04 grad=0.593 tok/s=10,997 elapsed=1h23m eta=7h35m
+epoch=01/3 batch=3,400/7,231 update=3,400/21,693 loss=4.6176 ppl=101.25 acc=0.2881 lr=1.915e-04 grad=0.574 tok/s=10,991 elapsed=1h24m eta=7h35m
+epoch=01/3 batch=3,425/7,231 update=3,425/21,693 loss=4.6041 ppl=99.90 acc=0.2905 lr=1.914e-04 grad=0.576 tok/s=11,140 elapsed=1h25m eta=7h34m
+epoch=01/3 batch=3,450/7,231 update=3,450/21,693 loss=4.5841 ppl=97.92 acc=0.2893 lr=1.912e-04 grad=0.552 tok/s=10,859 elapsed=1h25m eta=7h33m
+epoch=01/3 batch=3,475/7,231 update=3,475/21,693 loss=4.6045 ppl=99.93 acc=0.2894 lr=1.911e-04 grad=0.578 tok/s=11,096 elapsed=1h26m eta=7h33m
+epoch=01/3 batch=3,500/7,231 update=3,500/21,693 loss=4.6003 ppl=99.52 acc=0.2896 lr=1.909e-04 grad=0.564 tok/s=11,154 elapsed=1h27m eta=7h32m
+Saved latest checkpoint at update 3,500
+epoch=01/3 batch=3,525/7,231 update=3,525/21,693 loss=4.5893 ppl=98.43 acc=0.2909 lr=1.908e-04 grad=0.571 tok/s=10,608 elapsed=1h27m eta=7h31m
+epoch=01/3 batch=3,550/7,231 update=3,550/21,693 loss=4.5800 ppl=97.51 acc=0.2896 lr=1.906e-04 grad=0.585 tok/s=11,144 elapsed=1h28m eta=7h31m
+epoch=01/3 batch=3,575/7,231 update=3,575/21,693 loss=4.5662 ppl=96.17 acc=0.2924 lr=1.905e-04 grad=0.578 tok/s=10,996 elapsed=1h28m eta=7h30m
+epoch=01/3 batch=3,600/7,231 update=3,600/21,693 loss=4.5658 ppl=96.14 acc=0.2924 lr=1.903e-04 grad=0.576 tok/s=11,168 elapsed=1h29m eta=7h30m
+epoch=01/3 batch=3,625/7,231 update=3,625/21,693 loss=4.5637 ppl=95.94 acc=0.2928 lr=1.902e-04 grad=0.571 tok/s=11,058 elapsed=1h30m eta=7h29m
+epoch=01/3 batch=3,650/7,231 update=3,650/21,693 loss=4.5492 ppl=94.56 acc=0.2931 lr=1.900e-04 grad=0.586 tok/s=11,105 elapsed=1h30m eta=7h28m
+epoch=01/3 batch=3,675/7,231 update=3,675/21,693 loss=4.5573 ppl=95.32 acc=0.2929 lr=1.899e-04 grad=0.565 tok/s=10,933 elapsed=1h31m eta=7h28m
+epoch=01/3 batch=3,700/7,231 update=3,700/21,693 loss=4.5768 ppl=97.20 acc=0.2903 lr=1.897e-04 grad=0.566 tok/s=10,806 elapsed=1h32m eta=7h27m
+epoch=01/3 batch=3,725/7,231 update=3,725/21,693 loss=4.5373 ppl=93.44 acc=0.2943 lr=1.896e-04 grad=0.556 tok/s=11,126 elapsed=1h32m eta=7h26m
+epoch=01/3 batch=3,750/7,231 update=3,750/21,693 loss=4.5552 ppl=95.13 acc=0.2928 lr=1.894e-04 grad=0.551 tok/s=10,959 elapsed=1h33m eta=7h26m
+epoch=01/3 batch=3,775/7,231 update=3,775/21,693 loss=4.5364 ppl=93.36 acc=0.2939 lr=1.893e-04 grad=0.570 tok/s=11,014 elapsed=1h33m eta=7h25m
+epoch=01/3 batch=3,800/7,231 update=3,800/21,693 loss=4.5303 ppl=92.79 acc=0.2941 lr=1.891e-04 grad=0.599 tok/s=11,132 elapsed=1h34m eta=7h24m
+epoch=01/3 batch=3,825/7,231 update=3,825/21,693 loss=4.5640 ppl=95.96 acc=0.2931 lr=1.889e-04 grad=0.561 tok/s=10,927 elapsed=1h35m eta=7h24m
+epoch=01/3 batch=3,850/7,231 update=3,850/21,693 loss=4.5307 ppl=92.83 acc=0.2934 lr=1.888e-04 grad=0.600 tok/s=10,979 elapsed=1h35m eta=7h23m
+epoch=01/3 batch=3,875/7,231 update=3,875/21,693 loss=4.5209 ppl=91.91 acc=0.2957 lr=1.886e-04 grad=0.576 tok/s=11,087 elapsed=1h36m eta=7h23m
+epoch=01/3 batch=3,900/7,231 update=3,900/21,693 loss=4.5515 ppl=94.77 acc=0.2931 lr=1.885e-04 grad=0.554 tok/s=11,083 elapsed=1h36m eta=7h22m
+epoch=01/3 batch=3,925/7,231 update=3,925/21,693 loss=4.5409 ppl=93.77 acc=0.2937 lr=1.883e-04 grad=0.566 tok/s=11,081 elapsed=1h37m eta=7h21m
+epoch=01/3 batch=3,950/7,231 update=3,950/21,693 loss=4.5485 ppl=94.49 acc=0.2925 lr=1.881e-04 grad=0.576 tok/s=11,101 elapsed=1h38m eta=7h21m
+epoch=01/3 batch=3,975/7,231 update=3,975/21,693 loss=4.5183 ppl=91.68 acc=0.2960 lr=1.880e-04 grad=0.581 tok/s=10,867 elapsed=1h38m eta=7h20m
+epoch=01/3 batch=4,000/7,231 update=4,000/21,693 loss=4.5199 ppl=91.83 acc=0.2957 lr=1.878e-04 grad=0.577 tok/s=11,053 elapsed=1h39m eta=7h19m
+Saved latest checkpoint at update 4,000
+[validation] loss=4.3902 ppl=80.65 bpt=6.334 token_acc=0.3070 tokens=248,064 tok/s=55,145
+New best validation perplexity: 80.65
+epoch=01/3 batch=4,025/7,231 update=4,025/21,693 loss=4.5227 ppl=92.09 acc=0.2951 lr=1.876e-04 grad=0.596 tok/s=8,761 elapsed=1h40m eta=7h19m
+epoch=01/3 batch=4,050/7,231 update=4,050/21,693 loss=4.5233 ppl=92.14 acc=0.2948 lr=1.875e-04 grad=0.584 tok/s=11,060 elapsed=1h40m eta=7h19m
+epoch=01/3 batch=4,075/7,231 update=4,075/21,693 loss=4.5117 ppl=91.08 acc=0.2958 lr=1.873e-04 grad=0.568 tok/s=11,044 elapsed=1h41m eta=7h18m
+epoch=01/3 batch=4,100/7,231 update=4,100/21,693 loss=4.4903 ppl=89.15 acc=0.2975 lr=1.871e-04 grad=0.590 tok/s=11,136 elapsed=1h42m eta=7h18m
+epoch=01/3 batch=4,125/7,231 update=4,125/21,693 loss=4.5187 ppl=91.72 acc=0.2945 lr=1.869e-04 grad=0.598 tok/s=11,066 elapsed=1h42m eta=7h17m
+epoch=01/3 batch=4,150/7,231 update=4,150/21,693 loss=4.5016 ppl=90.16 acc=0.2974 lr=1.868e-04 grad=0.603 tok/s=11,066 elapsed=1h43m eta=7h16m
+epoch=01/3 batch=4,175/7,231 update=4,175/21,693 loss=4.5129 ppl=91.18 acc=0.2966 lr=1.866e-04 grad=0.583 tok/s=11,080 elapsed=1h43m eta=7h16m
+epoch=01/3 batch=4,200/7,231 update=4,200/21,693 loss=4.4917 ppl=89.27 acc=0.2972 lr=1.864e-04 grad=0.582 tok/s=11,125 elapsed=1h44m eta=7h15m
+epoch=01/3 batch=4,225/7,231 update=4,225/21,693 loss=4.5164 ppl=91.51 acc=0.2957 lr=1.862e-04 grad=0.563 tok/s=11,186 elapsed=1h45m eta=7h14m
+epoch=01/3 batch=4,250/7,231 update=4,250/21,693 loss=4.4925 ppl=89.35 acc=0.2968 lr=1.861e-04 grad=0.575 tok/s=11,208 elapsed=1h45m eta=7h14m
+epoch=01/3 batch=4,275/7,231 update=4,275/21,693 loss=4.4958 ppl=89.64 acc=0.2977 lr=1.859e-04 grad=0.595 tok/s=11,035 elapsed=1h46m eta=7h13m
+epoch=01/3 batch=4,300/7,231 update=4,300/21,693 loss=4.4968 ppl=89.73 acc=0.2981 lr=1.857e-04 grad=0.587 tok/s=11,184 elapsed=1h46m eta=7h12m
+epoch=01/3 batch=4,325/7,231 update=4,325/21,693 loss=4.4793 ppl=88.17 acc=0.2983 lr=1.855e-04 grad=0.595 tok/s=11,033 elapsed=1h47m eta=7h12m
+epoch=01/3 batch=4,350/7,231 update=4,350/21,693 loss=4.4819 ppl=88.40 acc=0.2992 lr=1.853e-04 grad=0.621 tok/s=11,095 elapsed=1h48m eta=7h11m
+epoch=01/3 batch=4,375/7,231 update=4,375/21,693 loss=4.4873 ppl=88.88 acc=0.2970 lr=1.852e-04 grad=0.586 tok/s=11,122 elapsed=1h48m eta=7h10m
+epoch=01/3 batch=4,400/7,231 update=4,400/21,693 loss=4.4634 ppl=86.78 acc=0.2975 lr=1.850e-04 grad=0.589 tok/s=11,110 elapsed=1h49m eta=7h10m
+epoch=01/3 batch=4,425/7,231 update=4,425/21,693 loss=4.4866 ppl=88.82 acc=0.2973 lr=1.848e-04 grad=0.573 tok/s=11,103 elapsed=1h50m eta=7h09m
+epoch=01/3 batch=4,450/7,231 update=4,450/21,693 loss=4.4652 ppl=86.94 acc=0.2995 lr=1.846e-04 grad=0.611 tok/s=11,158 elapsed=1h50m eta=7h08m
+epoch=01/3 batch=4,475/7,231 update=4,475/21,693 loss=4.4425 ppl=84.98 acc=0.3015 lr=1.844e-04 grad=0.591 tok/s=11,066 elapsed=1h51m eta=7h08m
+epoch=01/3 batch=4,500/7,231 update=4,500/21,693 loss=4.4677 ppl=87.16 acc=0.2996 lr=1.842e-04 grad=0.593 tok/s=11,110 elapsed=1h51m eta=7h07m
+Saved latest checkpoint at update 4,500
+epoch=01/3 batch=4,525/7,231 update=4,525/21,693 loss=4.4556 ppl=86.11 acc=0.2984 lr=1.840e-04 grad=0.612 tok/s=10,600 elapsed=1h52m eta=7h07m
+epoch=01/3 batch=4,550/7,231 update=4,550/21,693 loss=4.4727 ppl=87.59 acc=0.2993 lr=1.839e-04 grad=0.575 tok/s=10,980 elapsed=1h53m eta=7h06m
+epoch=01/3 batch=4,575/7,231 update=4,575/21,693 loss=4.4293 ppl=83.87 acc=0.3026 lr=1.837e-04 grad=0.597 tok/s=11,114 elapsed=1h53m eta=7h05m
+epoch=01/3 batch=4,600/7,231 update=4,600/21,693 loss=4.4434 ppl=85.06 acc=0.2999 lr=1.835e-04 grad=0.585 tok/s=10,746 elapsed=1h54m eta=7h05m
+epoch=01/3 batch=4,625/7,231 update=4,625/21,693 loss=4.4456 ppl=85.25 acc=0.3019 lr=1.833e-04 grad=0.594 tok/s=11,154 elapsed=1h55m eta=7h04m
+epoch=01/3 batch=4,650/7,231 update=4,650/21,693 loss=4.4445 ppl=85.16 acc=0.2995 lr=1.831e-04 grad=0.590 tok/s=10,949 elapsed=1h55m eta=7h03m
+epoch=01/3 batch=4,675/7,231 update=4,675/21,693 loss=4.4329 ppl=84.17 acc=0.3014 lr=1.829e-04 grad=0.598 tok/s=10,838 elapsed=1h56m eta=7h03m
+epoch=01/3 batch=4,700/7,231 update=4,700/21,693 loss=4.4494 ppl=85.57 acc=0.3004 lr=1.827e-04 grad=0.602 tok/s=11,071 elapsed=1h56m eta=7h02m
+epoch=01/3 batch=4,725/7,231 update=4,725/21,693 loss=4.4083 ppl=82.13 acc=0.3051 lr=1.825e-04 grad=0.606 tok/s=11,093 elapsed=1h57m eta=7h02m
+epoch=01/3 batch=4,750/7,231 update=4,750/21,693 loss=4.4284 ppl=83.80 acc=0.3020 lr=1.823e-04 grad=0.579 tok/s=11,026 elapsed=1h58m eta=7h01m
+epoch=01/3 batch=4,775/7,231 update=4,775/21,693 loss=4.4265 ppl=83.64 acc=0.3022 lr=1.821e-04 grad=0.582 tok/s=11,161 elapsed=1h58m eta=7h00m
+epoch=01/3 batch=4,800/7,231 update=4,800/21,693 loss=4.4133 ppl=82.54 acc=0.3027 lr=1.819e-04 grad=0.623 tok/s=11,126 elapsed=1h59m eta=7h00m
+epoch=01/3 batch=4,825/7,231 update=4,825/21,693 loss=4.4237 ppl=83.41 acc=0.3032 lr=1.817e-04 grad=0.595 tok/s=11,092 elapsed=1h59m eta=6h59m
+epoch=01/3 batch=4,850/7,231 update=4,850/21,693 loss=4.4024 ppl=81.65 acc=0.3049 lr=1.815e-04 grad=0.620 tok/s=11,134 elapsed=2h00m eta=6h58m
+epoch=01/3 batch=4,875/7,231 update=4,875/21,693 loss=4.4287 ppl=83.82 acc=0.3007 lr=1.813e-04 grad=0.585 tok/s=10,989 elapsed=2h01m eta=6h58m
+epoch=01/3 batch=4,900/7,231 update=4,900/21,693 loss=4.4244 ppl=83.47 acc=0.3010 lr=1.811e-04 grad=0.584 tok/s=10,958 elapsed=2h01m eta=6h57m
+epoch=01/3 batch=4,925/7,231 update=4,925/21,693 loss=4.3945 ppl=81.00 acc=0.3052 lr=1.809e-04 grad=0.581 tok/s=10,902 elapsed=2h02m eta=6h56m
+epoch=01/3 batch=4,950/7,231 update=4,950/21,693 loss=4.4373 ppl=84.54 acc=0.3009 lr=1.807e-04 grad=0.610 tok/s=10,731 elapsed=2h03m eta=6h56m
+epoch=01/3 batch=4,975/7,231 update=4,975/21,693 loss=4.4130 ppl=82.52 acc=0.3039 lr=1.805e-04 grad=0.602 tok/s=11,128 elapsed=2h03m eta=6h55m
+epoch=01/3 batch=5,000/7,231 update=5,000/21,693 loss=4.3927 ppl=80.86 acc=0.3049 lr=1.803e-04 grad=0.587 tok/s=11,086 elapsed=2h04m eta=6h55m
+Saved latest checkpoint at update 5,000
+[validation] loss=4.2736 ppl=71.78 bpt=6.166 token_acc=0.3156 tokens=248,064 tok/s=54,883
+New best validation perplexity: 71.78
+epoch=01/3 batch=5,025/7,231 update=5,025/21,693 loss=4.4017 ppl=81.59 acc=0.3055 lr=1.801e-04 grad=0.602 tok/s=8,917 elapsed=2h05m eta=6h54m
+epoch=01/3 batch=5,050/7,231 update=5,050/21,693 loss=4.4051 ppl=81.87 acc=0.3030 lr=1.799e-04 grad=0.598 tok/s=11,158 elapsed=2h05m eta=6h54m
+epoch=01/3 batch=5,075/7,231 update=5,075/21,693 loss=4.4227 ppl=83.32 acc=0.3022 lr=1.797e-04 grad=0.633 tok/s=10,922 elapsed=2h06m eta=6h53m
+epoch=01/3 batch=5,100/7,231 update=5,100/21,693 loss=4.4236 ppl=83.40 acc=0.3017 lr=1.794e-04 grad=0.608 tok/s=10,892 elapsed=2h06m eta=6h53m
+epoch=01/3 batch=5,125/7,231 update=5,125/21,693 loss=4.3699 ppl=79.03 acc=0.3065 lr=1.792e-04 grad=0.595 tok/s=10,994 elapsed=2h07m eta=6h52m
+epoch=01/3 batch=5,150/7,231 update=5,150/21,693 loss=4.4035 ppl=81.74 acc=0.3031 lr=1.790e-04 grad=0.596 tok/s=11,049 elapsed=2h08m eta=6h51m
+epoch=01/3 batch=5,175/7,231 update=5,175/21,693 loss=4.3841 ppl=80.16 acc=0.3061 lr=1.788e-04 grad=0.621 tok/s=10,900 elapsed=2h08m eta=6h51m
+epoch=01/3 batch=5,200/7,231 update=5,200/21,693 loss=4.3814 ppl=79.95 acc=0.3057 lr=1.786e-04 grad=0.612 tok/s=11,105 elapsed=2h09m eta=6h50m
+epoch=01/3 batch=5,225/7,231 update=5,225/21,693 loss=4.4014 ppl=81.56 acc=0.3044 lr=1.784e-04 grad=0.591 tok/s=11,075 elapsed=2h10m eta=6h49m
+epoch=01/3 batch=5,250/7,231 update=5,250/21,693 loss=4.4002 ppl=81.47 acc=0.3041 lr=1.782e-04 grad=0.598 tok/s=10,746 elapsed=2h10m eta=6h49m
+epoch=01/3 batch=5,275/7,231 update=5,275/21,693 loss=4.3888 ppl=80.54 acc=0.3043 lr=1.779e-04 grad=0.600 tok/s=10,499 elapsed=2h11m eta=6h48m
+epoch=01/3 batch=5,300/7,231 update=5,300/21,693 loss=4.3676 ppl=78.85 acc=0.3067 lr=1.777e-04 grad=0.603 tok/s=11,109 elapsed=2h11m eta=6h48m
+epoch=01/3 batch=5,325/7,231 update=5,325/21,693 loss=4.3843 ppl=80.18 acc=0.3043 lr=1.775e-04 grad=0.609 tok/s=11,132 elapsed=2h12m eta=6h47m
+epoch=01/3 batch=5,350/7,231 update=5,350/21,693 loss=4.3620 ppl=78.41 acc=0.3070 lr=1.773e-04 grad=0.606 tok/s=11,034 elapsed=2h13m eta=6h46m
+epoch=01/3 batch=5,375/7,231 update=5,375/21,693 loss=4.3874 ppl=80.43 acc=0.3059 lr=1.771e-04 grad=0.623 tok/s=10,908 elapsed=2h13m eta=6h46m
+epoch=01/3 batch=5,400/7,231 update=5,400/21,693 loss=4.3732 ppl=79.30 acc=0.3055 lr=1.768e-04 grad=0.596 tok/s=11,102 elapsed=2h14m eta=6h45m
+epoch=01/3 batch=5,425/7,231 update=5,425/21,693 loss=4.3601 ppl=78.27 acc=0.3075 lr=1.766e-04 grad=0.628 tok/s=10,719 elapsed=2h15m eta=6h45m
+epoch=01/3 batch=5,450/7,231 update=5,450/21,693 loss=4.3509 ppl=77.55 acc=0.3083 lr=1.764e-04 grad=0.607 tok/s=11,098 elapsed=2h15m eta=6h44m
+epoch=01/3 batch=5,475/7,231 update=5,475/21,693 loss=4.3602 ppl=78.27 acc=0.3083 lr=1.762e-04 grad=0.625 tok/s=11,124 elapsed=2h16m eta=6h43m
+epoch=01/3 batch=5,500/7,231 update=5,500/21,693 loss=4.3639 ppl=78.56 acc=0.3073 lr=1.759e-04 grad=0.616 tok/s=11,157 elapsed=2h16m eta=6h43m
+Saved latest checkpoint at update 5,500
+epoch=01/3 batch=5,525/7,231 update=5,525/21,693 loss=4.3449 ppl=77.08 acc=0.3072 lr=1.757e-04 grad=0.616 tok/s=10,720 elapsed=2h17m eta=6h42m
+epoch=01/3 batch=5,550/7,231 update=5,550/21,693 loss=4.3399 ppl=76.70 acc=0.3087 lr=1.755e-04 grad=0.599 tok/s=10,999 elapsed=2h18m eta=6h41m
+epoch=01/3 batch=5,575/7,231 update=5,575/21,693 loss=4.3250 ppl=75.57 acc=0.3099 lr=1.753e-04 grad=0.630 tok/s=11,190 elapsed=2h18m eta=6h41m
+epoch=01/3 batch=5,600/7,231 update=5,600/21,693 loss=4.3607 ppl=78.32 acc=0.3083 lr=1.750e-04 grad=0.609 tok/s=11,108 elapsed=2h19m eta=6h40m
+epoch=01/3 batch=5,625/7,231 update=5,625/21,693 loss=4.3331 ppl=76.18 acc=0.3104 lr=1.748e-04 grad=0.612 tok/s=11,181 elapsed=2h20m eta=6h39m
+epoch=01/3 batch=5,650/7,231 update=5,650/21,693 loss=4.3475 ppl=77.28 acc=0.3080 lr=1.746e-04 grad=0.642 tok/s=11,206 elapsed=2h20m eta=6h39m
+epoch=01/3 batch=5,675/7,231 update=5,675/21,693 loss=4.3389 ppl=76.62 acc=0.3087 lr=1.743e-04 grad=0.627 tok/s=11,218 elapsed=2h21m eta=6h38m
+epoch=01/3 batch=5,700/7,231 update=5,700/21,693 loss=4.3467 ppl=77.23 acc=0.3068 lr=1.741e-04 grad=0.609 tok/s=11,254 elapsed=2h21m eta=6h37m
+epoch=01/3 batch=5,725/7,231 update=5,725/21,693 loss=4.3237 ppl=75.46 acc=0.3101 lr=1.739e-04 grad=0.603 tok/s=11,153 elapsed=2h22m eta=6h37m
+epoch=01/3 batch=5,750/7,231 update=5,750/21,693 loss=4.3362 ppl=76.42 acc=0.3100 lr=1.736e-04 grad=0.643 tok/s=11,151 elapsed=2h23m eta=6h36m
+epoch=01/3 batch=5,775/7,231 update=5,775/21,693 loss=4.3376 ppl=76.53 acc=0.3086 lr=1.734e-04 grad=0.599 tok/s=11,191 elapsed=2h23m eta=6h35m
+epoch=01/3 batch=5,800/7,231 update=5,800/21,693 loss=4.3319 ppl=76.09 acc=0.3092 lr=1.732e-04 grad=0.654 tok/s=11,005 elapsed=2h24m eta=6h35m
+epoch=01/3 batch=5,825/7,231 update=5,825/21,693 loss=4.3655 ppl=78.69 acc=0.3058 lr=1.729e-04 grad=0.596 tok/s=10,872 elapsed=2h24m eta=6h34m
+epoch=01/3 batch=5,850/7,231 update=5,850/21,693 loss=4.3201 ppl=75.20 acc=0.3093 lr=1.727e-04 grad=0.609 tok/s=11,227 elapsed=2h25m eta=6h34m
+epoch=01/3 batch=5,875/7,231 update=5,875/21,693 loss=4.3435 ppl=76.97 acc=0.3093 lr=1.724e-04 grad=0.605 tok/s=11,267 elapsed=2h26m eta=6h33m
+epoch=01/3 batch=5,900/7,231 update=5,900/21,693 loss=4.3322 ppl=76.12 acc=0.3093 lr=1.722e-04 grad=0.614 tok/s=10,850 elapsed=2h26m eta=6h32m
+epoch=01/3 batch=5,925/7,231 update=5,925/21,693 loss=4.3048 ppl=74.05 acc=0.3119 lr=1.720e-04 grad=0.627 tok/s=11,207 elapsed=2h27m eta=6h32m
+epoch=01/3 batch=5,950/7,231 update=5,950/21,693 loss=4.3043 ppl=74.02 acc=0.3126 lr=1.717e-04 grad=0.625 tok/s=10,862 elapsed=2h27m eta=6h31m
+epoch=01/3 batch=5,975/7,231 update=5,975/21,693 loss=4.3475 ppl=77.29 acc=0.3082 lr=1.715e-04 grad=0.627 tok/s=11,104 elapsed=2h28m eta=6h30m
+epoch=01/3 batch=6,000/7,231 update=6,000/21,693 loss=4.3181 ppl=75.05 acc=0.3104 lr=1.712e-04 grad=0.616 tok/s=11,062 elapsed=2h29m eta=6h30m
+Saved latest checkpoint at update 6,000
+[validation] loss=4.1931 ppl=66.23 bpt=6.049 token_acc=0.3222 tokens=248,064 tok/s=54,791
+New best validation perplexity: 66.23
+epoch=01/3 batch=6,025/7,231 update=6,025/21,693 loss=4.3358 ppl=76.39 acc=0.3068 lr=1.710e-04 grad=0.609 tok/s=8,765 elapsed=2h29m eta=6h30m
+epoch=01/3 batch=6,050/7,231 update=6,050/21,693 loss=4.3125 ppl=74.62 acc=0.3106 lr=1.707e-04 grad=0.607 tok/s=11,054 elapsed=2h30m eta=6h29m
+epoch=01/3 batch=6,075/7,231 update=6,075/21,693 loss=4.3210 ppl=75.27 acc=0.3116 lr=1.705e-04 grad=0.617 tok/s=11,166 elapsed=2h31m eta=6h28m
+epoch=01/3 batch=6,100/7,231 update=6,100/21,693 loss=4.3071 ppl=74.23 acc=0.3123 lr=1.703e-04 grad=0.622 tok/s=11,169 elapsed=2h31m eta=6h28m
+epoch=01/3 batch=6,125/7,231 update=6,125/21,693 loss=4.2948 ppl=73.32 acc=0.3120 lr=1.700e-04 grad=0.609 tok/s=11,135 elapsed=2h32m eta=6h27m
+epoch=01/3 batch=6,150/7,231 update=6,150/21,693 loss=4.3228 ppl=75.40 acc=0.3104 lr=1.698e-04 grad=0.623 tok/s=11,176 elapsed=2h33m eta=6h26m
+epoch=01/3 batch=6,175/7,231 update=6,175/21,693 loss=4.3207 ppl=75.24 acc=0.3099 lr=1.695e-04 grad=0.617 tok/s=11,042 elapsed=2h33m eta=6h26m
+epoch=01/3 batch=6,200/7,231 update=6,200/21,693 loss=4.3075 ppl=74.25 acc=0.3116 lr=1.693e-04 grad=0.621 tok/s=11,106 elapsed=2h34m eta=6h25m
+epoch=01/3 batch=6,225/7,231 update=6,225/21,693 loss=4.2888 ppl=72.88 acc=0.3142 lr=1.690e-04 grad=0.611 tok/s=11,131 elapsed=2h34m eta=6h24m
+epoch=01/3 batch=6,250/7,231 update=6,250/21,693 loss=4.3274 ppl=75.75 acc=0.3084 lr=1.688e-04 grad=0.626 tok/s=10,389 elapsed=2h35m eta=6h24m
+epoch=01/3 batch=6,275/7,231 update=6,275/21,693 loss=4.3074 ppl=74.25 acc=0.3120 lr=1.685e-04 grad=0.634 tok/s=11,097 elapsed=2h36m eta=6h23m
+epoch=01/3 batch=6,300/7,231 update=6,300/21,693 loss=4.2607 ppl=70.86 acc=0.3163 lr=1.683e-04 grad=0.632 tok/s=11,043 elapsed=2h36m eta=6h23m
+epoch=01/3 batch=6,325/7,231 update=6,325/21,693 loss=4.2875 ppl=72.78 acc=0.3129 lr=1.680e-04 grad=0.619 tok/s=11,040 elapsed=2h37m eta=6h22m
+epoch=01/3 batch=6,350/7,231 update=6,350/21,693 loss=4.2832 ppl=72.47 acc=0.3128 lr=1.677e-04 grad=0.637 tok/s=11,180 elapsed=2h38m eta=6h21m
+epoch=01/3 batch=6,375/7,231 update=6,375/21,693 loss=4.2949 ppl=73.33 acc=0.3119 lr=1.675e-04 grad=0.625 tok/s=11,145 elapsed=2h38m eta=6h21m
+epoch=01/3 batch=6,400/7,231 update=6,400/21,693 loss=4.3146 ppl=74.78 acc=0.3097 lr=1.672e-04 grad=0.652 tok/s=11,201 elapsed=2h39m eta=6h20m
+epoch=01/3 batch=6,425/7,231 update=6,425/21,693 loss=4.3109 ppl=74.51 acc=0.3108 lr=1.670e-04 grad=0.625 tok/s=11,137 elapsed=2h39m eta=6h19m
+epoch=01/3 batch=6,450/7,231 update=6,450/21,693 loss=4.2818 ppl=72.37 acc=0.3134 lr=1.667e-04 grad=0.599 tok/s=11,113 elapsed=2h40m eta=6h19m
+epoch=01/3 batch=6,475/7,231 update=6,475/21,693 loss=4.2991 ppl=73.63 acc=0.3112 lr=1.665e-04 grad=0.616 tok/s=11,156 elapsed=2h41m eta=6h18m
+epoch=01/3 batch=6,500/7,231 update=6,500/21,693 loss=4.2865 ppl=72.71 acc=0.3121 lr=1.662e-04 grad=0.630 tok/s=11,079 elapsed=2h41m eta=6h17m
+Saved latest checkpoint at update 6,500
+epoch=01/3 batch=6,525/7,231 update=6,525/21,693 loss=4.2744 ppl=71.84 acc=0.3148 lr=1.659e-04 grad=0.645 tok/s=10,467 elapsed=2h42m eta=6h17m
+epoch=01/3 batch=6,550/7,231 update=6,550/21,693 loss=4.2722 ppl=71.68 acc=0.3130 lr=1.657e-04 grad=0.643 tok/s=11,116 elapsed=2h42m eta=6h16m
+epoch=01/3 batch=6,575/7,231 update=6,575/21,693 loss=4.2748 ppl=71.86 acc=0.3139 lr=1.654e-04 grad=0.619 tok/s=11,163 elapsed=2h43m eta=6h16m
+epoch=01/3 batch=6,600/7,231 update=6,600/21,693 loss=4.2747 ppl=71.86 acc=0.3126 lr=1.652e-04 grad=0.640 tok/s=11,219 elapsed=2h44m eta=6h15m
+epoch=01/3 batch=6,625/7,231 update=6,625/21,693 loss=4.2964 ppl=73.44 acc=0.3117 lr=1.649e-04 grad=0.617 tok/s=10,920 elapsed=2h44m eta=6h14m
+epoch=01/3 batch=6,650/7,231 update=6,650/21,693 loss=4.2931 ppl=73.19 acc=0.3129 lr=1.646e-04 grad=0.658 tok/s=11,108 elapsed=2h45m eta=6h14m
+epoch=01/3 batch=6,675/7,231 update=6,675/21,693 loss=4.2717 ppl=71.64 acc=0.3154 lr=1.644e-04 grad=0.609 tok/s=11,133 elapsed=2h46m eta=6h13m
+epoch=01/3 batch=6,700/7,231 update=6,700/21,693 loss=4.2715 ppl=71.63 acc=0.3144 lr=1.641e-04 grad=0.661 tok/s=11,075 elapsed=2h46m eta=6h12m
+epoch=01/3 batch=6,725/7,231 update=6,725/21,693 loss=4.2676 ppl=71.35 acc=0.3127 lr=1.638e-04 grad=0.663 tok/s=10,804 elapsed=2h47m eta=6h12m
+epoch=01/3 batch=6,750/7,231 update=6,750/21,693 loss=4.2708 ppl=71.58 acc=0.3145 lr=1.636e-04 grad=0.654 tok/s=11,169 elapsed=2h47m eta=6h11m
+epoch=01/3 batch=6,775/7,231 update=6,775/21,693 loss=4.2835 ppl=72.49 acc=0.3127 lr=1.633e-04 grad=0.639 tok/s=11,160 elapsed=2h48m eta=6h11m
+epoch=01/3 batch=6,800/7,231 update=6,800/21,693 loss=4.2727 ppl=71.71 acc=0.3127 lr=1.630e-04 grad=0.629 tok/s=11,126 elapsed=2h49m eta=6h10m
+epoch=01/3 batch=6,825/7,231 update=6,825/21,693 loss=4.2665 ppl=71.27 acc=0.3130 lr=1.628e-04 grad=0.649 tok/s=11,141 elapsed=2h49m eta=6h09m
+epoch=01/3 batch=6,850/7,231 update=6,850/21,693 loss=4.2593 ppl=70.76 acc=0.3155 lr=1.625e-04 grad=0.650 tok/s=11,011 elapsed=2h50m eta=6h09m
+epoch=01/3 batch=6,875/7,231 update=6,875/21,693 loss=4.2144 ppl=67.65 acc=0.3196 lr=1.622e-04 grad=0.665 tok/s=11,121 elapsed=2h50m eta=6h08m
+epoch=01/3 batch=6,900/7,231 update=6,900/21,693 loss=4.2584 ppl=70.69 acc=0.3147 lr=1.619e-04 grad=0.628 tok/s=11,155 elapsed=2h51m eta=6h07m
+epoch=01/3 batch=6,925/7,231 update=6,925/21,693 loss=4.2553 ppl=70.48 acc=0.3155 lr=1.617e-04 grad=0.621 tok/s=10,892 elapsed=2h52m eta=6h07m
+epoch=01/3 batch=6,950/7,231 update=6,950/21,693 loss=4.2554 ppl=70.49 acc=0.3156 lr=1.614e-04 grad=0.636 tok/s=11,197 elapsed=2h52m eta=6h06m
+epoch=01/3 batch=6,975/7,231 update=6,975/21,693 loss=4.2399 ppl=69.40 acc=0.3166 lr=1.611e-04 grad=0.631 tok/s=11,130 elapsed=2h53m eta=6h05m
+epoch=01/3 batch=7,000/7,231 update=7,000/21,693 loss=4.2631 ppl=71.03 acc=0.3150 lr=1.609e-04 grad=0.654 tok/s=11,071 elapsed=2h54m eta=6h05m
+Saved latest checkpoint at update 7,000
+[validation] loss=4.1247 ppl=61.85 bpt=5.951 token_acc=0.3268 tokens=248,064 tok/s=55,290
+New best validation perplexity: 61.85
+epoch=01/3 batch=7,025/7,231 update=7,025/21,693 loss=4.2476 ppl=69.94 acc=0.3163 lr=1.606e-04 grad=0.664 tok/s=8,808 elapsed=2h54m eta=6h05m
+epoch=01/3 batch=7,050/7,231 update=7,050/21,693 loss=4.2510 ppl=70.17 acc=0.3163 lr=1.603e-04 grad=0.645 tok/s=11,108 elapsed=2h55m eta=6h04m
+epoch=01/3 batch=7,075/7,231 update=7,075/21,693 loss=4.2494 ppl=70.06 acc=0.3172 lr=1.600e-04 grad=0.636 tok/s=10,783 elapsed=2h56m eta=6h03m
+epoch=01/3 batch=7,100/7,231 update=7,100/21,693 loss=4.2362 ppl=69.14 acc=0.3177 lr=1.598e-04 grad=0.619 tok/s=11,093 elapsed=2h56m eta=6h03m
+epoch=01/3 batch=7,125/7,231 update=7,125/21,693 loss=4.2377 ppl=69.25 acc=0.3187 lr=1.595e-04 grad=0.635 tok/s=11,109 elapsed=2h57m eta=6h02m
+epoch=01/3 batch=7,150/7,231 update=7,150/21,693 loss=4.2403 ppl=69.43 acc=0.3175 lr=1.592e-04 grad=0.654 tok/s=10,975 elapsed=2h57m eta=6h01m
+epoch=01/3 batch=7,175/7,231 update=7,175/21,693 loss=4.2368 ppl=69.19 acc=0.3176 lr=1.589e-04 grad=0.656 tok/s=10,995 elapsed=2h58m eta=6h01m
+epoch=01/3 batch=7,200/7,231 update=7,200/21,693 loss=4.2359 ppl=69.13 acc=0.3159 lr=1.586e-04 grad=0.625 tok/s=11,168 elapsed=2h59m eta=6h00m
+epoch=01/3 batch=7,225/7,231 update=7,225/21,693 loss=4.2461 ppl=69.83 acc=0.3153 lr=1.584e-04 grad=0.624 tok/s=11,080 elapsed=2h59m eta=6h00m
+[validation] loss=4.1122 ppl=61.08 bpt=5.933 token_acc=0.3284 tokens=248,064 tok/s=54,968
+[validation_long_512] loss=4.0806 ppl=59.18 bpt=5.887 token_acc=0.3311 tokens=248,320 tok/s=53,806
+New best validation perplexity: 61.08
+epoch=02/3 batch=19/7,231 update=7,250/21,693 loss=4.2299 ppl=68.71 acc=0.3155 lr=1.581e-04 grad=0.641 tok/s=10,939 elapsed=3h00m eta=5h59m
+epoch=02/3 batch=44/7,231 update=7,275/21,693 loss=4.1947 ppl=66.33 acc=0.3205 lr=1.578e-04 grad=0.635 tok/s=11,098 elapsed=3h01m eta=5h59m
+epoch=02/3 batch=69/7,231 update=7,300/21,693 loss=4.2119 ppl=67.49 acc=0.3178 lr=1.575e-04 grad=0.625 tok/s=11,008 elapsed=3h01m eta=5h58m
+epoch=02/3 batch=94/7,231 update=7,325/21,693 loss=4.2126 ppl=67.53 acc=0.3179 lr=1.572e-04 grad=0.642 tok/s=10,979 elapsed=3h02m eta=5h57m
+epoch=02/3 batch=119/7,231 update=7,350/21,693 loss=4.2533 ppl=70.34 acc=0.3150 lr=1.569e-04 grad=0.672 tok/s=10,974 elapsed=3h03m eta=5h57m
+epoch=02/3 batch=144/7,231 update=7,375/21,693 loss=4.2009 ppl=66.75 acc=0.3189 lr=1.567e-04 grad=0.657 tok/s=11,023 elapsed=3h03m eta=5h56m
+epoch=02/3 batch=169/7,231 update=7,400/21,693 loss=4.1891 ppl=65.97 acc=0.3206 lr=1.564e-04 grad=0.660 tok/s=11,026 elapsed=3h04m eta=5h56m
+epoch=02/3 batch=194/7,231 update=7,425/21,693 loss=4.2021 ppl=66.83 acc=0.3201 lr=1.561e-04 grad=0.662 tok/s=11,111 elapsed=3h04m eta=5h55m
+epoch=02/3 batch=219/7,231 update=7,450/21,693 loss=4.2133 ppl=67.58 acc=0.3169 lr=1.558e-04 grad=0.652 tok/s=10,659 elapsed=3h05m eta=5h54m
+epoch=02/3 batch=244/7,231 update=7,475/21,693 loss=4.2121 ppl=67.50 acc=0.3176 lr=1.555e-04 grad=0.653 tok/s=10,625 elapsed=3h06m eta=5h54m
+epoch=02/3 batch=269/7,231 update=7,500/21,693 loss=4.1844 ppl=65.65 acc=0.3203 lr=1.552e-04 grad=0.644 tok/s=10,568 elapsed=3h06m eta=5h53m
+Saved latest checkpoint at update 7,500
+epoch=02/3 batch=294/7,231 update=7,525/21,693 loss=4.2220 ppl=68.17 acc=0.3181 lr=1.549e-04 grad=0.652 tok/s=10,060 elapsed=3h07m eta=5h53m
+epoch=02/3 batch=319/7,231 update=7,550/21,693 loss=4.2065 ppl=67.12 acc=0.3182 lr=1.547e-04 grad=0.649 tok/s=11,039 elapsed=3h08m eta=5h52m
+epoch=02/3 batch=344/7,231 update=7,575/21,693 loss=4.1953 ppl=66.38 acc=0.3192 lr=1.544e-04 grad=0.643 tok/s=10,991 elapsed=3h08m eta=5h51m
+epoch=02/3 batch=369/7,231 update=7,600/21,693 loss=4.1941 ppl=66.29 acc=0.3189 lr=1.541e-04 grad=0.653 tok/s=11,069 elapsed=3h09m eta=5h51m
+epoch=02/3 batch=394/7,231 update=7,625/21,693 loss=4.1726 ppl=64.88 acc=0.3223 lr=1.538e-04 grad=0.650 tok/s=10,981 elapsed=3h10m eta=5h50m
+epoch=02/3 batch=419/7,231 update=7,650/21,693 loss=4.1910 ppl=66.09 acc=0.3193 lr=1.535e-04 grad=0.636 tok/s=11,104 elapsed=3h10m eta=5h49m
+epoch=02/3 batch=444/7,231 update=7,675/21,693 loss=4.2004 ppl=66.71 acc=0.3198 lr=1.532e-04 grad=0.648 tok/s=11,059 elapsed=3h11m eta=5h49m
+epoch=02/3 batch=469/7,231 update=7,700/21,693 loss=4.2014 ppl=66.78 acc=0.3202 lr=1.529e-04 grad=0.661 tok/s=10,955 elapsed=3h11m eta=5h48m
+epoch=02/3 batch=494/7,231 update=7,725/21,693 loss=4.2030 ppl=66.89 acc=0.3185 lr=1.526e-04 grad=0.643 tok/s=11,098 elapsed=3h12m eta=5h48m
+epoch=02/3 batch=519/7,231 update=7,750/21,693 loss=4.2264 ppl=68.47 acc=0.3165 lr=1.523e-04 grad=0.660 tok/s=11,063 elapsed=3h13m eta=5h47m
+epoch=02/3 batch=544/7,231 update=7,775/21,693 loss=4.2151 ppl=67.70 acc=0.3173 lr=1.520e-04 grad=0.664 tok/s=11,011 elapsed=3h13m eta=5h46m
+epoch=02/3 batch=569/7,231 update=7,800/21,693 loss=4.2022 ppl=66.83 acc=0.3191 lr=1.517e-04 grad=0.656 tok/s=11,083 elapsed=3h14m eta=5h46m
+epoch=02/3 batch=594/7,231 update=7,825/21,693 loss=4.1897 ppl=66.00 acc=0.3205 lr=1.514e-04 grad=0.656 tok/s=11,143 elapsed=3h14m eta=5h45m
+epoch=02/3 batch=619/7,231 update=7,850/21,693 loss=4.1715 ppl=64.82 acc=0.3230 lr=1.512e-04 grad=0.639 tok/s=11,106 elapsed=3h15m eta=5h44m
+epoch=02/3 batch=644/7,231 update=7,875/21,693 loss=4.1742 ppl=64.99 acc=0.3212 lr=1.509e-04 grad=0.654 tok/s=11,086 elapsed=3h16m eta=5h44m
+epoch=02/3 batch=669/7,231 update=7,900/21,693 loss=4.1709 ppl=64.78 acc=0.3217 lr=1.506e-04 grad=0.651 tok/s=11,032 elapsed=3h16m eta=5h43m
+epoch=02/3 batch=694/7,231 update=7,925/21,693 loss=4.2108 ppl=67.41 acc=0.3191 lr=1.503e-04 grad=0.649 tok/s=11,120 elapsed=3h17m eta=5h42m
+epoch=02/3 batch=719/7,231 update=7,950/21,693 loss=4.1757 ppl=65.08 acc=0.3227 lr=1.500e-04 grad=0.667 tok/s=10,991 elapsed=3h18m eta=5h42m
+epoch=02/3 batch=744/7,231 update=7,975/21,693 loss=4.1563 ppl=63.83 acc=0.3237 lr=1.497e-04 grad=0.666 tok/s=10,783 elapsed=3h18m eta=5h41m
+epoch=02/3 batch=769/7,231 update=8,000/21,693 loss=4.1801 ppl=65.38 acc=0.3208 lr=1.494e-04 grad=0.651 tok/s=11,107 elapsed=3h19m eta=5h41m
+Saved latest checkpoint at update 8,000
+[validation] loss=4.0740 ppl=58.79 bpt=5.877 token_acc=0.3308 tokens=248,064 tok/s=55,078
+New best validation perplexity: 58.79
+epoch=02/3 batch=794/7,231 update=8,025/21,693 loss=4.1638 ppl=64.32 acc=0.3231 lr=1.491e-04 grad=0.653 tok/s=8,856 elapsed=3h20m eta=5h40m
+epoch=02/3 batch=819/7,231 update=8,050/21,693 loss=4.2189 ppl=67.96 acc=0.3163 lr=1.488e-04 grad=0.677 tok/s=11,063 elapsed=3h20m eta=5h40m
+epoch=02/3 batch=844/7,231 update=8,075/21,693 loss=4.1698 ppl=64.70 acc=0.3226 lr=1.485e-04 grad=0.644 tok/s=10,988 elapsed=3h21m eta=5h39m
+epoch=02/3 batch=869/7,231 update=8,100/21,693 loss=4.1898 ppl=66.01 acc=0.3197 lr=1.482e-04 grad=0.655 tok/s=10,614 elapsed=3h21m eta=5h38m
+epoch=02/3 batch=894/7,231 update=8,125/21,693 loss=4.1714 ppl=64.81 acc=0.3222 lr=1.479e-04 grad=0.667 tok/s=11,125 elapsed=3h22m eta=5h38m
+epoch=02/3 batch=919/7,231 update=8,150/21,693 loss=4.1692 ppl=64.67 acc=0.3230 lr=1.476e-04 grad=0.663 tok/s=10,920 elapsed=3h23m eta=5h37m
+epoch=02/3 batch=944/7,231 update=8,175/21,693 loss=4.1985 ppl=66.59 acc=0.3191 lr=1.473e-04 grad=0.694 tok/s=11,146 elapsed=3h23m eta=5h36m
+epoch=02/3 batch=969/7,231 update=8,200/21,693 loss=4.1747 ppl=65.02 acc=0.3214 lr=1.470e-04 grad=0.669 tok/s=11,173 elapsed=3h24m eta=5h36m
+epoch=02/3 batch=994/7,231 update=8,225/21,693 loss=4.1676 ppl=64.56 acc=0.3225 lr=1.467e-04 grad=0.658 tok/s=11,179 elapsed=3h25m eta=5h35m
+epoch=02/3 batch=1,019/7,231 update=8,250/21,693 loss=4.1873 ppl=65.84 acc=0.3197 lr=1.464e-04 grad=0.646 tok/s=11,210 elapsed=3h25m eta=5h35m
+epoch=02/3 batch=1,044/7,231 update=8,275/21,693 loss=4.1695 ppl=64.68 acc=0.3207 lr=1.460e-04 grad=0.677 tok/s=11,131 elapsed=3h26m eta=5h34m
+epoch=02/3 batch=1,069/7,231 update=8,300/21,693 loss=4.1968 ppl=66.47 acc=0.3193 lr=1.457e-04 grad=0.655 tok/s=11,168 elapsed=3h26m eta=5h33m
+epoch=02/3 batch=1,094/7,231 update=8,325/21,693 loss=4.1722 ppl=64.86 acc=0.3217 lr=1.454e-04 grad=0.657 tok/s=10,942 elapsed=3h27m eta=5h33m
+epoch=02/3 batch=1,119/7,231 update=8,350/21,693 loss=4.1809 ppl=65.42 acc=0.3200 lr=1.451e-04 grad=0.667 tok/s=10,813 elapsed=3h28m eta=5h32m
+epoch=02/3 batch=1,144/7,231 update=8,375/21,693 loss=4.1542 ppl=63.70 acc=0.3227 lr=1.448e-04 grad=0.663 tok/s=11,113 elapsed=3h28m eta=5h31m
+epoch=02/3 batch=1,169/7,231 update=8,400/21,693 loss=4.1982 ppl=66.57 acc=0.3198 lr=1.445e-04 grad=0.654 tok/s=11,166 elapsed=3h29m eta=5h31m
+epoch=02/3 batch=1,194/7,231 update=8,425/21,693 loss=4.1765 ppl=65.14 acc=0.3223 lr=1.442e-04 grad=0.670 tok/s=11,076 elapsed=3h29m eta=5h30m
+epoch=02/3 batch=1,219/7,231 update=8,450/21,693 loss=4.1697 ppl=64.69 acc=0.3222 lr=1.439e-04 grad=0.671 tok/s=11,130 elapsed=3h30m eta=5h30m
+epoch=02/3 batch=1,244/7,231 update=8,475/21,693 loss=4.1504 ppl=63.46 acc=0.3228 lr=1.436e-04 grad=0.649 tok/s=11,103 elapsed=3h31m eta=5h29m
+epoch=02/3 batch=1,269/7,231 update=8,500/21,693 loss=4.1606 ppl=64.11 acc=0.3226 lr=1.433e-04 grad=0.675 tok/s=11,196 elapsed=3h31m eta=5h28m
+Saved latest checkpoint at update 8,500
+epoch=02/3 batch=1,294/7,231 update=8,525/21,693 loss=4.1655 ppl=64.42 acc=0.3225 lr=1.430e-04 grad=0.646 tok/s=10,600 elapsed=3h32m eta=5h28m
+epoch=02/3 batch=1,319/7,231 update=8,550/21,693 loss=4.1695 ppl=64.68 acc=0.3205 lr=1.427e-04 grad=0.659 tok/s=11,105 elapsed=3h33m eta=5h27m
+epoch=02/3 batch=1,344/7,231 update=8,575/21,693 loss=4.1471 ppl=63.25 acc=0.3256 lr=1.424e-04 grad=0.653 tok/s=11,145 elapsed=3h33m eta=5h26m
+epoch=02/3 batch=1,369/7,231 update=8,600/21,693 loss=4.1681 ppl=64.59 acc=0.3227 lr=1.420e-04 grad=0.665 tok/s=11,231 elapsed=3h34m eta=5h26m
+epoch=02/3 batch=1,394/7,231 update=8,625/21,693 loss=4.1548 ppl=63.74 acc=0.3218 lr=1.417e-04 grad=0.676 tok/s=11,176 elapsed=3h34m eta=5h25m
+epoch=02/3 batch=1,419/7,231 update=8,650/21,693 loss=4.1952 ppl=66.36 acc=0.3203 lr=1.414e-04 grad=0.705 tok/s=11,142 elapsed=3h35m eta=5h24m
+epoch=02/3 batch=1,444/7,231 update=8,675/21,693 loss=4.1664 ppl=64.48 acc=0.3227 lr=1.411e-04 grad=0.652 tok/s=11,029 elapsed=3h36m eta=5h24m
+epoch=02/3 batch=1,469/7,231 update=8,700/21,693 loss=4.1696 ppl=64.69 acc=0.3226 lr=1.408e-04 grad=0.668 tok/s=11,216 elapsed=3h36m eta=5h23m
+epoch=02/3 batch=1,494/7,231 update=8,725/21,693 loss=4.1528 ppl=63.61 acc=0.3238 lr=1.405e-04 grad=0.690 tok/s=10,957 elapsed=3h37m eta=5h23m
+epoch=02/3 batch=1,519/7,231 update=8,750/21,693 loss=4.1291 ppl=62.12 acc=0.3247 lr=1.402e-04 grad=0.671 tok/s=11,113 elapsed=3h37m eta=5h22m
+epoch=02/3 batch=1,544/7,231 update=8,775/21,693 loss=4.1577 ppl=63.93 acc=0.3229 lr=1.399e-04 grad=0.697 tok/s=11,201 elapsed=3h38m eta=5h21m
+epoch=02/3 batch=1,569/7,231 update=8,800/21,693 loss=4.1660 ppl=64.45 acc=0.3218 lr=1.395e-04 grad=0.687 tok/s=11,153 elapsed=3h39m eta=5h21m
+epoch=02/3 batch=1,594/7,231 update=8,825/21,693 loss=4.1566 ppl=63.85 acc=0.3241 lr=1.392e-04 grad=0.690 tok/s=11,165 elapsed=3h39m eta=5h20m
+epoch=02/3 batch=1,619/7,231 update=8,850/21,693 loss=4.1370 ppl=62.61 acc=0.3250 lr=1.389e-04 grad=0.692 tok/s=11,171 elapsed=3h40m eta=5h19m
+epoch=02/3 batch=1,644/7,231 update=8,875/21,693 loss=4.1390 ppl=62.74 acc=0.3238 lr=1.386e-04 grad=0.682 tok/s=11,187 elapsed=3h41m eta=5h19m
+epoch=02/3 batch=1,669/7,231 update=8,900/21,693 loss=4.1572 ppl=63.89 acc=0.3224 lr=1.383e-04 grad=0.665 tok/s=11,133 elapsed=3h41m eta=5h18m
+epoch=02/3 batch=1,694/7,231 update=8,925/21,693 loss=4.1275 ppl=62.02 acc=0.3255 lr=1.380e-04 grad=0.674 tok/s=11,107 elapsed=3h42m eta=5h17m
+epoch=02/3 batch=1,719/7,231 update=8,950/21,693 loss=4.1237 ppl=61.79 acc=0.3256 lr=1.377e-04 grad=0.705 tok/s=11,204 elapsed=3h42m eta=5h17m
+epoch=02/3 batch=1,744/7,231 update=8,975/21,693 loss=4.1529 ppl=63.62 acc=0.3223 lr=1.373e-04 grad=0.691 tok/s=11,165 elapsed=3h43m eta=5h16m
+epoch=02/3 batch=1,769/7,231 update=9,000/21,693 loss=4.1530 ppl=63.62 acc=0.3244 lr=1.370e-04 grad=0.699 tok/s=11,158 elapsed=3h44m eta=5h16m
+Saved latest checkpoint at update 9,000
+[validation] loss=4.0265 ppl=56.06 bpt=5.809 token_acc=0.3354 tokens=248,064 tok/s=55,223
+New best validation perplexity: 56.06
+epoch=02/3 batch=1,794/7,231 update=9,025/21,693 loss=4.1442 ppl=63.07 acc=0.3237 lr=1.367e-04 grad=0.671 tok/s=8,583 elapsed=3h44m eta=5h15m
+epoch=02/3 batch=1,819/7,231 update=9,050/21,693 loss=4.1526 ppl=63.60 acc=0.3230 lr=1.364e-04 grad=0.654 tok/s=11,125 elapsed=3h45m eta=5h14m
+epoch=02/3 batch=1,844/7,231 update=9,075/21,693 loss=4.1300 ppl=62.18 acc=0.3258 lr=1.361e-04 grad=0.674 tok/s=11,035 elapsed=3h46m eta=5h14m
+epoch=02/3 batch=1,869/7,231 update=9,100/21,693 loss=4.1531 ppl=63.63 acc=0.3227 lr=1.357e-04 grad=0.662 tok/s=11,102 elapsed=3h46m eta=5h13m
+epoch=02/3 batch=1,894/7,231 update=9,125/21,693 loss=4.1497 ppl=63.42 acc=0.3236 lr=1.354e-04 grad=0.687 tok/s=10,972 elapsed=3h47m eta=5h13m
+epoch=02/3 batch=1,919/7,231 update=9,150/21,693 loss=4.1719 ppl=64.84 acc=0.3209 lr=1.351e-04 grad=0.671 tok/s=11,137 elapsed=3h47m eta=5h12m
+epoch=02/3 batch=1,944/7,231 update=9,175/21,693 loss=4.1396 ppl=62.78 acc=0.3247 lr=1.348e-04 grad=0.687 tok/s=11,070 elapsed=3h48m eta=5h11m
+epoch=02/3 batch=1,969/7,231 update=9,200/21,693 loss=4.1375 ppl=62.65 acc=0.3255 lr=1.345e-04 grad=0.660 tok/s=11,178 elapsed=3h49m eta=5h11m
+epoch=02/3 batch=1,994/7,231 update=9,225/21,693 loss=4.1439 ppl=63.05 acc=0.3234 lr=1.342e-04 grad=0.696 tok/s=11,079 elapsed=3h49m eta=5h10m
+epoch=02/3 batch=2,019/7,231 update=9,250/21,693 loss=4.1162 ppl=61.33 acc=0.3264 lr=1.338e-04 grad=0.656 tok/s=10,921 elapsed=3h50m eta=5h09m
+epoch=02/3 batch=2,044/7,231 update=9,275/21,693 loss=4.1405 ppl=62.83 acc=0.3242 lr=1.335e-04 grad=0.663 tok/s=10,673 elapsed=3h51m eta=5h09m
+epoch=02/3 batch=2,069/7,231 update=9,300/21,693 loss=4.1454 ppl=63.15 acc=0.3238 lr=1.332e-04 grad=0.657 tok/s=10,945 elapsed=3h51m eta=5h08m
+epoch=02/3 batch=2,094/7,231 update=9,325/21,693 loss=4.1512 ppl=63.51 acc=0.3236 lr=1.329e-04 grad=0.689 tok/s=11,133 elapsed=3h52m eta=5h08m
+epoch=02/3 batch=2,119/7,231 update=9,350/21,693 loss=4.1386 ppl=62.71 acc=0.3250 lr=1.325e-04 grad=0.679 tok/s=11,095 elapsed=3h52m eta=5h07m
+epoch=02/3 batch=2,144/7,231 update=9,375/21,693 loss=4.1381 ppl=62.68 acc=0.3240 lr=1.322e-04 grad=0.675 tok/s=11,080 elapsed=3h53m eta=5h06m
+epoch=02/3 batch=2,169/7,231 update=9,400/21,693 loss=4.1401 ppl=62.81 acc=0.3260 lr=1.319e-04 grad=0.677 tok/s=10,822 elapsed=3h54m eta=5h06m
+epoch=02/3 batch=2,194/7,231 update=9,425/21,693 loss=4.1652 ppl=64.41 acc=0.3214 lr=1.316e-04 grad=0.686 tok/s=11,012 elapsed=3h54m eta=5h05m
+epoch=02/3 batch=2,219/7,231 update=9,450/21,693 loss=4.1280 ppl=62.05 acc=0.3249 lr=1.313e-04 grad=0.710 tok/s=11,070 elapsed=3h55m eta=5h04m
+epoch=02/3 batch=2,244/7,231 update=9,475/21,693 loss=4.1539 ppl=63.68 acc=0.3244 lr=1.309e-04 grad=0.684 tok/s=11,002 elapsed=3h56m eta=5h04m
+epoch=02/3 batch=2,269/7,231 update=9,500/21,693 loss=4.1176 ppl=61.41 acc=0.3265 lr=1.306e-04 grad=0.682 tok/s=11,043 elapsed=3h56m eta=5h03m
+Saved latest checkpoint at update 9,500
+epoch=02/3 batch=2,294/7,231 update=9,525/21,693 loss=4.1356 ppl=62.53 acc=0.3258 lr=1.303e-04 grad=0.682 tok/s=10,677 elapsed=3h57m eta=5h03m
+epoch=02/3 batch=2,319/7,231 update=9,550/21,693 loss=4.1475 ppl=63.27 acc=0.3216 lr=1.300e-04 grad=0.708 tok/s=11,173 elapsed=3h57m eta=5h02m
+epoch=02/3 batch=2,344/7,231 update=9,575/21,693 loss=4.1267 ppl=61.97 acc=0.3250 lr=1.296e-04 grad=0.690 tok/s=11,190 elapsed=3h58m eta=5h01m
+epoch=02/3 batch=2,369/7,231 update=9,600/21,693 loss=4.1181 ppl=61.44 acc=0.3275 lr=1.293e-04 grad=0.704 tok/s=10,919 elapsed=3h59m eta=5h01m
+epoch=02/3 batch=2,394/7,231 update=9,625/21,693 loss=4.1599 ppl=64.06 acc=0.3235 lr=1.290e-04 grad=0.670 tok/s=11,004 elapsed=3h59m eta=5h00m
+epoch=02/3 batch=2,419/7,231 update=9,650/21,693 loss=4.1203 ppl=61.58 acc=0.3262 lr=1.287e-04 grad=0.680 tok/s=10,822 elapsed=4h00m eta=4h59m
+epoch=02/3 batch=2,444/7,231 update=9,675/21,693 loss=4.1119 ppl=61.06 acc=0.3267 lr=1.283e-04 grad=0.678 tok/s=10,860 elapsed=4h00m eta=4h59m
+epoch=02/3 batch=2,469/7,231 update=9,700/21,693 loss=4.1338 ppl=62.41 acc=0.3242 lr=1.280e-04 grad=0.674 tok/s=11,172 elapsed=4h01m eta=4h58m
+epoch=02/3 batch=2,494/7,231 update=9,725/21,693 loss=4.1198 ppl=61.55 acc=0.3285 lr=1.277e-04 grad=0.683 tok/s=11,211 elapsed=4h02m eta=4h58m
+epoch=02/3 batch=2,519/7,231 update=9,750/21,693 loss=4.1241 ppl=61.81 acc=0.3262 lr=1.274e-04 grad=0.715 tok/s=11,265 elapsed=4h02m eta=4h57m
+epoch=02/3 batch=2,544/7,231 update=9,775/21,693 loss=4.1148 ppl=61.24 acc=0.3257 lr=1.270e-04 grad=0.676 tok/s=11,207 elapsed=4h03m eta=4h56m
+epoch=02/3 batch=2,569/7,231 update=9,800/21,693 loss=4.1225 ppl=61.71 acc=0.3262 lr=1.267e-04 grad=0.695 tok/s=11,220 elapsed=4h04m eta=4h56m
+epoch=02/3 batch=2,594/7,231 update=9,825/21,693 loss=4.1482 ppl=63.32 acc=0.3217 lr=1.264e-04 grad=0.671 tok/s=11,226 elapsed=4h04m eta=4h55m
+epoch=02/3 batch=2,619/7,231 update=9,850/21,693 loss=4.1300 ppl=62.18 acc=0.3245 lr=1.261e-04 grad=0.686 tok/s=11,013 elapsed=4h05m eta=4h54m
+epoch=02/3 batch=2,644/7,231 update=9,875/21,693 loss=4.1431 ppl=63.00 acc=0.3228 lr=1.257e-04 grad=0.685 tok/s=11,051 elapsed=4h05m eta=4h54m
+epoch=02/3 batch=2,669/7,231 update=9,900/21,693 loss=4.0932 ppl=59.93 acc=0.3284 lr=1.254e-04 grad=0.679 tok/s=11,157 elapsed=4h06m eta=4h53m
+epoch=02/3 batch=2,694/7,231 update=9,925/21,693 loss=4.1146 ppl=61.23 acc=0.3273 lr=1.251e-04 grad=0.695 tok/s=11,145 elapsed=4h07m eta=4h52m
+epoch=02/3 batch=2,719/7,231 update=9,950/21,693 loss=4.1266 ppl=61.96 acc=0.3252 lr=1.247e-04 grad=0.663 tok/s=11,187 elapsed=4h07m eta=4h52m
+epoch=02/3 batch=2,744/7,231 update=9,975/21,693 loss=4.1122 ppl=61.08 acc=0.3259 lr=1.244e-04 grad=0.688 tok/s=10,972 elapsed=4h08m eta=4h51m
+epoch=02/3 batch=2,769/7,231 update=10,000/21,693 loss=4.1378 ppl=62.66 acc=0.3236 lr=1.241e-04 grad=0.675 tok/s=11,099 elapsed=4h08m eta=4h51m
+Saved latest checkpoint at update 10,000
+[validation] loss=3.9895 ppl=54.03 bpt=5.756 token_acc=0.3378 tokens=248,064 tok/s=55,181
+New best validation perplexity: 54.03
+epoch=02/3 batch=2,794/7,231 update=10,025/21,693 loss=4.1421 ppl=62.93 acc=0.3249 lr=1.238e-04 grad=0.704 tok/s=8,856 elapsed=4h09m eta=4h50m
+epoch=02/3 batch=2,819/7,231 update=10,050/21,693 loss=4.1252 ppl=61.88 acc=0.3251 lr=1.234e-04 grad=0.698 tok/s=11,090 elapsed=4h10m eta=4h50m
+epoch=02/3 batch=2,844/7,231 update=10,075/21,693 loss=4.0975 ppl=60.19 acc=0.3289 lr=1.231e-04 grad=0.669 tok/s=11,146 elapsed=4h10m eta=4h49m
+epoch=02/3 batch=2,869/7,231 update=10,100/21,693 loss=4.1087 ppl=60.87 acc=0.3265 lr=1.228e-04 grad=0.687 tok/s=10,906 elapsed=4h11m eta=4h48m
+epoch=02/3 batch=2,894/7,231 update=10,125/21,693 loss=4.1214 ppl=61.65 acc=0.3253 lr=1.224e-04 grad=0.688 tok/s=11,075 elapsed=4h12m eta=4h48m
+epoch=02/3 batch=2,919/7,231 update=10,150/21,693 loss=4.1062 ppl=60.71 acc=0.3275 lr=1.221e-04 grad=0.682 tok/s=11,111 elapsed=4h12m eta=4h47m
+epoch=02/3 batch=2,944/7,231 update=10,175/21,693 loss=4.1057 ppl=60.68 acc=0.3279 lr=1.218e-04 grad=0.683 tok/s=11,204 elapsed=4h13m eta=4h46m
+epoch=02/3 batch=2,969/7,231 update=10,200/21,693 loss=4.1132 ppl=61.14 acc=0.3263 lr=1.215e-04 grad=0.706 tok/s=11,091 elapsed=4h14m eta=4h46m
+epoch=02/3 batch=2,994/7,231 update=10,225/21,693 loss=4.0992 ppl=60.29 acc=0.3284 lr=1.211e-04 grad=0.668 tok/s=11,148 elapsed=4h14m eta=4h45m
+epoch=02/3 batch=3,019/7,231 update=10,250/21,693 loss=4.0911 ppl=59.80 acc=0.3296 lr=1.208e-04 grad=0.674 tok/s=11,213 elapsed=4h15m eta=4h44m
+epoch=02/3 batch=3,044/7,231 update=10,275/21,693 loss=4.0942 ppl=59.99 acc=0.3277 lr=1.205e-04 grad=0.703 tok/s=11,141 elapsed=4h15m eta=4h44m
+epoch=02/3 batch=3,069/7,231 update=10,300/21,693 loss=4.1205 ppl=61.59 acc=0.3261 lr=1.201e-04 grad=0.707 tok/s=10,982 elapsed=4h16m eta=4h43m
+epoch=02/3 batch=3,094/7,231 update=10,325/21,693 loss=4.1067 ppl=60.75 acc=0.3271 lr=1.198e-04 grad=0.708 tok/s=11,050 elapsed=4h17m eta=4h43m
+epoch=02/3 batch=3,119/7,231 update=10,350/21,693 loss=4.1424 ppl=62.96 acc=0.3232 lr=1.195e-04 grad=0.706 tok/s=11,028 elapsed=4h17m eta=4h42m
+epoch=02/3 batch=3,144/7,231 update=10,375/21,693 loss=4.1213 ppl=61.64 acc=0.3258 lr=1.191e-04 grad=0.690 tok/s=11,159 elapsed=4h18m eta=4h41m
+epoch=02/3 batch=3,169/7,231 update=10,400/21,693 loss=4.1286 ppl=62.09 acc=0.3258 lr=1.188e-04 grad=0.721 tok/s=11,188 elapsed=4h18m eta=4h41m
+epoch=02/3 batch=3,194/7,231 update=10,425/21,693 loss=4.0907 ppl=59.78 acc=0.3271 lr=1.185e-04 grad=0.703 tok/s=11,158 elapsed=4h19m eta=4h40m
+epoch=02/3 batch=3,219/7,231 update=10,450/21,693 loss=4.1061 ppl=60.71 acc=0.3266 lr=1.181e-04 grad=0.690 tok/s=11,198 elapsed=4h20m eta=4h39m
+epoch=02/3 batch=3,244/7,231 update=10,475/21,693 loss=4.0802 ppl=59.16 acc=0.3289 lr=1.178e-04 grad=0.688 tok/s=11,165 elapsed=4h20m eta=4h39m
+epoch=02/3 batch=3,269/7,231 update=10,500/21,693 loss=4.1090 ppl=60.89 acc=0.3275 lr=1.175e-04 grad=0.690 tok/s=11,143 elapsed=4h21m eta=4h38m
+Saved latest checkpoint at update 10,500
+epoch=02/3 batch=3,294/7,231 update=10,525/21,693 loss=4.0975 ppl=60.19 acc=0.3280 lr=1.172e-04 grad=0.698 tok/s=10,674 elapsed=4h22m eta=4h38m
+epoch=02/3 batch=3,319/7,231 update=10,550/21,693 loss=4.1126 ppl=61.10 acc=0.3263 lr=1.168e-04 grad=0.719 tok/s=11,197 elapsed=4h22m eta=4h37m
+epoch=02/3 batch=3,344/7,231 update=10,575/21,693 loss=4.0942 ppl=59.99 acc=0.3290 lr=1.165e-04 grad=0.698 tok/s=11,126 elapsed=4h23m eta=4h36m
+epoch=02/3 batch=3,369/7,231 update=10,600/21,693 loss=4.1002 ppl=60.35 acc=0.3286 lr=1.162e-04 grad=0.704 tok/s=11,084 elapsed=4h23m eta=4h36m
+epoch=02/3 batch=3,394/7,231 update=10,625/21,693 loss=4.0902 ppl=59.75 acc=0.3291 lr=1.158e-04 grad=0.718 tok/s=11,174 elapsed=4h24m eta=4h35m
+epoch=02/3 batch=3,419/7,231 update=10,650/21,693 loss=4.1109 ppl=61.00 acc=0.3272 lr=1.155e-04 grad=0.718 tok/s=11,199 elapsed=4h25m eta=4h34m
+epoch=02/3 batch=3,444/7,231 update=10,675/21,693 loss=4.0907 ppl=59.78 acc=0.3289 lr=1.152e-04 grad=0.684 tok/s=11,167 elapsed=4h25m eta=4h34m
+epoch=02/3 batch=3,469/7,231 update=10,700/21,693 loss=4.0964 ppl=60.12 acc=0.3287 lr=1.148e-04 grad=0.713 tok/s=11,167 elapsed=4h26m eta=4h33m
+epoch=02/3 batch=3,494/7,231 update=10,725/21,693 loss=4.1210 ppl=61.62 acc=0.3249 lr=1.145e-04 grad=0.686 tok/s=11,130 elapsed=4h26m eta=4h32m
+epoch=02/3 batch=3,519/7,231 update=10,750/21,693 loss=4.1087 ppl=60.87 acc=0.3268 lr=1.142e-04 grad=0.714 tok/s=11,015 elapsed=4h27m eta=4h32m
+epoch=02/3 batch=3,544/7,231 update=10,775/21,693 loss=4.0974 ppl=60.19 acc=0.3280 lr=1.138e-04 grad=0.693 tok/s=11,135 elapsed=4h28m eta=4h31m
+epoch=02/3 batch=3,569/7,231 update=10,800/21,693 loss=4.0736 ppl=58.77 acc=0.3310 lr=1.135e-04 grad=0.706 tok/s=10,913 elapsed=4h28m eta=4h31m
+epoch=02/3 batch=3,594/7,231 update=10,825/21,693 loss=4.0847 ppl=59.42 acc=0.3294 lr=1.132e-04 grad=0.677 tok/s=11,092 elapsed=4h29m eta=4h30m
+epoch=02/3 batch=3,619/7,231 update=10,850/21,693 loss=4.0919 ppl=59.85 acc=0.3285 lr=1.128e-04 grad=0.700 tok/s=10,752 elapsed=4h30m eta=4h29m
+epoch=02/3 batch=3,644/7,231 update=10,875/21,693 loss=4.1143 ppl=61.21 acc=0.3266 lr=1.125e-04 grad=0.700 tok/s=10,723 elapsed=4h30m eta=4h29m
+epoch=02/3 batch=3,669/7,231 update=10,900/21,693 loss=4.0920 ppl=59.86 acc=0.3291 lr=1.122e-04 grad=0.725 tok/s=10,934 elapsed=4h31m eta=4h28m
+epoch=02/3 batch=3,694/7,231 update=10,925/21,693 loss=4.0885 ppl=59.65 acc=0.3304 lr=1.118e-04 grad=0.694 tok/s=10,945 elapsed=4h31m eta=4h28m
+epoch=02/3 batch=3,719/7,231 update=10,950/21,693 loss=4.0699 ppl=58.55 acc=0.3313 lr=1.115e-04 grad=0.719 tok/s=10,958 elapsed=4h32m eta=4h27m
+epoch=02/3 batch=3,744/7,231 update=10,975/21,693 loss=4.1056 ppl=60.68 acc=0.3278 lr=1.112e-04 grad=0.698 tok/s=10,610 elapsed=4h33m eta=4h26m
+epoch=02/3 batch=3,769/7,231 update=11,000/21,693 loss=4.0860 ppl=59.50 acc=0.3288 lr=1.108e-04 grad=0.705 tok/s=10,905 elapsed=4h33m eta=4h26m
+Saved latest checkpoint at update 11,000
+[validation] loss=3.9583 ppl=52.37 bpt=5.711 token_acc=0.3403 tokens=248,064 tok/s=55,114
+New best validation perplexity: 52.37
+epoch=02/3 batch=3,794/7,231 update=11,025/21,693 loss=4.0914 ppl=59.83 acc=0.3289 lr=1.105e-04 grad=0.697 tok/s=8,680 elapsed=4h34m eta=4h25m
+epoch=02/3 batch=3,819/7,231 update=11,050/21,693 loss=4.0845 ppl=59.41 acc=0.3300 lr=1.102e-04 grad=0.711 tok/s=10,241 elapsed=4h35m eta=4h25m
+epoch=02/3 batch=3,844/7,231 update=11,075/21,693 loss=4.0799 ppl=59.14 acc=0.3300 lr=1.098e-04 grad=0.708 tok/s=10,296 elapsed=4h35m eta=4h24m
+epoch=02/3 batch=3,869/7,231 update=11,100/21,693 loss=4.0799 ppl=59.14 acc=0.3303 lr=1.095e-04 grad=0.694 tok/s=11,045 elapsed=4h36m eta=4h23m
+epoch=02/3 batch=3,894/7,231 update=11,125/21,693 loss=4.0650 ppl=58.26 acc=0.3302 lr=1.092e-04 grad=0.709 tok/s=10,578 elapsed=4h37m eta=4h23m
+epoch=02/3 batch=3,919/7,231 update=11,150/21,693 loss=4.0924 ppl=59.88 acc=0.3272 lr=1.088e-04 grad=0.679 tok/s=10,773 elapsed=4h37m eta=4h22m
+epoch=02/3 batch=3,944/7,231 update=11,175/21,693 loss=4.0976 ppl=60.20 acc=0.3278 lr=1.085e-04 grad=0.693 tok/s=10,964 elapsed=4h38m eta=4h22m
+epoch=02/3 batch=3,969/7,231 update=11,200/21,693 loss=4.0848 ppl=59.43 acc=0.3294 lr=1.082e-04 grad=0.698 tok/s=11,121 elapsed=4h39m eta=4h21m
+epoch=02/3 batch=3,994/7,231 update=11,225/21,693 loss=4.0670 ppl=58.38 acc=0.3304 lr=1.079e-04 grad=0.698 tok/s=10,799 elapsed=4h39m eta=4h20m
+epoch=02/3 batch=4,019/7,231 update=11,250/21,693 loss=4.0871 ppl=59.57 acc=0.3288 lr=1.075e-04 grad=0.703 tok/s=10,685 elapsed=4h40m eta=4h20m
+epoch=02/3 batch=4,044/7,231 update=11,275/21,693 loss=4.0692 ppl=58.51 acc=0.3312 lr=1.072e-04 grad=0.702 tok/s=10,426 elapsed=4h40m eta=4h19m
+epoch=02/3 batch=4,069/7,231 update=11,300/21,693 loss=4.0624 ppl=58.12 acc=0.3316 lr=1.069e-04 grad=0.709 tok/s=10,947 elapsed=4h41m eta=4h19m
+epoch=02/3 batch=4,094/7,231 update=11,325/21,693 loss=4.0750 ppl=58.85 acc=0.3300 lr=1.065e-04 grad=0.693 tok/s=10,820 elapsed=4h42m eta=4h18m
+epoch=02/3 batch=4,119/7,231 update=11,350/21,693 loss=4.0858 ppl=59.49 acc=0.3285 lr=1.062e-04 grad=0.705 tok/s=10,619 elapsed=4h42m eta=4h17m
+epoch=02/3 batch=4,144/7,231 update=11,375/21,693 loss=4.0665 ppl=58.35 acc=0.3308 lr=1.059e-04 grad=0.690 tok/s=10,531 elapsed=4h43m eta=4h17m
+epoch=02/3 batch=4,169/7,231 update=11,400/21,693 loss=4.0679 ppl=58.43 acc=0.3309 lr=1.055e-04 grad=0.726 tok/s=10,964 elapsed=4h44m eta=4h16m
+epoch=02/3 batch=4,194/7,231 update=11,425/21,693 loss=4.0572 ppl=57.81 acc=0.3319 lr=1.052e-04 grad=0.702 tok/s=10,802 elapsed=4h44m eta=4h15m
+epoch=02/3 batch=4,219/7,231 update=11,450/21,693 loss=4.0722 ppl=58.69 acc=0.3302 lr=1.049e-04 grad=0.714 tok/s=11,053 elapsed=4h45m eta=4h15m
+epoch=02/3 batch=4,244/7,231 update=11,475/21,693 loss=4.0863 ppl=59.52 acc=0.3281 lr=1.045e-04 grad=0.711 tok/s=10,541 elapsed=4h46m eta=4h14m
+epoch=02/3 batch=4,269/7,231 update=11,500/21,693 loss=4.0599 ppl=57.97 acc=0.3299 lr=1.042e-04 grad=0.715 tok/s=10,971 elapsed=4h46m eta=4h14m
+Saved latest checkpoint at update 11,500
+epoch=02/3 batch=4,294/7,231 update=11,525/21,693 loss=4.0984 ppl=60.24 acc=0.3272 lr=1.039e-04 grad=0.713 tok/s=10,448 elapsed=4h47m eta=4h13m
+epoch=02/3 batch=4,319/7,231 update=11,550/21,693 loss=4.0648 ppl=58.25 acc=0.3319 lr=1.035e-04 grad=0.690 tok/s=10,827 elapsed=4h47m eta=4h12m
+epoch=02/3 batch=4,344/7,231 update=11,575/21,693 loss=4.0638 ppl=58.19 acc=0.3302 lr=1.032e-04 grad=0.724 tok/s=11,135 elapsed=4h48m eta=4h12m
+epoch=02/3 batch=4,369/7,231 update=11,600/21,693 loss=4.1194 ppl=61.52 acc=0.3262 lr=1.029e-04 grad=0.730 tok/s=11,065 elapsed=4h49m eta=4h11m
+epoch=02/3 batch=4,394/7,231 update=11,625/21,693 loss=4.0759 ppl=58.91 acc=0.3308 lr=1.025e-04 grad=0.710 tok/s=11,065 elapsed=4h49m eta=4h10m
+epoch=02/3 batch=4,419/7,231 update=11,650/21,693 loss=4.0768 ppl=58.96 acc=0.3302 lr=1.022e-04 grad=0.736 tok/s=10,827 elapsed=4h50m eta=4h10m
+epoch=02/3 batch=4,444/7,231 update=11,675/21,693 loss=4.0486 ppl=57.32 acc=0.3316 lr=1.019e-04 grad=0.731 tok/s=10,933 elapsed=4h51m eta=4h09m
+epoch=02/3 batch=4,469/7,231 update=11,700/21,693 loss=4.0677 ppl=58.42 acc=0.3306 lr=1.015e-04 grad=0.705 tok/s=10,758 elapsed=4h51m eta=4h09m
+epoch=02/3 batch=4,494/7,231 update=11,725/21,693 loss=4.0858 ppl=59.49 acc=0.3285 lr=1.012e-04 grad=0.682 tok/s=10,913 elapsed=4h52m eta=4h08m
+epoch=02/3 batch=4,519/7,231 update=11,750/21,693 loss=4.0585 ppl=57.89 acc=0.3309 lr=1.009e-04 grad=0.706 tok/s=10,685 elapsed=4h52m eta=4h07m
+epoch=02/3 batch=4,544/7,231 update=11,775/21,693 loss=4.0791 ppl=59.09 acc=0.3294 lr=1.006e-04 grad=0.700 tok/s=11,013 elapsed=4h53m eta=4h07m
+epoch=02/3 batch=4,569/7,231 update=11,800/21,693 loss=4.0735 ppl=58.76 acc=0.3291 lr=1.002e-04 grad=0.702 tok/s=10,978 elapsed=4h54m eta=4h06m
+epoch=02/3 batch=4,594/7,231 update=11,825/21,693 loss=4.0538 ppl=57.62 acc=0.3329 lr=9.989e-05 grad=0.704 tok/s=10,784 elapsed=4h54m eta=4h06m
+epoch=02/3 batch=4,619/7,231 update=11,850/21,693 loss=4.0682 ppl=58.45 acc=0.3312 lr=9.956e-05 grad=0.703 tok/s=11,021 elapsed=4h55m eta=4h05m
+epoch=02/3 batch=4,644/7,231 update=11,875/21,693 loss=4.0818 ppl=59.25 acc=0.3304 lr=9.923e-05 grad=0.688 tok/s=11,005 elapsed=4h56m eta=4h04m
+epoch=02/3 batch=4,669/7,231 update=11,900/21,693 loss=4.0653 ppl=58.28 acc=0.3306 lr=9.890e-05 grad=0.709 tok/s=11,054 elapsed=4h56m eta=4h04m
+epoch=02/3 batch=4,694/7,231 update=11,925/21,693 loss=4.0748 ppl=58.84 acc=0.3298 lr=9.857e-05 grad=0.720 tok/s=10,920 elapsed=4h57m eta=4h03m
+epoch=02/3 batch=4,719/7,231 update=11,950/21,693 loss=4.0766 ppl=58.94 acc=0.3301 lr=9.824e-05 grad=0.711 tok/s=11,036 elapsed=4h57m eta=4h02m
+epoch=02/3 batch=4,744/7,231 update=11,975/21,693 loss=4.0664 ppl=58.35 acc=0.3317 lr=9.791e-05 grad=0.684 tok/s=10,705 elapsed=4h58m eta=4h02m
+epoch=02/3 batch=4,769/7,231 update=12,000/21,693 loss=4.0661 ppl=58.33 acc=0.3313 lr=9.758e-05 grad=0.724 tok/s=10,811 elapsed=4h59m eta=4h01m
+Saved latest checkpoint at update 12,000
+[validation] loss=3.9300 ppl=50.91 bpt=5.670 token_acc=0.3438 tokens=248,064 tok/s=54,676
+New best validation perplexity: 50.91
+epoch=02/3 batch=4,794/7,231 update=12,025/21,693 loss=4.0524 ppl=57.53 acc=0.3315 lr=9.726e-05 grad=0.717 tok/s=8,648 elapsed=5h00m eta=4h01m
+epoch=02/3 batch=4,819/7,231 update=12,050/21,693 loss=4.0169 ppl=55.53 acc=0.3353 lr=9.693e-05 grad=0.709 tok/s=10,709 elapsed=5h00m eta=4h00m
+epoch=02/3 batch=4,844/7,231 update=12,075/21,693 loss=4.0599 ppl=57.97 acc=0.3315 lr=9.660e-05 grad=0.707 tok/s=10,937 elapsed=5h01m eta=3h59m
+epoch=02/3 batch=4,869/7,231 update=12,100/21,693 loss=4.0518 ppl=57.50 acc=0.3325 lr=9.627e-05 grad=0.711 tok/s=10,939 elapsed=5h01m eta=3h59m
+epoch=02/3 batch=4,894/7,231 update=12,125/21,693 loss=4.0633 ppl=58.17 acc=0.3311 lr=9.594e-05 grad=0.737 tok/s=10,530 elapsed=5h02m eta=3h58m
+epoch=02/3 batch=4,919/7,231 update=12,150/21,693 loss=4.0693 ppl=58.52 acc=0.3299 lr=9.561e-05 grad=0.747 tok/s=11,148 elapsed=5h03m eta=3h58m
+epoch=02/3 batch=4,944/7,231 update=12,175/21,693 loss=4.0599 ppl=57.97 acc=0.3316 lr=9.528e-05 grad=0.734 tok/s=10,956 elapsed=5h03m eta=3h57m
+epoch=02/3 batch=4,969/7,231 update=12,200/21,693 loss=4.0370 ppl=56.65 acc=0.3331 lr=9.496e-05 grad=0.708 tok/s=10,855 elapsed=5h04m eta=3h56m
+epoch=02/3 batch=4,994/7,231 update=12,225/21,693 loss=4.0628 ppl=58.14 acc=0.3309 lr=9.463e-05 grad=0.724 tok/s=10,222 elapsed=5h05m eta=3h56m
+epoch=02/3 batch=5,019/7,231 update=12,250/21,693 loss=4.0473 ppl=57.24 acc=0.3313 lr=9.430e-05 grad=0.707 tok/s=10,786 elapsed=5h05m eta=3h55m
+epoch=02/3 batch=5,044/7,231 update=12,275/21,693 loss=4.0541 ppl=57.63 acc=0.3311 lr=9.397e-05 grad=0.726 tok/s=11,053 elapsed=5h06m eta=3h55m
+epoch=02/3 batch=5,069/7,231 update=12,300/21,693 loss=4.0691 ppl=58.51 acc=0.3303 lr=9.365e-05 grad=0.745 tok/s=11,021 elapsed=5h06m eta=3h54m
+epoch=02/3 batch=5,094/7,231 update=12,325/21,693 loss=4.0411 ppl=56.89 acc=0.3325 lr=9.332e-05 grad=0.690 tok/s=10,921 elapsed=5h07m eta=3h53m
+epoch=02/3 batch=5,119/7,231 update=12,350/21,693 loss=4.0426 ppl=56.97 acc=0.3330 lr=9.299e-05 grad=0.713 tok/s=11,051 elapsed=5h08m eta=3h53m
+epoch=02/3 batch=5,144/7,231 update=12,375/21,693 loss=4.0659 ppl=58.32 acc=0.3302 lr=9.267e-05 grad=0.716 tok/s=11,031 elapsed=5h08m eta=3h52m
+epoch=02/3 batch=5,169/7,231 update=12,400/21,693 loss=4.0522 ppl=57.53 acc=0.3316 lr=9.234e-05 grad=0.714 tok/s=10,660 elapsed=5h09m eta=3h51m
+epoch=02/3 batch=5,194/7,231 update=12,425/21,693 loss=4.0496 ppl=57.38 acc=0.3337 lr=9.201e-05 grad=0.717 tok/s=10,913 elapsed=5h10m eta=3h51m
+epoch=02/3 batch=5,219/7,231 update=12,450/21,693 loss=4.0552 ppl=57.70 acc=0.3324 lr=9.169e-05 grad=0.722 tok/s=10,751 elapsed=5h10m eta=3h50m
+epoch=02/3 batch=5,244/7,231 update=12,475/21,693 loss=4.0517 ppl=57.50 acc=0.3317 lr=9.136e-05 grad=0.703 tok/s=10,617 elapsed=5h11m eta=3h50m
+epoch=02/3 batch=5,269/7,231 update=12,500/21,693 loss=4.0681 ppl=58.44 acc=0.3279 lr=9.104e-05 grad=0.743 tok/s=10,837 elapsed=5h11m eta=3h49m
+Saved latest checkpoint at update 12,500
+epoch=02/3 batch=5,294/7,231 update=12,525/21,693 loss=4.0485 ppl=57.31 acc=0.3323 lr=9.071e-05 grad=0.711 tok/s=10,304 elapsed=5h12m eta=3h48m
+epoch=02/3 batch=5,319/7,231 update=12,550/21,693 loss=4.0442 ppl=57.07 acc=0.3312 lr=9.039e-05 grad=0.705 tok/s=11,062 elapsed=5h13m eta=3h48m
+epoch=02/3 batch=5,344/7,231 update=12,575/21,693 loss=4.0291 ppl=56.21 acc=0.3324 lr=9.006e-05 grad=0.718 tok/s=10,593 elapsed=5h13m eta=3h47m
+epoch=02/3 batch=5,369/7,231 update=12,600/21,693 loss=4.0380 ppl=56.71 acc=0.3316 lr=8.974e-05 grad=0.692 tok/s=10,097 elapsed=5h14m eta=3h47m
+epoch=02/3 batch=5,394/7,231 update=12,625/21,693 loss=4.0448 ppl=57.10 acc=0.3313 lr=8.942e-05 grad=0.724 tok/s=10,379 elapsed=5h15m eta=3h46m
+epoch=02/3 batch=5,419/7,231 update=12,650/21,693 loss=4.0342 ppl=56.50 acc=0.3323 lr=8.909e-05 grad=0.714 tok/s=10,761 elapsed=5h15m eta=3h45m
+epoch=02/3 batch=5,444/7,231 update=12,675/21,693 loss=4.0542 ppl=57.64 acc=0.3329 lr=8.877e-05 grad=0.758 tok/s=10,333 elapsed=5h16m eta=3h45m
+epoch=02/3 batch=5,469/7,231 update=12,700/21,693 loss=4.0315 ppl=56.35 acc=0.3339 lr=8.845e-05 grad=0.724 tok/s=10,965 elapsed=5h17m eta=3h44m
+epoch=02/3 batch=5,494/7,231 update=12,725/21,693 loss=4.0321 ppl=56.38 acc=0.3338 lr=8.812e-05 grad=0.714 tok/s=10,503 elapsed=5h17m eta=3h43m
+epoch=02/3 batch=5,519/7,231 update=12,750/21,693 loss=4.0390 ppl=56.77 acc=0.3337 lr=8.780e-05 grad=0.715 tok/s=10,711 elapsed=5h18m eta=3h43m
+epoch=02/3 batch=5,544/7,231 update=12,775/21,693 loss=4.0337 ppl=56.47 acc=0.3341 lr=8.748e-05 grad=0.727 tok/s=10,302 elapsed=5h19m eta=3h42m
+epoch=02/3 batch=5,569/7,231 update=12,800/21,693 loss=4.0541 ppl=57.63 acc=0.3321 lr=8.716e-05 grad=0.710 tok/s=10,743 elapsed=5h19m eta=3h42m
+epoch=02/3 batch=5,594/7,231 update=12,825/21,693 loss=4.0179 ppl=55.58 acc=0.3353 lr=8.684e-05 grad=0.703 tok/s=10,613 elapsed=5h20m eta=3h41m
+epoch=02/3 batch=5,619/7,231 update=12,850/21,693 loss=4.0605 ppl=58.00 acc=0.3310 lr=8.651e-05 grad=0.724 tok/s=10,770 elapsed=5h21m eta=3h40m
+epoch=02/3 batch=5,644/7,231 update=12,875/21,693 loss=4.0412 ppl=56.89 acc=0.3320 lr=8.619e-05 grad=0.744 tok/s=10,173 elapsed=5h21m eta=3h40m
+epoch=02/3 batch=5,669/7,231 update=12,900/21,693 loss=4.0357 ppl=56.58 acc=0.3339 lr=8.587e-05 grad=0.716 tok/s=10,620 elapsed=5h22m eta=3h39m
+epoch=02/3 batch=5,694/7,231 update=12,925/21,693 loss=4.0491 ppl=57.34 acc=0.3321 lr=8.555e-05 grad=0.724 tok/s=10,629 elapsed=5h22m eta=3h39m
+epoch=02/3 batch=5,719/7,231 update=12,950/21,693 loss=4.0254 ppl=56.00 acc=0.3345 lr=8.523e-05 grad=0.729 tok/s=10,789 elapsed=5h23m eta=3h38m
+epoch=02/3 batch=5,744/7,231 update=12,975/21,693 loss=4.0291 ppl=56.21 acc=0.3338 lr=8.491e-05 grad=0.738 tok/s=10,453 elapsed=5h24m eta=3h37m
+epoch=02/3 batch=5,769/7,231 update=13,000/21,693 loss=4.0398 ppl=56.81 acc=0.3334 lr=8.459e-05 grad=0.721 tok/s=10,055 elapsed=5h24m eta=3h37m
+Saved latest checkpoint at update 13,000
+[validation] loss=3.9083 ppl=49.81 bpt=5.638 token_acc=0.3456 tokens=248,064 tok/s=54,773
+New best validation perplexity: 49.81
+epoch=02/3 batch=5,794/7,231 update=13,025/21,693 loss=4.0276 ppl=56.12 acc=0.3346 lr=8.428e-05 grad=0.748 tok/s=8,501 elapsed=5h25m eta=3h36m
+epoch=02/3 batch=5,819/7,231 update=13,050/21,693 loss=4.0307 ppl=56.30 acc=0.3349 lr=8.396e-05 grad=0.710 tok/s=10,829 elapsed=5h26m eta=3h36m
+epoch=02/3 batch=5,844/7,231 update=13,075/21,693 loss=4.0242 ppl=55.94 acc=0.3340 lr=8.364e-05 grad=0.708 tok/s=10,873 elapsed=5h26m eta=3h35m
+epoch=02/3 batch=5,869/7,231 update=13,100/21,693 loss=4.0408 ppl=56.87 acc=0.3330 lr=8.332e-05 grad=0.730 tok/s=10,955 elapsed=5h27m eta=3h34m
+epoch=02/3 batch=5,894/7,231 update=13,125/21,693 loss=4.0188 ppl=55.64 acc=0.3346 lr=8.300e-05 grad=0.718 tok/s=10,685 elapsed=5h28m eta=3h34m
+epoch=02/3 batch=5,919/7,231 update=13,150/21,693 loss=4.0281 ppl=56.15 acc=0.3354 lr=8.269e-05 grad=0.755 tok/s=10,735 elapsed=5h28m eta=3h33m
+epoch=02/3 batch=5,944/7,231 update=13,175/21,693 loss=4.0442 ppl=57.07 acc=0.3307 lr=8.237e-05 grad=0.717 tok/s=10,716 elapsed=5h29m eta=3h33m
+epoch=02/3 batch=5,969/7,231 update=13,200/21,693 loss=4.0320 ppl=56.37 acc=0.3335 lr=8.205e-05 grad=0.715 tok/s=10,846 elapsed=5h30m eta=3h32m
+epoch=02/3 batch=5,994/7,231 update=13,225/21,693 loss=4.0388 ppl=56.76 acc=0.3332 lr=8.174e-05 grad=0.713 tok/s=10,908 elapsed=5h30m eta=3h31m
+epoch=02/3 batch=6,019/7,231 update=13,250/21,693 loss=4.0441 ppl=57.06 acc=0.3324 lr=8.142e-05 grad=0.729 tok/s=10,735 elapsed=5h31m eta=3h31m
+epoch=02/3 batch=6,044/7,231 update=13,275/21,693 loss=4.0296 ppl=56.24 acc=0.3336 lr=8.111e-05 grad=0.700 tok/s=11,033 elapsed=5h32m eta=3h30m
+epoch=02/3 batch=6,069/7,231 update=13,300/21,693 loss=4.0545 ppl=57.66 acc=0.3316 lr=8.079e-05 grad=0.741 tok/s=10,820 elapsed=5h32m eta=3h29m
+epoch=02/3 batch=6,094/7,231 update=13,325/21,693 loss=4.0328 ppl=56.42 acc=0.3335 lr=8.048e-05 grad=0.736 tok/s=10,579 elapsed=5h33m eta=3h29m
+epoch=02/3 batch=6,119/7,231 update=13,350/21,693 loss=4.0128 ppl=55.30 acc=0.3348 lr=8.017e-05 grad=0.706 tok/s=10,734 elapsed=5h33m eta=3h28m
+epoch=02/3 batch=6,144/7,231 update=13,375/21,693 loss=4.0245 ppl=55.95 acc=0.3350 lr=7.985e-05 grad=0.735 tok/s=10,844 elapsed=5h34m eta=3h28m
+epoch=02/3 batch=6,169/7,231 update=13,400/21,693 loss=4.0224 ppl=55.83 acc=0.3339 lr=7.954e-05 grad=0.712 tok/s=11,051 elapsed=5h35m eta=3h27m
+epoch=02/3 batch=6,194/7,231 update=13,425/21,693 loss=4.0255 ppl=56.01 acc=0.3360 lr=7.923e-05 grad=0.707 tok/s=10,956 elapsed=5h35m eta=3h26m
+epoch=02/3 batch=6,219/7,231 update=13,450/21,693 loss=4.0412 ppl=56.89 acc=0.3320 lr=7.891e-05 grad=0.722 tok/s=10,935 elapsed=5h36m eta=3h26m
+epoch=02/3 batch=6,244/7,231 update=13,475/21,693 loss=4.0281 ppl=56.15 acc=0.3337 lr=7.860e-05 grad=0.720 tok/s=10,974 elapsed=5h37m eta=3h25m
+epoch=02/3 batch=6,269/7,231 update=13,500/21,693 loss=4.0318 ppl=56.36 acc=0.3347 lr=7.829e-05 grad=0.719 tok/s=10,914 elapsed=5h37m eta=3h24m
+Saved latest checkpoint at update 13,500
+epoch=02/3 batch=6,294/7,231 update=13,525/21,693 loss=4.0635 ppl=58.18 acc=0.3297 lr=7.798e-05 grad=0.736 tok/s=10,123 elapsed=5h38m eta=3h24m
+epoch=02/3 batch=6,319/7,231 update=13,550/21,693 loss=4.0440 ppl=57.05 acc=0.3317 lr=7.767e-05 grad=0.770 tok/s=11,016 elapsed=5h38m eta=3h23m
+epoch=02/3 batch=6,344/7,231 update=13,575/21,693 loss=4.0230 ppl=55.87 acc=0.3342 lr=7.736e-05 grad=0.738 tok/s=10,993 elapsed=5h39m eta=3h23m
+epoch=02/3 batch=6,369/7,231 update=13,600/21,693 loss=3.9907 ppl=54.09 acc=0.3375 lr=7.705e-05 grad=0.720 tok/s=10,958 elapsed=5h40m eta=3h22m
+epoch=02/3 batch=6,394/7,231 update=13,625/21,693 loss=4.0236 ppl=55.90 acc=0.3338 lr=7.674e-05 grad=0.724 tok/s=10,844 elapsed=5h40m eta=3h21m
+epoch=02/3 batch=6,419/7,231 update=13,650/21,693 loss=4.0485 ppl=57.31 acc=0.3314 lr=7.643e-05 grad=0.744 tok/s=10,578 elapsed=5h41m eta=3h21m
+epoch=02/3 batch=6,444/7,231 update=13,675/21,693 loss=4.0161 ppl=55.49 acc=0.3355 lr=7.612e-05 grad=0.727 tok/s=10,958 elapsed=5h42m eta=3h20m
+epoch=02/3 batch=6,469/7,231 update=13,700/21,693 loss=4.0348 ppl=56.53 acc=0.3334 lr=7.582e-05 grad=0.749 tok/s=10,980 elapsed=5h42m eta=3h19m
+epoch=02/3 batch=6,494/7,231 update=13,725/21,693 loss=4.0110 ppl=55.20 acc=0.3348 lr=7.551e-05 grad=0.747 tok/s=10,889 elapsed=5h43m eta=3h19m
+epoch=02/3 batch=6,519/7,231 update=13,750/21,693 loss=3.9962 ppl=54.39 acc=0.3369 lr=7.520e-05 grad=0.723 tok/s=10,938 elapsed=5h44m eta=3h18m
+epoch=02/3 batch=6,544/7,231 update=13,775/21,693 loss=4.0344 ppl=56.51 acc=0.3343 lr=7.489e-05 grad=0.723 tok/s=10,967 elapsed=5h44m eta=3h18m
+epoch=02/3 batch=6,569/7,231 update=13,800/21,693 loss=4.0423 ppl=56.96 acc=0.3317 lr=7.459e-05 grad=0.705 tok/s=11,041 elapsed=5h45m eta=3h17m
+epoch=02/3 batch=6,594/7,231 update=13,825/21,693 loss=3.9954 ppl=54.34 acc=0.3355 lr=7.428e-05 grad=0.713 tok/s=11,078 elapsed=5h45m eta=3h16m
+epoch=02/3 batch=6,619/7,231 update=13,850/21,693 loss=4.0242 ppl=55.93 acc=0.3357 lr=7.398e-05 grad=0.740 tok/s=11,051 elapsed=5h46m eta=3h16m
+epoch=02/3 batch=6,644/7,231 update=13,875/21,693 loss=4.0107 ppl=55.19 acc=0.3358 lr=7.367e-05 grad=0.726 tok/s=11,048 elapsed=5h47m eta=3h15m
+epoch=02/3 batch=6,669/7,231 update=13,900/21,693 loss=4.0082 ppl=55.05 acc=0.3368 lr=7.337e-05 grad=0.725 tok/s=11,052 elapsed=5h47m eta=3h14m
+epoch=02/3 batch=6,694/7,231 update=13,925/21,693 loss=4.0164 ppl=55.50 acc=0.3343 lr=7.307e-05 grad=0.730 tok/s=11,044 elapsed=5h48m eta=3h14m
+epoch=02/3 batch=6,719/7,231 update=13,950/21,693 loss=4.0198 ppl=55.69 acc=0.3352 lr=7.276e-05 grad=0.700 tok/s=11,051 elapsed=5h48m eta=3h13m
+epoch=02/3 batch=6,744/7,231 update=13,975/21,693 loss=4.0195 ppl=55.67 acc=0.3348 lr=7.246e-05 grad=0.705 tok/s=11,010 elapsed=5h49m eta=3h13m
+epoch=02/3 batch=6,769/7,231 update=14,000/21,693 loss=4.0141 ppl=55.37 acc=0.3352 lr=7.216e-05 grad=0.728 tok/s=11,044 elapsed=5h50m eta=3h12m
+Saved latest checkpoint at update 14,000
+[validation] loss=3.8867 ppl=48.75 bpt=5.607 token_acc=0.3478 tokens=248,064 tok/s=54,954
+New best validation perplexity: 48.75
+epoch=02/3 batch=6,794/7,231 update=14,025/21,693 loss=4.0190 ppl=55.65 acc=0.3349 lr=7.186e-05 grad=0.768 tok/s=8,511 elapsed=5h50m eta=3h11m
+epoch=02/3 batch=6,819/7,231 update=14,050/21,693 loss=4.0383 ppl=56.73 acc=0.3332 lr=7.156e-05 grad=0.723 tok/s=10,898 elapsed=5h51m eta=3h11m
+epoch=02/3 batch=6,844/7,231 update=14,075/21,693 loss=4.0117 ppl=55.24 acc=0.3344 lr=7.126e-05 grad=0.740 tok/s=11,045 elapsed=5h52m eta=3h10m
+epoch=02/3 batch=6,869/7,231 update=14,100/21,693 loss=4.0185 ppl=55.62 acc=0.3339 lr=7.096e-05 grad=0.717 tok/s=10,971 elapsed=5h52m eta=3h10m
+epoch=02/3 batch=6,894/7,231 update=14,125/21,693 loss=4.0262 ppl=56.04 acc=0.3339 lr=7.066e-05 grad=0.717 tok/s=10,951 elapsed=5h53m eta=3h09m
+epoch=02/3 batch=6,919/7,231 update=14,150/21,693 loss=4.0459 ppl=57.16 acc=0.3329 lr=7.036e-05 grad=0.716 tok/s=10,739 elapsed=5h54m eta=3h08m
+epoch=02/3 batch=6,944/7,231 update=14,175/21,693 loss=4.0084 ppl=55.06 acc=0.3362 lr=7.006e-05 grad=0.729 tok/s=10,992 elapsed=5h54m eta=3h08m
+epoch=02/3 batch=6,969/7,231 update=14,200/21,693 loss=4.0085 ppl=55.07 acc=0.3360 lr=6.976e-05 grad=0.719 tok/s=11,021 elapsed=5h55m eta=3h07m
+epoch=02/3 batch=6,994/7,231 update=14,225/21,693 loss=4.0097 ppl=55.13 acc=0.3371 lr=6.947e-05 grad=0.729 tok/s=10,891 elapsed=5h55m eta=3h06m
+epoch=02/3 batch=7,019/7,231 update=14,250/21,693 loss=3.9936 ppl=54.25 acc=0.3379 lr=6.917e-05 grad=0.731 tok/s=11,047 elapsed=5h56m eta=3h06m
+epoch=02/3 batch=7,044/7,231 update=14,275/21,693 loss=4.0415 ppl=56.91 acc=0.3320 lr=6.887e-05 grad=0.725 tok/s=11,032 elapsed=5h57m eta=3h05m
+epoch=02/3 batch=7,069/7,231 update=14,300/21,693 loss=4.0022 ppl=54.72 acc=0.3380 lr=6.858e-05 grad=0.727 tok/s=10,997 elapsed=5h57m eta=3h05m
+epoch=02/3 batch=7,094/7,231 update=14,325/21,693 loss=4.0158 ppl=55.47 acc=0.3336 lr=6.828e-05 grad=0.728 tok/s=10,971 elapsed=5h58m eta=3h04m
+epoch=02/3 batch=7,119/7,231 update=14,350/21,693 loss=3.9866 ppl=53.87 acc=0.3388 lr=6.799e-05 grad=0.703 tok/s=11,097 elapsed=5h59m eta=3h03m
+epoch=02/3 batch=7,144/7,231 update=14,375/21,693 loss=4.0193 ppl=55.66 acc=0.3336 lr=6.769e-05 grad=0.713 tok/s=11,056 elapsed=5h59m eta=3h03m
+epoch=02/3 batch=7,169/7,231 update=14,400/21,693 loss=4.0065 ppl=54.95 acc=0.3376 lr=6.740e-05 grad=0.726 tok/s=11,076 elapsed=6h00m eta=3h02m
+epoch=02/3 batch=7,194/7,231 update=14,425/21,693 loss=4.0098 ppl=55.13 acc=0.3364 lr=6.711e-05 grad=0.787 tok/s=11,057 elapsed=6h00m eta=3h01m
+epoch=02/3 batch=7,219/7,231 update=14,450/21,693 loss=4.0025 ppl=54.73 acc=0.3367 lr=6.682e-05 grad=0.734 tok/s=11,000 elapsed=6h01m eta=3h01m
+[validation] loss=3.8799 ppl=48.42 bpt=5.598 token_acc=0.3478 tokens=248,064 tok/s=54,914
+[validation_long_512] loss=3.8440 ppl=46.71 bpt=5.546 token_acc=0.3511 tokens=248,320 tok/s=53,847
+New best validation perplexity: 48.42
+epoch=03/3 batch=13/7,231 update=14,475/21,693 loss=3.9980 ppl=54.49 acc=0.3370 lr=6.652e-05 grad=0.741 tok/s=10,868 elapsed=6h02m eta=3h00m
+epoch=03/3 batch=38/7,231 update=14,500/21,693 loss=3.9971 ppl=54.44 acc=0.3373 lr=6.623e-05 grad=0.749 tok/s=11,005 elapsed=6h03m eta=3h00m
+Saved latest checkpoint at update 14,500
+epoch=03/3 batch=63/7,231 update=14,525/21,693 loss=4.0090 ppl=55.09 acc=0.3342 lr=6.594e-05 grad=0.726 tok/s=10,465 elapsed=6h03m eta=2h59m
+epoch=03/3 batch=88/7,231 update=14,550/21,693 loss=3.9760 ppl=53.30 acc=0.3364 lr=6.565e-05 grad=0.721 tok/s=11,068 elapsed=6h04m eta=2h58m
+epoch=03/3 batch=113/7,231 update=14,575/21,693 loss=3.9807 ppl=53.55 acc=0.3382 lr=6.537e-05 grad=0.743 tok/s=10,823 elapsed=6h04m eta=2h58m
+epoch=03/3 batch=138/7,231 update=14,600/21,693 loss=3.9785 ppl=53.44 acc=0.3365 lr=6.508e-05 grad=0.738 tok/s=10,962 elapsed=6h05m eta=2h57m
+epoch=03/3 batch=163/7,231 update=14,625/21,693 loss=4.0002 ppl=54.61 acc=0.3355 lr=6.479e-05 grad=0.739 tok/s=10,904 elapsed=6h06m eta=2h56m
+epoch=03/3 batch=188/7,231 update=14,650/21,693 loss=3.9958 ppl=54.37 acc=0.3353 lr=6.450e-05 grad=0.741 tok/s=11,060 elapsed=6h06m eta=2h56m
+epoch=03/3 batch=213/7,231 update=14,675/21,693 loss=3.9871 ppl=53.90 acc=0.3361 lr=6.422e-05 grad=0.742 tok/s=11,061 elapsed=6h07m eta=2h55m
+epoch=03/3 batch=238/7,231 update=14,700/21,693 loss=3.9796 ppl=53.50 acc=0.3365 lr=6.393e-05 grad=0.720 tok/s=10,895 elapsed=6h08m eta=2h55m
+epoch=03/3 batch=263/7,231 update=14,725/21,693 loss=3.9807 ppl=53.56 acc=0.3373 lr=6.364e-05 grad=0.737 tok/s=10,919 elapsed=6h08m eta=2h54m
+epoch=03/3 batch=288/7,231 update=14,750/21,693 loss=3.9901 ppl=54.06 acc=0.3361 lr=6.336e-05 grad=0.778 tok/s=11,063 elapsed=6h09m eta=2h53m
+epoch=03/3 batch=313/7,231 update=14,775/21,693 loss=3.9829 ppl=53.67 acc=0.3373 lr=6.308e-05 grad=0.745 tok/s=10,940 elapsed=6h09m eta=2h53m
+epoch=03/3 batch=338/7,231 update=14,800/21,693 loss=3.9752 ppl=53.26 acc=0.3390 lr=6.279e-05 grad=0.724 tok/s=10,954 elapsed=6h10m eta=2h52m
+epoch=03/3 batch=363/7,231 update=14,825/21,693 loss=4.0086 ppl=55.07 acc=0.3344 lr=6.251e-05 grad=0.750 tok/s=11,015 elapsed=6h11m eta=2h51m
+epoch=03/3 batch=388/7,231 update=14,850/21,693 loss=3.9480 ppl=51.83 acc=0.3409 lr=6.223e-05 grad=0.754 tok/s=10,982 elapsed=6h11m eta=2h51m
+epoch=03/3 batch=413/7,231 update=14,875/21,693 loss=3.9739 ppl=53.19 acc=0.3384 lr=6.195e-05 grad=0.742 tok/s=10,922 elapsed=6h12m eta=2h50m
+epoch=03/3 batch=438/7,231 update=14,900/21,693 loss=3.9749 ppl=53.24 acc=0.3391 lr=6.166e-05 grad=0.744 tok/s=10,974 elapsed=6h13m eta=2h50m
+epoch=03/3 batch=463/7,231 update=14,925/21,693 loss=3.9923 ppl=54.18 acc=0.3368 lr=6.138e-05 grad=0.728 tok/s=10,865 elapsed=6h13m eta=2h49m
+epoch=03/3 batch=488/7,231 update=14,950/21,693 loss=3.9799 ppl=53.51 acc=0.3379 lr=6.111e-05 grad=0.732 tok/s=10,833 elapsed=6h14m eta=2h48m
+epoch=03/3 batch=513/7,231 update=14,975/21,693 loss=3.9910 ppl=54.11 acc=0.3374 lr=6.083e-05 grad=0.743 tok/s=10,975 elapsed=6h14m eta=2h48m
+epoch=03/3 batch=538/7,231 update=15,000/21,693 loss=3.9839 ppl=53.73 acc=0.3363 lr=6.055e-05 grad=0.760 tok/s=10,976 elapsed=6h15m eta=2h47m
+Saved latest checkpoint at update 15,000
+[validation] loss=3.8750 ppl=48.18 bpt=5.590 token_acc=0.3490 tokens=248,064 tok/s=54,550
+New best validation perplexity: 48.18
+epoch=03/3 batch=563/7,231 update=15,025/21,693 loss=3.9798 ppl=53.51 acc=0.3388 lr=6.027e-05 grad=0.736 tok/s=8,587 elapsed=6h16m eta=2h46m
+epoch=03/3 batch=588/7,231 update=15,050/21,693 loss=3.9833 ppl=53.69 acc=0.3362 lr=5.999e-05 grad=0.745 tok/s=10,992 elapsed=6h16m eta=2h46m
+epoch=03/3 batch=613/7,231 update=15,075/21,693 loss=3.9518 ppl=52.03 acc=0.3402 lr=5.972e-05 grad=0.731 tok/s=11,012 elapsed=6h17m eta=2h45m
+epoch=03/3 batch=638/7,231 update=15,100/21,693 loss=3.9552 ppl=52.21 acc=0.3398 lr=5.944e-05 grad=0.738 tok/s=11,031 elapsed=6h18m eta=2h45m
+epoch=03/3 batch=663/7,231 update=15,125/21,693 loss=3.9834 ppl=53.70 acc=0.3383 lr=5.917e-05 grad=0.754 tok/s=11,028 elapsed=6h18m eta=2h44m
+epoch=03/3 batch=688/7,231 update=15,150/21,693 loss=3.9769 ppl=53.35 acc=0.3378 lr=5.889e-05 grad=0.725 tok/s=10,982 elapsed=6h19m eta=2h43m
+epoch=03/3 batch=713/7,231 update=15,175/21,693 loss=3.9575 ppl=52.33 acc=0.3403 lr=5.862e-05 grad=0.761 tok/s=11,013 elapsed=6h20m eta=2h43m
+epoch=03/3 batch=738/7,231 update=15,200/21,693 loss=3.9956 ppl=54.36 acc=0.3358 lr=5.835e-05 grad=0.739 tok/s=11,047 elapsed=6h20m eta=2h42m
+epoch=03/3 batch=763/7,231 update=15,225/21,693 loss=4.0091 ppl=55.10 acc=0.3344 lr=5.808e-05 grad=0.744 tok/s=11,013 elapsed=6h21m eta=2h41m
+epoch=03/3 batch=788/7,231 update=15,250/21,693 loss=3.9902 ppl=54.07 acc=0.3364 lr=5.780e-05 grad=0.751 tok/s=11,035 elapsed=6h21m eta=2h41m
+epoch=03/3 batch=813/7,231 update=15,275/21,693 loss=3.9689 ppl=52.93 acc=0.3403 lr=5.753e-05 grad=0.740 tok/s=10,884 elapsed=6h22m eta=2h40m
+epoch=03/3 batch=838/7,231 update=15,300/21,693 loss=3.9886 ppl=53.98 acc=0.3369 lr=5.726e-05 grad=0.751 tok/s=10,927 elapsed=6h23m eta=2h40m
+epoch=03/3 batch=863/7,231 update=15,325/21,693 loss=3.9835 ppl=53.70 acc=0.3380 lr=5.700e-05 grad=0.747 tok/s=11,020 elapsed=6h23m eta=2h39m
+epoch=03/3 batch=888/7,231 update=15,350/21,693 loss=3.9648 ppl=52.71 acc=0.3389 lr=5.673e-05 grad=0.748 tok/s=11,094 elapsed=6h24m eta=2h38m
+epoch=03/3 batch=913/7,231 update=15,375/21,693 loss=3.9775 ppl=53.38 acc=0.3374 lr=5.646e-05 grad=0.736 tok/s=11,079 elapsed=6h24m eta=2h38m
+epoch=03/3 batch=938/7,231 update=15,400/21,693 loss=3.9745 ppl=53.23 acc=0.3391 lr=5.619e-05 grad=0.738 tok/s=11,057 elapsed=6h25m eta=2h37m
+epoch=03/3 batch=963/7,231 update=15,425/21,693 loss=3.9620 ppl=52.56 acc=0.3400 lr=5.593e-05 grad=0.731 tok/s=10,842 elapsed=6h26m eta=2h36m
+epoch=03/3 batch=988/7,231 update=15,450/21,693 loss=3.9632 ppl=52.63 acc=0.3400 lr=5.566e-05 grad=0.752 tok/s=10,917 elapsed=6h26m eta=2h36m
+epoch=03/3 batch=1,013/7,231 update=15,475/21,693 loss=3.9624 ppl=52.58 acc=0.3394 lr=5.540e-05 grad=0.745 tok/s=11,037 elapsed=6h27m eta=2h35m
+epoch=03/3 batch=1,038/7,231 update=15,500/21,693 loss=3.9834 ppl=53.70 acc=0.3368 lr=5.513e-05 grad=0.741 tok/s=11,020 elapsed=6h28m eta=2h35m
+Saved latest checkpoint at update 15,500
+epoch=03/3 batch=1,063/7,231 update=15,525/21,693 loss=3.9709 ppl=53.03 acc=0.3387 lr=5.487e-05 grad=0.762 tok/s=10,477 elapsed=6h28m eta=2h34m
+epoch=03/3 batch=1,088/7,231 update=15,550/21,693 loss=3.9764 ppl=53.32 acc=0.3396 lr=5.461e-05 grad=0.740 tok/s=11,067 elapsed=6h29m eta=2h33m
+epoch=03/3 batch=1,113/7,231 update=15,575/21,693 loss=3.9751 ppl=53.25 acc=0.3384 lr=5.434e-05 grad=0.734 tok/s=10,934 elapsed=6h29m eta=2h33m
+epoch=03/3 batch=1,138/7,231 update=15,600/21,693 loss=3.9776 ppl=53.39 acc=0.3384 lr=5.408e-05 grad=0.730 tok/s=11,098 elapsed=6h30m eta=2h32m
+epoch=03/3 batch=1,163/7,231 update=15,625/21,693 loss=3.9915 ppl=54.14 acc=0.3375 lr=5.382e-05 grad=0.762 tok/s=10,792 elapsed=6h31m eta=2h31m
+epoch=03/3 batch=1,188/7,231 update=15,650/21,693 loss=3.9994 ppl=54.57 acc=0.3363 lr=5.356e-05 grad=0.741 tok/s=11,073 elapsed=6h31m eta=2h31m
+epoch=03/3 batch=1,213/7,231 update=15,675/21,693 loss=3.9583 ppl=52.37 acc=0.3395 lr=5.331e-05 grad=0.759 tok/s=10,997 elapsed=6h32m eta=2h30m
+epoch=03/3 batch=1,238/7,231 update=15,700/21,693 loss=3.9749 ppl=53.25 acc=0.3399 lr=5.305e-05 grad=0.766 tok/s=11,113 elapsed=6h33m eta=2h30m
+epoch=03/3 batch=1,263/7,231 update=15,725/21,693 loss=3.9710 ppl=53.04 acc=0.3379 lr=5.279e-05 grad=0.734 tok/s=11,008 elapsed=6h33m eta=2h29m
+epoch=03/3 batch=1,288/7,231 update=15,750/21,693 loss=3.9587 ppl=52.39 acc=0.3387 lr=5.253e-05 grad=0.735 tok/s=11,043 elapsed=6h34m eta=2h28m
+epoch=03/3 batch=1,313/7,231 update=15,775/21,693 loss=3.9844 ppl=53.75 acc=0.3384 lr=5.228e-05 grad=0.749 tok/s=11,039 elapsed=6h34m eta=2h28m
+epoch=03/3 batch=1,338/7,231 update=15,800/21,693 loss=3.9601 ppl=52.46 acc=0.3392 lr=5.202e-05 grad=0.766 tok/s=10,980 elapsed=6h35m eta=2h27m
+epoch=03/3 batch=1,363/7,231 update=15,825/21,693 loss=3.9623 ppl=52.58 acc=0.3395 lr=5.177e-05 grad=0.763 tok/s=11,011 elapsed=6h36m eta=2h26m
+epoch=03/3 batch=1,388/7,231 update=15,850/21,693 loss=3.9737 ppl=53.18 acc=0.3400 lr=5.152e-05 grad=0.735 tok/s=10,754 elapsed=6h36m eta=2h26m
+epoch=03/3 batch=1,413/7,231 update=15,875/21,693 loss=3.9495 ppl=51.91 acc=0.3390 lr=5.126e-05 grad=0.745 tok/s=10,981 elapsed=6h37m eta=2h25m
+epoch=03/3 batch=1,438/7,231 update=15,900/21,693 loss=3.9747 ppl=53.23 acc=0.3375 lr=5.101e-05 grad=0.748 tok/s=11,026 elapsed=6h38m eta=2h25m
+epoch=03/3 batch=1,463/7,231 update=15,925/21,693 loss=3.9712 ppl=53.05 acc=0.3385 lr=5.076e-05 grad=0.748 tok/s=11,056 elapsed=6h38m eta=2h24m
+epoch=03/3 batch=1,488/7,231 update=15,950/21,693 loss=3.9671 ppl=52.83 acc=0.3399 lr=5.051e-05 grad=0.782 tok/s=10,636 elapsed=6h39m eta=2h23m
+epoch=03/3 batch=1,513/7,231 update=15,975/21,693 loss=3.9452 ppl=51.68 acc=0.3417 lr=5.026e-05 grad=0.736 tok/s=10,945 elapsed=6h39m eta=2h23m
+epoch=03/3 batch=1,538/7,231 update=16,000/21,693 loss=3.9679 ppl=52.87 acc=0.3386 lr=5.002e-05 grad=0.728 tok/s=11,030 elapsed=6h40m eta=2h22m
+Saved latest checkpoint at update 16,000
+[validation] loss=3.8576 ppl=47.35 bpt=5.565 token_acc=0.3504 tokens=248,064 tok/s=55,013
+New best validation perplexity: 47.35
+epoch=03/3 batch=1,563/7,231 update=16,025/21,693 loss=3.9668 ppl=52.82 acc=0.3378 lr=4.977e-05 grad=0.746 tok/s=8,712 elapsed=6h41m eta=2h21m
+epoch=03/3 batch=1,588/7,231 update=16,050/21,693 loss=3.9658 ppl=52.76 acc=0.3380 lr=4.952e-05 grad=0.750 tok/s=11,030 elapsed=6h41m eta=2h21m
+epoch=03/3 batch=1,613/7,231 update=16,075/21,693 loss=3.9754 ppl=53.27 acc=0.3380 lr=4.928e-05 grad=0.759 tok/s=11,032 elapsed=6h42m eta=2h20m
+epoch=03/3 batch=1,638/7,231 update=16,100/21,693 loss=3.9776 ppl=53.39 acc=0.3365 lr=4.903e-05 grad=0.732 tok/s=11,020 elapsed=6h43m eta=2h20m
+epoch=03/3 batch=1,663/7,231 update=16,125/21,693 loss=3.9599 ppl=52.45 acc=0.3406 lr=4.879e-05 grad=0.747 tok/s=10,988 elapsed=6h43m eta=2h19m
+epoch=03/3 batch=1,688/7,231 update=16,150/21,693 loss=3.9759 ppl=53.30 acc=0.3377 lr=4.854e-05 grad=0.752 tok/s=10,961 elapsed=6h44m eta=2h18m
+epoch=03/3 batch=1,713/7,231 update=16,175/21,693 loss=3.9513 ppl=52.00 acc=0.3407 lr=4.830e-05 grad=0.749 tok/s=11,124 elapsed=6h45m eta=2h18m
+epoch=03/3 batch=1,738/7,231 update=16,200/21,693 loss=3.9682 ppl=52.89 acc=0.3376 lr=4.806e-05 grad=0.732 tok/s=11,036 elapsed=6h45m eta=2h17m
+epoch=03/3 batch=1,763/7,231 update=16,225/21,693 loss=3.9640 ppl=52.67 acc=0.3407 lr=4.782e-05 grad=0.763 tok/s=11,028 elapsed=6h46m eta=2h16m
+epoch=03/3 batch=1,788/7,231 update=16,250/21,693 loss=3.9766 ppl=53.34 acc=0.3387 lr=4.758e-05 grad=0.755 tok/s=11,064 elapsed=6h46m eta=2h16m
+epoch=03/3 batch=1,813/7,231 update=16,275/21,693 loss=3.9636 ppl=52.65 acc=0.3399 lr=4.734e-05 grad=0.728 tok/s=11,010 elapsed=6h47m eta=2h15m
+epoch=03/3 batch=1,838/7,231 update=16,300/21,693 loss=3.9753 ppl=53.27 acc=0.3379 lr=4.710e-05 grad=0.751 tok/s=10,930 elapsed=6h48m eta=2h15m
+epoch=03/3 batch=1,863/7,231 update=16,325/21,693 loss=3.9693 ppl=52.95 acc=0.3383 lr=4.686e-05 grad=0.736 tok/s=10,901 elapsed=6h48m eta=2h14m
+epoch=03/3 batch=1,888/7,231 update=16,350/21,693 loss=3.9546 ppl=52.17 acc=0.3412 lr=4.663e-05 grad=0.731 tok/s=10,944 elapsed=6h49m eta=2h13m
+epoch=03/3 batch=1,913/7,231 update=16,375/21,693 loss=3.9667 ppl=52.81 acc=0.3402 lr=4.639e-05 grad=0.736 tok/s=11,018 elapsed=6h50m eta=2h13m
+epoch=03/3 batch=1,938/7,231 update=16,400/21,693 loss=3.9674 ppl=52.85 acc=0.3408 lr=4.616e-05 grad=0.738 tok/s=10,778 elapsed=6h50m eta=2h12m
+epoch=03/3 batch=1,963/7,231 update=16,425/21,693 loss=3.9699 ppl=52.98 acc=0.3385 lr=4.592e-05 grad=0.750 tok/s=10,781 elapsed=6h51m eta=2h11m
+epoch=03/3 batch=1,988/7,231 update=16,450/21,693 loss=3.9689 ppl=52.93 acc=0.3389 lr=4.569e-05 grad=0.755 tok/s=10,906 elapsed=6h51m eta=2h11m
+epoch=03/3 batch=2,013/7,231 update=16,475/21,693 loss=3.9666 ppl=52.80 acc=0.3396 lr=4.546e-05 grad=0.744 tok/s=10,822 elapsed=6h52m eta=2h10m
+epoch=03/3 batch=2,038/7,231 update=16,500/21,693 loss=3.9653 ppl=52.74 acc=0.3397 lr=4.523e-05 grad=0.733 tok/s=10,979 elapsed=6h53m eta=2h10m
+Saved latest checkpoint at update 16,500
+epoch=03/3 batch=2,063/7,231 update=16,525/21,693 loss=3.9873 ppl=53.91 acc=0.3355 lr=4.500e-05 grad=0.764 tok/s=10,288 elapsed=6h53m eta=2h09m
+epoch=03/3 batch=2,088/7,231 update=16,550/21,693 loss=3.9687 ppl=52.92 acc=0.3396 lr=4.477e-05 grad=0.744 tok/s=11,048 elapsed=6h54m eta=2h08m
+epoch=03/3 batch=2,113/7,231 update=16,575/21,693 loss=3.9584 ppl=52.37 acc=0.3392 lr=4.454e-05 grad=0.748 tok/s=10,952 elapsed=6h55m eta=2h08m
+epoch=03/3 batch=2,138/7,231 update=16,600/21,693 loss=3.9783 ppl=53.43 acc=0.3381 lr=4.431e-05 grad=0.746 tok/s=10,780 elapsed=6h55m eta=2h07m
+epoch=03/3 batch=2,163/7,231 update=16,625/21,693 loss=3.9669 ppl=52.82 acc=0.3389 lr=4.408e-05 grad=0.753 tok/s=10,771 elapsed=6h56m eta=2h06m
+epoch=03/3 batch=2,188/7,231 update=16,650/21,693 loss=3.9763 ppl=53.32 acc=0.3382 lr=4.386e-05 grad=0.750 tok/s=10,741 elapsed=6h56m eta=2h06m
+epoch=03/3 batch=2,213/7,231 update=16,675/21,693 loss=3.9736 ppl=53.18 acc=0.3387 lr=4.363e-05 grad=0.750 tok/s=10,866 elapsed=6h57m eta=2h05m
+epoch=03/3 batch=2,238/7,231 update=16,700/21,693 loss=3.9866 ppl=53.87 acc=0.3379 lr=4.341e-05 grad=0.732 tok/s=10,891 elapsed=6h58m eta=2h05m
+epoch=03/3 batch=2,263/7,231 update=16,725/21,693 loss=3.9697 ppl=52.97 acc=0.3378 lr=4.318e-05 grad=0.742 tok/s=11,022 elapsed=6h58m eta=2h04m
+epoch=03/3 batch=2,288/7,231 update=16,750/21,693 loss=3.9551 ppl=52.20 acc=0.3406 lr=4.296e-05 grad=0.746 tok/s=10,938 elapsed=6h59m eta=2h03m
+epoch=03/3 batch=2,313/7,231 update=16,775/21,693 loss=3.9639 ppl=52.66 acc=0.3390 lr=4.274e-05 grad=0.782 tok/s=11,010 elapsed=7h00m eta=2h03m
+epoch=03/3 batch=2,338/7,231 update=16,800/21,693 loss=3.9696 ppl=52.96 acc=0.3385 lr=4.252e-05 grad=0.758 tok/s=10,911 elapsed=7h00m eta=2h02m
+epoch=03/3 batch=2,363/7,231 update=16,825/21,693 loss=3.9861 ppl=53.84 acc=0.3371 lr=4.230e-05 grad=0.760 tok/s=11,008 elapsed=7h01m eta=2h01m
+epoch=03/3 batch=2,388/7,231 update=16,850/21,693 loss=3.9752 ppl=53.26 acc=0.3389 lr=4.208e-05 grad=0.760 tok/s=10,951 elapsed=7h01m eta=2h01m
+epoch=03/3 batch=2,413/7,231 update=16,875/21,693 loss=3.9803 ppl=53.53 acc=0.3386 lr=4.186e-05 grad=0.770 tok/s=10,934 elapsed=7h02m eta=2h00m
+epoch=03/3 batch=2,438/7,231 update=16,900/21,693 loss=3.9702 ppl=52.99 acc=0.3392 lr=4.165e-05 grad=0.746 tok/s=11,055 elapsed=7h03m eta=2h00m
+epoch=03/3 batch=2,463/7,231 update=16,925/21,693 loss=3.9564 ppl=52.27 acc=0.3396 lr=4.143e-05 grad=0.744 tok/s=10,825 elapsed=7h03m eta=1h59m
+epoch=03/3 batch=2,488/7,231 update=16,950/21,693 loss=3.9229 ppl=50.55 acc=0.3437 lr=4.122e-05 grad=0.756 tok/s=10,936 elapsed=7h04m eta=1h58m
+epoch=03/3 batch=2,513/7,231 update=16,975/21,693 loss=3.9640 ppl=52.67 acc=0.3400 lr=4.100e-05 grad=0.750 tok/s=10,704 elapsed=7h05m eta=1h58m
+epoch=03/3 batch=2,538/7,231 update=17,000/21,693 loss=3.9398 ppl=51.41 acc=0.3425 lr=4.079e-05 grad=0.743 tok/s=10,870 elapsed=7h05m eta=1h57m
+Saved latest checkpoint at update 17,000
+[validation] loss=3.8469 ppl=46.85 bpt=5.550 token_acc=0.3514 tokens=248,064 tok/s=54,838
+New best validation perplexity: 46.85
+epoch=03/3 batch=2,563/7,231 update=17,025/21,693 loss=3.9705 ppl=53.01 acc=0.3384 lr=4.058e-05 grad=0.748 tok/s=8,492 elapsed=7h06m eta=1h56m
+epoch=03/3 batch=2,588/7,231 update=17,050/21,693 loss=3.9380 ppl=51.32 acc=0.3429 lr=4.037e-05 grad=0.759 tok/s=11,051 elapsed=7h07m eta=1h56m
+epoch=03/3 batch=2,613/7,231 update=17,075/21,693 loss=3.9517 ppl=52.03 acc=0.3417 lr=4.016e-05 grad=0.763 tok/s=10,963 elapsed=7h07m eta=1h55m
+epoch=03/3 batch=2,638/7,231 update=17,100/21,693 loss=3.9355 ppl=51.19 acc=0.3425 lr=3.995e-05 grad=0.721 tok/s=11,039 elapsed=7h08m eta=1h55m
+epoch=03/3 batch=2,663/7,231 update=17,125/21,693 loss=3.9597 ppl=52.44 acc=0.3396 lr=3.974e-05 grad=0.749 tok/s=10,902 elapsed=7h09m eta=1h54m
+epoch=03/3 batch=2,688/7,231 update=17,150/21,693 loss=3.9705 ppl=53.01 acc=0.3404 lr=3.953e-05 grad=0.748 tok/s=10,889 elapsed=7h09m eta=1h53m
+epoch=03/3 batch=2,713/7,231 update=17,175/21,693 loss=3.9676 ppl=52.86 acc=0.3382 lr=3.933e-05 grad=0.745 tok/s=10,986 elapsed=7h10m eta=1h53m
+epoch=03/3 batch=2,738/7,231 update=17,200/21,693 loss=3.9670 ppl=52.83 acc=0.3393 lr=3.912e-05 grad=0.768 tok/s=10,927 elapsed=7h10m eta=1h52m
+epoch=03/3 batch=2,763/7,231 update=17,225/21,693 loss=3.9444 ppl=51.65 acc=0.3417 lr=3.892e-05 grad=0.752 tok/s=11,008 elapsed=7h11m eta=1h51m
+epoch=03/3 batch=2,788/7,231 update=17,250/21,693 loss=3.9674 ppl=52.85 acc=0.3372 lr=3.871e-05 grad=0.754 tok/s=10,919 elapsed=7h12m eta=1h51m
+epoch=03/3 batch=2,813/7,231 update=17,275/21,693 loss=3.9669 ppl=52.82 acc=0.3380 lr=3.851e-05 grad=0.761 tok/s=11,096 elapsed=7h12m eta=1h50m
+epoch=03/3 batch=2,838/7,231 update=17,300/21,693 loss=3.9256 ppl=50.68 acc=0.3440 lr=3.831e-05 grad=0.733 tok/s=11,041 elapsed=7h13m eta=1h50m
+epoch=03/3 batch=2,863/7,231 update=17,325/21,693 loss=3.9578 ppl=52.34 acc=0.3393 lr=3.811e-05 grad=0.746 tok/s=10,791 elapsed=7h14m eta=1h49m
+epoch=03/3 batch=2,888/7,231 update=17,350/21,693 loss=3.9679 ppl=52.87 acc=0.3399 lr=3.791e-05 grad=0.748 tok/s=10,935 elapsed=7h14m eta=1h48m
+epoch=03/3 batch=2,913/7,231 update=17,375/21,693 loss=3.9505 ppl=51.96 acc=0.3412 lr=3.771e-05 grad=0.764 tok/s=11,007 elapsed=7h15m eta=1h48m
+epoch=03/3 batch=2,938/7,231 update=17,400/21,693 loss=3.9528 ppl=52.08 acc=0.3399 lr=3.751e-05 grad=0.760 tok/s=10,914 elapsed=7h15m eta=1h47m
+epoch=03/3 batch=2,963/7,231 update=17,425/21,693 loss=3.9600 ppl=52.46 acc=0.3398 lr=3.732e-05 grad=0.756 tok/s=10,956 elapsed=7h16m eta=1h46m
+epoch=03/3 batch=2,988/7,231 update=17,450/21,693 loss=3.9563 ppl=52.26 acc=0.3392 lr=3.712e-05 grad=0.748 tok/s=10,901 elapsed=7h17m eta=1h46m
+epoch=03/3 batch=3,013/7,231 update=17,475/21,693 loss=3.9563 ppl=52.26 acc=0.3406 lr=3.693e-05 grad=0.751 tok/s=10,900 elapsed=7h17m eta=1h45m
+epoch=03/3 batch=3,038/7,231 update=17,500/21,693 loss=3.9403 ppl=51.43 acc=0.3422 lr=3.673e-05 grad=0.770 tok/s=10,850 elapsed=7h18m eta=1h45m
+Saved latest checkpoint at update 17,500
+epoch=03/3 batch=3,063/7,231 update=17,525/21,693 loss=3.9688 ppl=52.92 acc=0.3393 lr=3.654e-05 grad=0.769 tok/s=10,452 elapsed=7h19m eta=1h44m
+epoch=03/3 batch=3,088/7,231 update=17,550/21,693 loss=3.9433 ppl=51.59 acc=0.3427 lr=3.635e-05 grad=0.748 tok/s=11,024 elapsed=7h19m eta=1h43m
+epoch=03/3 batch=3,113/7,231 update=17,575/21,693 loss=3.9501 ppl=51.94 acc=0.3411 lr=3.616e-05 grad=0.741 tok/s=10,883 elapsed=7h20m eta=1h43m
+epoch=03/3 batch=3,138/7,231 update=17,600/21,693 loss=3.9596 ppl=52.44 acc=0.3400 lr=3.597e-05 grad=0.746 tok/s=10,819 elapsed=7h20m eta=1h42m
+epoch=03/3 batch=3,163/7,231 update=17,625/21,693 loss=3.9660 ppl=52.77 acc=0.3382 lr=3.578e-05 grad=0.755 tok/s=11,003 elapsed=7h21m eta=1h41m
+epoch=03/3 batch=3,188/7,231 update=17,650/21,693 loss=3.9519 ppl=52.04 acc=0.3406 lr=3.559e-05 grad=0.772 tok/s=11,072 elapsed=7h22m eta=1h41m
+epoch=03/3 batch=3,213/7,231 update=17,675/21,693 loss=3.9371 ppl=51.27 acc=0.3421 lr=3.540e-05 grad=0.744 tok/s=11,009 elapsed=7h22m eta=1h40m
+epoch=03/3 batch=3,238/7,231 update=17,700/21,693 loss=3.9734 ppl=53.16 acc=0.3381 lr=3.522e-05 grad=0.751 tok/s=11,026 elapsed=7h23m eta=1h40m
+epoch=03/3 batch=3,263/7,231 update=17,725/21,693 loss=3.9799 ppl=53.51 acc=0.3384 lr=3.503e-05 grad=0.743 tok/s=11,052 elapsed=7h23m eta=1h39m
+epoch=03/3 batch=3,288/7,231 update=17,750/21,693 loss=3.9355 ppl=51.19 acc=0.3432 lr=3.485e-05 grad=0.752 tok/s=10,845 elapsed=7h24m eta=1h38m
+epoch=03/3 batch=3,313/7,231 update=17,775/21,693 loss=3.9467 ppl=51.76 acc=0.3415 lr=3.467e-05 grad=0.751 tok/s=11,064 elapsed=7h25m eta=1h38m
+epoch=03/3 batch=3,338/7,231 update=17,800/21,693 loss=3.9681 ppl=52.88 acc=0.3387 lr=3.449e-05 grad=0.745 tok/s=10,649 elapsed=7h25m eta=1h37m
+epoch=03/3 batch=3,363/7,231 update=17,825/21,693 loss=3.9528 ppl=52.08 acc=0.3404 lr=3.431e-05 grad=0.772 tok/s=11,219 elapsed=7h26m eta=1h36m
+epoch=03/3 batch=3,388/7,231 update=17,850/21,693 loss=3.9574 ppl=52.32 acc=0.3397 lr=3.413e-05 grad=0.792 tok/s=11,125 elapsed=7h27m eta=1h36m
+epoch=03/3 batch=3,413/7,231 update=17,875/21,693 loss=3.9613 ppl=52.53 acc=0.3403 lr=3.395e-05 grad=0.764 tok/s=10,969 elapsed=7h27m eta=1h35m
+epoch=03/3 batch=3,438/7,231 update=17,900/21,693 loss=3.9416 ppl=51.50 acc=0.3422 lr=3.377e-05 grad=0.748 tok/s=10,691 elapsed=7h28m eta=1h35m
+epoch=03/3 batch=3,463/7,231 update=17,925/21,693 loss=3.9423 ppl=51.54 acc=0.3413 lr=3.360e-05 grad=0.745 tok/s=10,869 elapsed=7h28m eta=1h34m
+epoch=03/3 batch=3,488/7,231 update=17,950/21,693 loss=3.9467 ppl=51.76 acc=0.3417 lr=3.342e-05 grad=0.773 tok/s=10,745 elapsed=7h29m eta=1h33m
+epoch=03/3 batch=3,513/7,231 update=17,975/21,693 loss=3.9596 ppl=52.44 acc=0.3388 lr=3.325e-05 grad=0.743 tok/s=11,067 elapsed=7h30m eta=1h33m
+epoch=03/3 batch=3,538/7,231 update=18,000/21,693 loss=3.9823 ppl=53.64 acc=0.3369 lr=3.307e-05 grad=0.759 tok/s=11,148 elapsed=7h30m eta=1h32m
+Saved latest checkpoint at update 18,000
+[validation] loss=3.8376 ppl=46.41 bpt=5.536 token_acc=0.3529 tokens=248,064 tok/s=55,093
+New best validation perplexity: 46.41
+epoch=03/3 batch=3,563/7,231 update=18,025/21,693 loss=3.9636 ppl=52.64 acc=0.3389 lr=3.290e-05 grad=0.755 tok/s=8,794 elapsed=7h31m eta=1h31m
+epoch=03/3 batch=3,588/7,231 update=18,050/21,693 loss=3.9589 ppl=52.40 acc=0.3411 lr=3.273e-05 grad=0.740 tok/s=11,046 elapsed=7h32m eta=1h31m
+epoch=03/3 batch=3,613/7,231 update=18,075/21,693 loss=3.9748 ppl=53.24 acc=0.3383 lr=3.256e-05 grad=0.752 tok/s=10,987 elapsed=7h32m eta=1h30m
+epoch=03/3 batch=3,638/7,231 update=18,100/21,693 loss=3.9215 ppl=50.47 acc=0.3443 lr=3.239e-05 grad=0.757 tok/s=11,193 elapsed=7h33m eta=1h30m
+epoch=03/3 batch=3,663/7,231 update=18,125/21,693 loss=3.9556 ppl=52.23 acc=0.3405 lr=3.222e-05 grad=0.781 tok/s=11,123 elapsed=7h34m eta=1h29m
+epoch=03/3 batch=3,688/7,231 update=18,150/21,693 loss=3.9658 ppl=52.76 acc=0.3381 lr=3.206e-05 grad=0.770 tok/s=11,012 elapsed=7h34m eta=1h28m
+epoch=03/3 batch=3,713/7,231 update=18,175/21,693 loss=3.9323 ppl=51.02 acc=0.3430 lr=3.189e-05 grad=0.781 tok/s=11,094 elapsed=7h35m eta=1h28m
+epoch=03/3 batch=3,738/7,231 update=18,200/21,693 loss=3.9490 ppl=51.88 acc=0.3405 lr=3.173e-05 grad=0.758 tok/s=11,102 elapsed=7h35m eta=1h27m
+epoch=03/3 batch=3,763/7,231 update=18,225/21,693 loss=3.9398 ppl=51.41 acc=0.3412 lr=3.156e-05 grad=0.754 tok/s=11,099 elapsed=7h36m eta=1h26m
+epoch=03/3 batch=3,788/7,231 update=18,250/21,693 loss=3.9286 ppl=50.83 acc=0.3425 lr=3.140e-05 grad=0.739 tok/s=11,036 elapsed=7h37m eta=1h26m
+epoch=03/3 batch=3,813/7,231 update=18,275/21,693 loss=3.9641 ppl=52.67 acc=0.3406 lr=3.124e-05 grad=0.765 tok/s=10,807 elapsed=7h37m eta=1h25m
+epoch=03/3 batch=3,838/7,231 update=18,300/21,693 loss=3.9576 ppl=52.33 acc=0.3412 lr=3.108e-05 grad=0.746 tok/s=10,876 elapsed=7h38m eta=1h25m
+epoch=03/3 batch=3,863/7,231 update=18,325/21,693 loss=3.9510 ppl=51.99 acc=0.3408 lr=3.092e-05 grad=0.751 tok/s=11,061 elapsed=7h39m eta=1h24m
+epoch=03/3 batch=3,888/7,231 update=18,350/21,693 loss=3.9636 ppl=52.65 acc=0.3391 lr=3.076e-05 grad=0.754 tok/s=10,512 elapsed=7h39m eta=1h23m
+epoch=03/3 batch=3,913/7,231 update=18,375/21,693 loss=3.9537 ppl=52.13 acc=0.3412 lr=3.060e-05 grad=0.755 tok/s=11,018 elapsed=7h40m eta=1h23m
+epoch=03/3 batch=3,938/7,231 update=18,400/21,693 loss=3.9371 ppl=51.27 acc=0.3421 lr=3.045e-05 grad=0.750 tok/s=10,410 elapsed=7h40m eta=1h22m
+epoch=03/3 batch=3,963/7,231 update=18,425/21,693 loss=3.9701 ppl=52.99 acc=0.3398 lr=3.029e-05 grad=0.777 tok/s=10,967 elapsed=7h41m eta=1h21m
+epoch=03/3 batch=3,988/7,231 update=18,450/21,693 loss=3.9643 ppl=52.68 acc=0.3384 lr=3.014e-05 grad=0.758 tok/s=11,123 elapsed=7h42m eta=1h21m
+epoch=03/3 batch=4,013/7,231 update=18,475/21,693 loss=3.9358 ppl=51.20 acc=0.3420 lr=2.999e-05 grad=0.745 tok/s=10,968 elapsed=7h42m eta=1h20m
+epoch=03/3 batch=4,038/7,231 update=18,500/21,693 loss=3.9610 ppl=52.51 acc=0.3399 lr=2.983e-05 grad=0.749 tok/s=10,812 elapsed=7h43m eta=1h19m
+Saved latest checkpoint at update 18,500
+epoch=03/3 batch=4,063/7,231 update=18,525/21,693 loss=3.9550 ppl=52.20 acc=0.3411 lr=2.968e-05 grad=0.753 tok/s=10,551 elapsed=7h44m eta=1h19m
+epoch=03/3 batch=4,088/7,231 update=18,550/21,693 loss=3.9450 ppl=51.67 acc=0.3413 lr=2.953e-05 grad=0.788 tok/s=11,194 elapsed=7h44m eta=1h18m
+epoch=03/3 batch=4,113/7,231 update=18,575/21,693 loss=3.9196 ppl=50.38 acc=0.3431 lr=2.939e-05 grad=0.757 tok/s=11,116 elapsed=7h45m eta=1h18m
+epoch=03/3 batch=4,138/7,231 update=18,600/21,693 loss=3.9416 ppl=51.50 acc=0.3426 lr=2.924e-05 grad=0.765 tok/s=10,831 elapsed=7h45m eta=1h17m
+epoch=03/3 batch=4,163/7,231 update=18,625/21,693 loss=3.9500 ppl=51.93 acc=0.3404 lr=2.909e-05 grad=0.767 tok/s=10,962 elapsed=7h46m eta=1h16m
+epoch=03/3 batch=4,188/7,231 update=18,650/21,693 loss=3.9302 ppl=50.92 acc=0.3431 lr=2.895e-05 grad=0.752 tok/s=11,060 elapsed=7h47m eta=1h16m
+epoch=03/3 batch=4,213/7,231 update=18,675/21,693 loss=3.9596 ppl=52.44 acc=0.3399 lr=2.880e-05 grad=0.743 tok/s=11,183 elapsed=7h47m eta=1h15m
+epoch=03/3 batch=4,238/7,231 update=18,700/21,693 loss=3.9619 ppl=52.56 acc=0.3389 lr=2.866e-05 grad=0.765 tok/s=11,054 elapsed=7h48m eta=1h14m
+epoch=03/3 batch=4,263/7,231 update=18,725/21,693 loss=3.9494 ppl=51.90 acc=0.3401 lr=2.852e-05 grad=0.770 tok/s=11,060 elapsed=7h49m eta=1h14m
+epoch=03/3 batch=4,288/7,231 update=18,750/21,693 loss=3.9573 ppl=52.32 acc=0.3403 lr=2.838e-05 grad=0.760 tok/s=11,184 elapsed=7h49m eta=1h13m
+epoch=03/3 batch=4,313/7,231 update=18,775/21,693 loss=3.9639 ppl=52.66 acc=0.3400 lr=2.824e-05 grad=0.775 tok/s=11,221 elapsed=7h50m eta=1h13m
+epoch=03/3 batch=4,338/7,231 update=18,800/21,693 loss=3.9578 ppl=52.34 acc=0.3416 lr=2.810e-05 grad=0.755 tok/s=11,173 elapsed=7h50m eta=1h12m
+epoch=03/3 batch=4,363/7,231 update=18,825/21,693 loss=3.9501 ppl=51.94 acc=0.3401 lr=2.796e-05 grad=0.766 tok/s=10,992 elapsed=7h51m eta=1h11m
+epoch=03/3 batch=4,388/7,231 update=18,850/21,693 loss=3.9285 ppl=50.83 acc=0.3427 lr=2.783e-05 grad=0.780 tok/s=11,114 elapsed=7h52m eta=1h11m
+epoch=03/3 batch=4,413/7,231 update=18,875/21,693 loss=3.9380 ppl=51.32 acc=0.3427 lr=2.769e-05 grad=0.754 tok/s=10,997 elapsed=7h52m eta=1h10m
+epoch=03/3 batch=4,438/7,231 update=18,900/21,693 loss=3.9414 ppl=51.49 acc=0.3410 lr=2.756e-05 grad=0.774 tok/s=11,020 elapsed=7h53m eta=1h09m
+epoch=03/3 batch=4,463/7,231 update=18,925/21,693 loss=3.9568 ppl=52.29 acc=0.3393 lr=2.742e-05 grad=0.778 tok/s=11,033 elapsed=7h53m eta=1h09m
+epoch=03/3 batch=4,488/7,231 update=18,950/21,693 loss=3.9517 ppl=52.02 acc=0.3414 lr=2.729e-05 grad=0.770 tok/s=10,887 elapsed=7h54m eta=1h08m
+epoch=03/3 batch=4,513/7,231 update=18,975/21,693 loss=3.9681 ppl=52.88 acc=0.3398 lr=2.716e-05 grad=0.764 tok/s=10,981 elapsed=7h55m eta=1h08m
+epoch=03/3 batch=4,538/7,231 update=19,000/21,693 loss=3.9501 ppl=51.94 acc=0.3413 lr=2.703e-05 grad=0.753 tok/s=11,125 elapsed=7h55m eta=1h07m
+Saved latest checkpoint at update 19,000
+[validation] loss=3.8301 ppl=46.06 bpt=5.526 token_acc=0.3532 tokens=248,064 tok/s=54,853
+New best validation perplexity: 46.06
+epoch=03/3 batch=4,563/7,231 update=19,025/21,693 loss=3.9453 ppl=51.69 acc=0.3417 lr=2.691e-05 grad=0.764 tok/s=8,757 elapsed=7h56m eta=1h06m
+epoch=03/3 batch=4,588/7,231 update=19,050/21,693 loss=3.9520 ppl=52.04 acc=0.3397 lr=2.678e-05 grad=0.759 tok/s=11,136 elapsed=7h57m eta=1h06m
+epoch=03/3 batch=4,613/7,231 update=19,075/21,693 loss=3.9439 ppl=51.62 acc=0.3416 lr=2.665e-05 grad=0.750 tok/s=11,089 elapsed=7h57m eta=1h05m
+epoch=03/3 batch=4,638/7,231 update=19,100/21,693 loss=3.9249 ppl=50.65 acc=0.3432 lr=2.653e-05 grad=0.771 tok/s=11,097 elapsed=7h58m eta=1h04m
+epoch=03/3 batch=4,663/7,231 update=19,125/21,693 loss=3.9237 ppl=50.59 acc=0.3433 lr=2.640e-05 grad=0.763 tok/s=11,010 elapsed=7h59m eta=1h04m
+epoch=03/3 batch=4,688/7,231 update=19,150/21,693 loss=3.9285 ppl=50.83 acc=0.3432 lr=2.628e-05 grad=0.758 tok/s=10,800 elapsed=7h59m eta=1h03m
+epoch=03/3 batch=4,713/7,231 update=19,175/21,693 loss=3.9481 ppl=51.84 acc=0.3397 lr=2.616e-05 grad=0.777 tok/s=10,798 elapsed=8h00m eta=1h03m
+epoch=03/3 batch=4,738/7,231 update=19,200/21,693 loss=3.9389 ppl=51.36 acc=0.3428 lr=2.604e-05 grad=0.756 tok/s=10,778 elapsed=8h00m eta=1h02m
+epoch=03/3 batch=4,763/7,231 update=19,225/21,693 loss=3.9715 ppl=53.07 acc=0.3401 lr=2.592e-05 grad=0.757 tok/s=10,886 elapsed=8h01m eta=1h01m
+epoch=03/3 batch=4,788/7,231 update=19,250/21,693 loss=3.9360 ppl=51.21 acc=0.3419 lr=2.580e-05 grad=0.760 tok/s=11,059 elapsed=8h02m eta=1h01m
+epoch=03/3 batch=4,813/7,231 update=19,275/21,693 loss=3.9566 ppl=52.28 acc=0.3403 lr=2.568e-05 grad=0.756 tok/s=11,162 elapsed=8h02m eta=1h00m
+epoch=03/3 batch=4,838/7,231 update=19,300/21,693 loss=3.9507 ppl=51.97 acc=0.3428 lr=2.557e-05 grad=0.806 tok/s=11,134 elapsed=8h03m eta=59m56s
+epoch=03/3 batch=4,863/7,231 update=19,325/21,693 loss=3.9644 ppl=52.69 acc=0.3393 lr=2.545e-05 grad=0.758 tok/s=11,122 elapsed=8h04m eta=59m18s
+epoch=03/3 batch=4,888/7,231 update=19,350/21,693 loss=3.9320 ppl=51.01 acc=0.3435 lr=2.534e-05 grad=0.781 tok/s=11,153 elapsed=8h04m eta=58m41s
+epoch=03/3 batch=4,913/7,231 update=19,375/21,693 loss=3.9460 ppl=51.73 acc=0.3409 lr=2.523e-05 grad=0.782 tok/s=11,104 elapsed=8h05m eta=58m03s
+epoch=03/3 batch=4,938/7,231 update=19,400/21,693 loss=3.9444 ppl=51.65 acc=0.3424 lr=2.512e-05 grad=0.751 tok/s=11,170 elapsed=8h05m eta=57m25s
+epoch=03/3 batch=4,963/7,231 update=19,425/21,693 loss=3.9464 ppl=51.75 acc=0.3410 lr=2.501e-05 grad=0.760 tok/s=11,015 elapsed=8h06m eta=56m48s
+epoch=03/3 batch=4,988/7,231 update=19,450/21,693 loss=3.9478 ppl=51.82 acc=0.3418 lr=2.490e-05 grad=0.750 tok/s=11,104 elapsed=8h07m eta=56m10s
+epoch=03/3 batch=5,013/7,231 update=19,475/21,693 loss=3.9724 ppl=53.11 acc=0.3387 lr=2.479e-05 grad=0.786 tok/s=11,142 elapsed=8h07m eta=55m33s
+epoch=03/3 batch=5,038/7,231 update=19,500/21,693 loss=3.9367 ppl=51.25 acc=0.3427 lr=2.468e-05 grad=0.757 tok/s=10,985 elapsed=8h08m eta=54m55s
+Saved latest checkpoint at update 19,500
+epoch=03/3 batch=5,063/7,231 update=19,525/21,693 loss=3.9254 ppl=50.67 acc=0.3431 lr=2.458e-05 grad=0.764 tok/s=10,480 elapsed=8h09m eta=54m18s
+epoch=03/3 batch=5,088/7,231 update=19,550/21,693 loss=3.9382 ppl=51.33 acc=0.3424 lr=2.448e-05 grad=0.762 tok/s=10,998 elapsed=8h09m eta=53m40s
+epoch=03/3 batch=5,113/7,231 update=19,575/21,693 loss=3.9541 ppl=52.15 acc=0.3414 lr=2.437e-05 grad=0.761 tok/s=11,049 elapsed=8h10m eta=53m02s
+epoch=03/3 batch=5,138/7,231 update=19,600/21,693 loss=3.9648 ppl=52.71 acc=0.3379 lr=2.427e-05 grad=0.762 tok/s=11,094 elapsed=8h10m eta=52m25s
+epoch=03/3 batch=5,163/7,231 update=19,625/21,693 loss=3.9611 ppl=52.51 acc=0.3392 lr=2.417e-05 grad=0.760 tok/s=10,940 elapsed=8h11m eta=51m47s
+epoch=03/3 batch=5,188/7,231 update=19,650/21,693 loss=3.9716 ppl=53.07 acc=0.3390 lr=2.407e-05 grad=0.788 tok/s=11,123 elapsed=8h12m eta=51m09s
+epoch=03/3 batch=5,213/7,231 update=19,675/21,693 loss=3.9160 ppl=50.20 acc=0.3442 lr=2.397e-05 grad=0.753 tok/s=10,706 elapsed=8h12m eta=50m32s
+epoch=03/3 batch=5,238/7,231 update=19,700/21,693 loss=3.9279 ppl=50.80 acc=0.3441 lr=2.388e-05 grad=0.773 tok/s=10,952 elapsed=8h13m eta=49m54s
+epoch=03/3 batch=5,263/7,231 update=19,725/21,693 loss=3.9442 ppl=51.63 acc=0.3410 lr=2.378e-05 grad=0.768 tok/s=11,086 elapsed=8h14m eta=49m17s
+epoch=03/3 batch=5,288/7,231 update=19,750/21,693 loss=3.9255 ppl=50.68 acc=0.3437 lr=2.368e-05 grad=0.764 tok/s=10,976 elapsed=8h14m eta=48m39s
+epoch=03/3 batch=5,313/7,231 update=19,775/21,693 loss=3.9735 ppl=53.17 acc=0.3386 lr=2.359e-05 grad=0.751 tok/s=10,925 elapsed=8h15m eta=48m02s
+epoch=03/3 batch=5,338/7,231 update=19,800/21,693 loss=3.9629 ppl=52.61 acc=0.3402 lr=2.350e-05 grad=0.760 tok/s=10,848 elapsed=8h15m eta=47m24s
+epoch=03/3 batch=5,363/7,231 update=19,825/21,693 loss=3.9281 ppl=50.81 acc=0.3423 lr=2.341e-05 grad=0.776 tok/s=11,171 elapsed=8h16m eta=46m46s
+epoch=03/3 batch=5,388/7,231 update=19,850/21,693 loss=3.9432 ppl=51.58 acc=0.3410 lr=2.332e-05 grad=0.749 tok/s=11,078 elapsed=8h17m eta=46m09s
+epoch=03/3 batch=5,413/7,231 update=19,875/21,693 loss=3.9662 ppl=52.78 acc=0.3389 lr=2.323e-05 grad=0.767 tok/s=11,122 elapsed=8h17m eta=45m31s
+epoch=03/3 batch=5,438/7,231 update=19,900/21,693 loss=3.9676 ppl=52.86 acc=0.3394 lr=2.314e-05 grad=0.767 tok/s=10,915 elapsed=8h18m eta=44m54s
+epoch=03/3 batch=5,463/7,231 update=19,925/21,693 loss=3.9527 ppl=52.08 acc=0.3401 lr=2.305e-05 grad=0.749 tok/s=10,830 elapsed=8h18m eta=44m16s
+epoch=03/3 batch=5,488/7,231 update=19,950/21,693 loss=3.9307 ppl=50.94 acc=0.3429 lr=2.297e-05 grad=0.756 tok/s=10,946 elapsed=8h19m eta=43m38s
+epoch=03/3 batch=5,513/7,231 update=19,975/21,693 loss=3.9424 ppl=51.54 acc=0.3421 lr=2.288e-05 grad=0.786 tok/s=11,002 elapsed=8h20m eta=43m01s
+epoch=03/3 batch=5,538/7,231 update=20,000/21,693 loss=3.9581 ppl=52.36 acc=0.3412 lr=2.280e-05 grad=0.769 tok/s=11,099 elapsed=8h20m eta=42m23s
+Saved latest checkpoint at update 20,000
+[validation] loss=3.8237 ppl=45.77 bpt=5.516 token_acc=0.3541 tokens=248,064 tok/s=55,067
+New best validation perplexity: 45.77
+epoch=03/3 batch=5,563/7,231 update=20,025/21,693 loss=3.9573 ppl=52.32 acc=0.3409 lr=2.272e-05 grad=0.771 tok/s=8,670 elapsed=8h21m eta=41m46s
+epoch=03/3 batch=5,588/7,231 update=20,050/21,693 loss=3.9235 ppl=50.58 acc=0.3430 lr=2.264e-05 grad=0.759 tok/s=11,162 elapsed=8h22m eta=41m09s
+epoch=03/3 batch=5,613/7,231 update=20,075/21,693 loss=3.9733 ppl=53.16 acc=0.3378 lr=2.256e-05 grad=0.785 tok/s=11,129 elapsed=8h22m eta=40m31s
+epoch=03/3 batch=5,638/7,231 update=20,100/21,693 loss=3.9480 ppl=51.83 acc=0.3422 lr=2.248e-05 grad=0.767 tok/s=11,119 elapsed=8h23m eta=39m54s
+epoch=03/3 batch=5,663/7,231 update=20,125/21,693 loss=3.9568 ppl=52.29 acc=0.3405 lr=2.241e-05 grad=0.767 tok/s=11,121 elapsed=8h24m eta=39m16s
+epoch=03/3 batch=5,688/7,231 update=20,150/21,693 loss=3.9524 ppl=52.06 acc=0.3396 lr=2.233e-05 grad=0.763 tok/s=11,089 elapsed=8h24m eta=38m38s
+epoch=03/3 batch=5,713/7,231 update=20,175/21,693 loss=3.9524 ppl=52.06 acc=0.3401 lr=2.226e-05 grad=0.760 tok/s=10,795 elapsed=8h25m eta=38m01s
+epoch=03/3 batch=5,738/7,231 update=20,200/21,693 loss=3.9578 ppl=52.34 acc=0.3400 lr=2.218e-05 grad=0.758 tok/s=11,119 elapsed=8h25m eta=37m23s
+epoch=03/3 batch=5,763/7,231 update=20,225/21,693 loss=3.9527 ppl=52.07 acc=0.3393 lr=2.211e-05 grad=0.768 tok/s=10,978 elapsed=8h26m eta=36m46s
+epoch=03/3 batch=5,788/7,231 update=20,250/21,693 loss=3.9472 ppl=51.79 acc=0.3403 lr=2.204e-05 grad=0.771 tok/s=11,128 elapsed=8h27m eta=36m08s
+epoch=03/3 batch=5,813/7,231 update=20,275/21,693 loss=3.9384 ppl=51.34 acc=0.3412 lr=2.197e-05 grad=0.760 tok/s=11,152 elapsed=8h27m eta=35m30s
+epoch=03/3 batch=5,838/7,231 update=20,300/21,693 loss=3.9290 ppl=50.86 acc=0.3426 lr=2.190e-05 grad=0.758 tok/s=11,141 elapsed=8h28m eta=34m53s
+epoch=03/3 batch=5,863/7,231 update=20,325/21,693 loss=3.9398 ppl=51.41 acc=0.3421 lr=2.183e-05 grad=0.775 tok/s=11,114 elapsed=8h29m eta=34m15s
+epoch=03/3 batch=5,888/7,231 update=20,350/21,693 loss=3.9106 ppl=49.93 acc=0.3445 lr=2.177e-05 grad=0.767 tok/s=11,168 elapsed=8h29m eta=33m37s
+epoch=03/3 batch=5,913/7,231 update=20,375/21,693 loss=3.9345 ppl=51.14 acc=0.3416 lr=2.170e-05 grad=0.781 tok/s=11,103 elapsed=8h30m eta=33m00s
+epoch=03/3 batch=5,938/7,231 update=20,400/21,693 loss=3.9410 ppl=51.47 acc=0.3425 lr=2.164e-05 grad=0.779 tok/s=10,800 elapsed=8h30m eta=32m22s
+epoch=03/3 batch=5,963/7,231 update=20,425/21,693 loss=3.9485 ppl=51.86 acc=0.3411 lr=2.158e-05 grad=0.751 tok/s=11,006 elapsed=8h31m eta=31m45s
+epoch=03/3 batch=5,988/7,231 update=20,450/21,693 loss=3.9365 ppl=51.24 acc=0.3421 lr=2.151e-05 grad=0.768 tok/s=11,127 elapsed=8h32m eta=31m07s
+epoch=03/3 batch=6,013/7,231 update=20,475/21,693 loss=3.9714 ppl=53.06 acc=0.3395 lr=2.145e-05 grad=0.764 tok/s=10,943 elapsed=8h32m eta=30m30s
+epoch=03/3 batch=6,038/7,231 update=20,500/21,693 loss=3.9545 ppl=52.17 acc=0.3409 lr=2.140e-05 grad=0.765 tok/s=11,034 elapsed=8h33m eta=29m52s
+Saved latest checkpoint at update 20,500
+epoch=03/3 batch=6,063/7,231 update=20,525/21,693 loss=3.9392 ppl=51.38 acc=0.3423 lr=2.134e-05 grad=0.761 tok/s=10,612 elapsed=8h33m eta=29m14s
+epoch=03/3 batch=6,088/7,231 update=20,550/21,693 loss=3.9496 ppl=51.91 acc=0.3400 lr=2.128e-05 grad=0.777 tok/s=10,995 elapsed=8h34m eta=28m37s
+epoch=03/3 batch=6,113/7,231 update=20,575/21,693 loss=3.9351 ppl=51.17 acc=0.3428 lr=2.123e-05 grad=0.773 tok/s=11,067 elapsed=8h35m eta=27m59s
+epoch=03/3 batch=6,138/7,231 update=20,600/21,693 loss=3.9432 ppl=51.58 acc=0.3418 lr=2.117e-05 grad=0.763 tok/s=11,108 elapsed=8h35m eta=27m22s
+epoch=03/3 batch=6,163/7,231 update=20,625/21,693 loss=3.9520 ppl=52.04 acc=0.3400 lr=2.112e-05 grad=0.770 tok/s=11,121 elapsed=8h36m eta=26m44s
+epoch=03/3 batch=6,188/7,231 update=20,650/21,693 loss=3.9420 ppl=51.52 acc=0.3412 lr=2.107e-05 grad=0.758 tok/s=11,121 elapsed=8h37m eta=26m06s
+epoch=03/3 batch=6,213/7,231 update=20,675/21,693 loss=3.9522 ppl=52.05 acc=0.3404 lr=2.102e-05 grad=0.767 tok/s=11,139 elapsed=8h37m eta=25m29s
+epoch=03/3 batch=6,238/7,231 update=20,700/21,693 loss=3.9460 ppl=51.73 acc=0.3409 lr=2.097e-05 grad=0.775 tok/s=11,184 elapsed=8h38m eta=24m51s
+epoch=03/3 batch=6,263/7,231 update=20,725/21,693 loss=3.9577 ppl=52.34 acc=0.3401 lr=2.092e-05 grad=0.743 tok/s=11,114 elapsed=8h38m eta=24m14s
+epoch=03/3 batch=6,288/7,231 update=20,750/21,693 loss=3.9494 ppl=51.90 acc=0.3403 lr=2.087e-05 grad=0.766 tok/s=11,121 elapsed=8h39m eta=23m36s
+epoch=03/3 batch=6,313/7,231 update=20,775/21,693 loss=3.9423 ppl=51.54 acc=0.3408 lr=2.083e-05 grad=0.756 tok/s=11,134 elapsed=8h40m eta=22m59s
+epoch=03/3 batch=6,338/7,231 update=20,800/21,693 loss=3.9394 ppl=51.39 acc=0.3410 lr=2.078e-05 grad=0.786 tok/s=11,135 elapsed=8h40m eta=22m21s
+epoch=03/3 batch=6,363/7,231 update=20,825/21,693 loss=3.9305 ppl=50.93 acc=0.3439 lr=2.074e-05 grad=0.758 tok/s=10,852 elapsed=8h41m eta=21m43s
+epoch=03/3 batch=6,388/7,231 update=20,850/21,693 loss=3.9434 ppl=51.59 acc=0.3415 lr=2.070e-05 grad=0.774 tok/s=11,117 elapsed=8h41m eta=21m06s
+epoch=03/3 batch=6,413/7,231 update=20,875/21,693 loss=3.9471 ppl=51.78 acc=0.3405 lr=2.066e-05 grad=0.776 tok/s=11,126 elapsed=8h42m eta=20m28s
+epoch=03/3 batch=6,438/7,231 update=20,900/21,693 loss=3.9267 ppl=50.74 acc=0.3417 lr=2.062e-05 grad=0.766 tok/s=11,148 elapsed=8h43m eta=19m51s
+epoch=03/3 batch=6,463/7,231 update=20,925/21,693 loss=3.9314 ppl=50.98 acc=0.3414 lr=2.058e-05 grad=0.790 tok/s=11,153 elapsed=8h43m eta=19m13s
+epoch=03/3 batch=6,488/7,231 update=20,950/21,693 loss=3.9356 ppl=51.19 acc=0.3421 lr=2.054e-05 grad=0.791 tok/s=10,951 elapsed=8h44m eta=18m35s
+epoch=03/3 batch=6,513/7,231 update=20,975/21,693 loss=3.9500 ppl=51.94 acc=0.3395 lr=2.051e-05 grad=0.798 tok/s=11,171 elapsed=8h45m eta=17m58s
+epoch=03/3 batch=6,538/7,231 update=21,000/21,693 loss=3.9124 ppl=50.02 acc=0.3430 lr=2.047e-05 grad=0.775 tok/s=11,131 elapsed=8h45m eta=17m20s
+Saved latest checkpoint at update 21,000
+[validation] loss=3.8186 ppl=45.54 bpt=5.509 token_acc=0.3545 tokens=248,064 tok/s=55,166
+New best validation perplexity: 45.54
+epoch=03/3 batch=6,563/7,231 update=21,025/21,693 loss=3.9597 ppl=52.44 acc=0.3399 lr=2.044e-05 grad=0.747 tok/s=8,758 elapsed=8h46m eta=16m43s
+epoch=03/3 batch=6,588/7,231 update=21,050/21,693 loss=3.9420 ppl=51.52 acc=0.3414 lr=2.041e-05 grad=0.772 tok/s=11,187 elapsed=8h47m eta=16m05s
+epoch=03/3 batch=6,613/7,231 update=21,075/21,693 loss=3.9435 ppl=51.60 acc=0.3425 lr=2.038e-05 grad=0.800 tok/s=11,190 elapsed=8h47m eta=15m28s
+epoch=03/3 batch=6,638/7,231 update=21,100/21,693 loss=3.9135 ppl=50.07 acc=0.3431 lr=2.035e-05 grad=0.770 tok/s=11,234 elapsed=8h48m eta=14m50s
+epoch=03/3 batch=6,663/7,231 update=21,125/21,693 loss=3.9227 ppl=50.53 acc=0.3438 lr=2.032e-05 grad=0.779 tok/s=11,183 elapsed=8h48m eta=14m13s
+epoch=03/3 batch=6,688/7,231 update=21,150/21,693 loss=3.9437 ppl=51.61 acc=0.3411 lr=2.029e-05 grad=0.779 tok/s=11,187 elapsed=8h49m eta=13m35s
+epoch=03/3 batch=6,713/7,231 update=21,175/21,693 loss=3.9288 ppl=50.85 acc=0.3438 lr=2.026e-05 grad=0.760 tok/s=11,173 elapsed=8h50m eta=12m58s
+epoch=03/3 batch=6,738/7,231 update=21,200/21,693 loss=3.9333 ppl=51.07 acc=0.3424 lr=2.024e-05 grad=0.764 tok/s=11,189 elapsed=8h50m eta=12m20s
+epoch=03/3 batch=6,763/7,231 update=21,225/21,693 loss=3.9404 ppl=51.44 acc=0.3419 lr=2.022e-05 grad=0.764 tok/s=11,215 elapsed=8h51m eta=11m42s
+epoch=03/3 batch=6,788/7,231 update=21,250/21,693 loss=3.9302 ppl=50.92 acc=0.3415 lr=2.019e-05 grad=0.756 tok/s=11,173 elapsed=8h51m eta=11m05s
+epoch=03/3 batch=6,813/7,231 update=21,275/21,693 loss=3.9248 ppl=50.64 acc=0.3442 lr=2.017e-05 grad=0.788 tok/s=11,183 elapsed=8h52m eta=10m27s
+epoch=03/3 batch=6,838/7,231 update=21,300/21,693 loss=3.9481 ppl=51.84 acc=0.3412 lr=2.015e-05 grad=0.763 tok/s=11,190 elapsed=8h53m eta=9m50s
+epoch=03/3 batch=6,863/7,231 update=21,325/21,693 loss=3.9374 ppl=51.29 acc=0.3433 lr=2.013e-05 grad=0.768 tok/s=11,223 elapsed=8h53m eta=9m12s
+epoch=03/3 batch=6,888/7,231 update=21,350/21,693 loss=3.9453 ppl=51.69 acc=0.3411 lr=2.012e-05 grad=0.795 tok/s=11,178 elapsed=8h54m eta=8m35s
+epoch=03/3 batch=6,913/7,231 update=21,375/21,693 loss=3.9388 ppl=51.36 acc=0.3424 lr=2.010e-05 grad=0.788 tok/s=11,190 elapsed=8h54m eta=7m57s
+epoch=03/3 batch=6,938/7,231 update=21,400/21,693 loss=3.9384 ppl=51.34 acc=0.3421 lr=2.008e-05 grad=0.773 tok/s=11,124 elapsed=8h55m eta=7m19s
+epoch=03/3 batch=6,963/7,231 update=21,425/21,693 loss=3.9330 ppl=51.06 acc=0.3431 lr=2.007e-05 grad=0.770 tok/s=11,154 elapsed=8h56m eta=6m42s
+epoch=03/3 batch=6,988/7,231 update=21,450/21,693 loss=3.9412 ppl=51.48 acc=0.3409 lr=2.006e-05 grad=0.776 tok/s=11,122 elapsed=8h56m eta=6m04s
+epoch=03/3 batch=7,013/7,231 update=21,475/21,693 loss=3.9215 ppl=50.47 acc=0.3435 lr=2.005e-05 grad=0.793 tok/s=11,108 elapsed=8h57m eta=5m27s
+epoch=03/3 batch=7,038/7,231 update=21,500/21,693 loss=3.9464 ppl=51.75 acc=0.3411 lr=2.004e-05 grad=0.782 tok/s=10,954 elapsed=8h58m eta=4m49s
+Saved latest checkpoint at update 21,500
+epoch=03/3 batch=7,063/7,231 update=21,525/21,693 loss=3.9438 ppl=51.61 acc=0.3400 lr=2.003e-05 grad=0.755 tok/s=10,611 elapsed=8h58m eta=4m12s
+epoch=03/3 batch=7,088/7,231 update=21,550/21,693 loss=3.9269 ppl=50.75 acc=0.3446 lr=2.002e-05 grad=0.799 tok/s=11,199 elapsed=8h59m eta=3m34s
+epoch=03/3 batch=7,113/7,231 update=21,575/21,693 loss=3.9442 ppl=51.64 acc=0.3413 lr=2.001e-05 grad=0.775 tok/s=11,130 elapsed=8h59m eta=2m57s
+epoch=03/3 batch=7,138/7,231 update=21,600/21,693 loss=3.9622 ppl=52.57 acc=0.3403 lr=2.001e-05 grad=0.764 tok/s=11,147 elapsed=9h00m eta=2m19s
+epoch=03/3 batch=7,163/7,231 update=21,625/21,693 loss=3.9404 ppl=51.44 acc=0.3423 lr=2.000e-05 grad=0.759 tok/s=11,109 elapsed=9h01m eta=1m42s
+epoch=03/3 batch=7,188/7,231 update=21,650/21,693 loss=3.9511 ppl=52.00 acc=0.3420 lr=2.000e-05 grad=0.791 tok/s=10,826 elapsed=9h01m eta=1m04s
+epoch=03/3 batch=7,213/7,231 update=21,675/21,693 loss=3.9245 ppl=50.63 acc=0.3425 lr=2.000e-05 grad=0.750 tok/s=11,039 elapsed=9h02m eta=0m27s
+[validation] loss=3.8172 ppl=45.47 bpt=5.507 token_acc=0.3547 tokens=248,064 tok/s=55,087
+[validation_long_512] loss=3.7800 ppl=43.82 bpt=5.453 token_acc=0.3576 tokens=248,320 tok/s=53,781
+New best validation perplexity: 45.47
+Loaded best checkpoint (validation ppl=45.47)
+[test] loss=3.8226 ppl=45.72 bpt=5.515 token_acc=0.3560 tokens=284,416 tok/s=55,754
+[validation_long_512] loss=3.7800 ppl=43.82 bpt=5.453 token_acc=0.3576 tokens=248,320 tok/s=53,757
+
+[Generation 1]
+The history of science for science . During the 1950s and 1950s , however , science and technology became a major success in the science fiction industry and the early 1980s was more critical . Amongst these was The Secret Service , a science fiction series that took a decade after the publication of the science fiction industry . After two years of science at science , the team 's success proved to be a little more expensive and
+
+
+[Generation 2]
+In the city of London . 
+
+
+
+[Generation 3]
+Researchers discovered that his wife had been born in the nearby town of Piedmont in December 1975 and that his wife 's grandmother could only be seen on his side . He told her that she was the only child in her life . 
+
+
+==============================================================================================================
+FINAL: test_loss=3.8226 test_ppl=45.72 test_acc=0.3560 long_val_ppl=43.82 runtime=9h03m
+Artifacts: /workspace/AAT/runs/aat_sequence_wikitext_paper_b64

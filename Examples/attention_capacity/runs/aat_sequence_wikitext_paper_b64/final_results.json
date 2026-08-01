@@ -1,0 +1,116 @@
+{
+  "architecture_stats": {
+    "chunk_size": 32.0,
+    "decoder_layers": 12.0,
+    "encoder_layers": 6.0,
+    "heads": 16.0,
+    "kappa_mean": 7.788154125213623,
+    "phase_scale_rms": 0.21310968697071075,
+    "position_scale": 255.0,
+    "ray_strength_max": 1.3433855772018433,
+    "ray_strength_mean": 0.6503164172172546,
+    "ray_strength_min": -0.2793155312538147,
+    "ray_strength_std": 0.17397546768188477,
+    "rays_per_head": 24.0,
+    "read_gate_mean": 0.7844929099082947,
+    "transport_gate_mean": 1.652052640914917,
+    "transport_steps": 3.0
+  },
+  "best_validation_loss": 3.8171550014562774,
+  "best_validation_perplexity": 45.47464880030001,
+  "environment": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91002,
+    "datasets": "5.0.1",
+    "device": "cuda",
+    "gpu_name": "NVIDIA GeForce RTX 5090",
+    "python": "3.12.3 (main, Aug 14 2025, 17:47:21) [GCC 13.3.0]",
+    "torch": "2.8.0+cu128",
+    "transformers": "5.14.1"
+  },
+  "generated_samples": [
+    {
+      "prompt": "The history of science",
+      "text": "The history of science for science . During the 1950s and 1950s , however , science and technology became a major success in the science fiction industry and the early 1980s was more critical . Amongst these was The Secret Service , a science fiction series that took a decade after the publication of the science fiction industry . After two years of science at science , the team 's success proved to be a little more expensive and"
+    },
+    {
+      "prompt": "In the city of London",
+      "text": "In the city of London . \n"
+    },
+    {
+      "prompt": "Researchers discovered that",
+      "text": "Researchers discovered that his wife had been born in the nearby town of Piedmont in December 1975 and that his wife 's grandmother could only be seen on his side . He told her that she was the only child in her life . \n"
+    }
+  ],
+  "implementation_version": "deep-transport-sequence-aat-e6-d12-v1",
+  "long_validation": {
+    "bits_per_token": 5.45341194970869,
+    "loss": 3.780017117372493,
+    "perplexity": 43.81679175750071,
+    "seconds": 4.6192910799290985,
+    "split": "validation_long_512",
+    "token_accuracy": 0.35763933634020617,
+    "tokens": 248320,
+    "tokens_per_second": 53757.16656587302
+  },
+  "model_config": {
+    "chunk_size": 32,
+    "d_model": 512,
+    "decoder_layers": 12,
+    "dropout": 0.1,
+    "encoder_layers": 6,
+    "gradient_checkpointing": true,
+    "heads": 16,
+    "kappa": 6.0,
+    "position_scale": 255.0,
+    "rays": 24,
+    "score_clip": 30.0,
+    "transport_steps": 3,
+    "vocab_size": 50257
+  },
+  "parameter_breakdown": {
+    "aat_sequence_core": 16104342,
+    "decoder_layers": 7438152,
+    "encoder_refinement_layers": 7957704,
+    "final_memory_writer": 706438,
+    "input_output_norms": 2048,
+    "tied_token_embedding_and_lm_head": 25731584,
+    "total": 41835926
+  },
+  "source_sha256": "9d1dd14806e8b71ef74ef9feeca04046db5767a67572335c4aa572e6f4f9136d",
+  "test": {
+    "bits_per_token": 5.514907765100028,
+    "loss": 3.8226427684272335,
+    "perplexity": 45.7248890781572,
+    "seconds": 5.1012436570599675,
+    "split": "test",
+    "token_accuracy": 0.35595747074707473,
+    "tokens": 284416,
+    "tokens_per_second": 55754.2472229055
+  },
+  "train_config": {
+    "batch_size": 64,
+    "dataset_config": "wikitext-103-raw-v1",
+    "dataset_name": "Salesforce/wikitext",
+    "epochs": 3,
+    "eval_batches": null,
+    "eval_every": 1000,
+    "grad_accum_steps": 1,
+    "grad_clip": 1.0,
+    "learning_rate": 0.0002,
+    "log_every": 25,
+    "long_sequence_length": 512,
+    "max_eval_blocks": null,
+    "max_train_blocks": null,
+    "min_lr_ratio": 0.1,
+    "num_workers": 0,
+    "preprocessing_workers": 4,
+    "save_every": 500,
+    "seed": 0,
+    "sequence_length": 256,
+    "tokenizer_name": "gpt2",
+    "warmup_fraction": 0.02,
+    "weight_decay": 0.1
+  },
+  "training_seconds_this_invocation": 32584.30670461501
+}
